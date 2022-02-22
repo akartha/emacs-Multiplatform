@@ -1,0 +1,25 @@
+;;;; Emacs Bookmark Format Version 1 ;;;; -*- coding: utf-8-emacs -*-
+;;; This format is meant to be slightly human-readable;
+;;; nevertheless, you probably don't want to edit it.
+;;; -*- End Of Bookmark File Format Version Stamp -*-
+(("braindump.org"
+ (filename . "~/Documents/braindump.org")
+ (front-context-string . "\n#+end_src\n** Cu")
+ (rear-context-string . " /size:1920x1080")
+ (position . 5580))
+("org-capture-last-stored"
+ (filename . "~/Documents/org-files/20220205131935-qemu_basics.org")
+ (front-context-string . "QEMU: https://ww")
+ (rear-context-string . "ics\n#+filetags:\n")
+ (position . 101))
+("polybar config"
+ (filename . "~/.config/polybar/config")
+ (front-context-string . "\n\n[module/wlan]\n")
+ (rear-context-string . "ercentage_used%%")
+ (position . 5000))
+("i3 config"
+ (filename . "~/.i3/config")
+ (front-context-string . " Gaps: (o) outer")
+ (rear-context-string . ".\nset $mode_gaps")
+ (position . 14474))
+)
