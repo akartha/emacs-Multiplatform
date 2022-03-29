@@ -17,18 +17,24 @@ My new favourite one I guess, decent default values.
 #+END_SRC
 * Basic Interface Settings
 These are setting that do not depend on packages and are built-in enhancements to the UI.
+** Custom file location
+#+begin_src emacs-lisp
+(setq custom-file (locate-user-emacs-file "custom-vars.el"))
+(load custom-file 'noerror 'nomessage)
+#+end_src
 ** Looks
 *** Remove Startup Screen
 We use an actual replacement for it, keep reading or head directly to =dashboard=.
 #+BEGIN_SRC emacs-lisp
 (setq inhibit-startup-message t)
 #+END_SRC
-*** Disable Menus And Scrollbars
+*** Disable Menus And Scrollbars and dialogboxes
 If you like using any of those, change =-1= to =1=.
 #+BEGIN_SRC emacs-lisp
 (tool-bar-mode -1)
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
+(setq use-dialog-box nil)    
 #+END_SRC
 *** Disable Bell
 This is annoying, remove this line if you like being visually reminded of events.
@@ -63,7 +69,6 @@ Changes =lambda= to an actual symbol and a few others as well, only in the GUI v
     :config
     (global-pretty-mode t)))
 #+END_SRC
-
 ** Functionality
 *** Disable backups and auto-saves
 I don't use either, you might want to turn those from =nil= to =t= if you do.
@@ -71,6 +76,14 @@ I don't use either, you might want to turn those from =nil= to =t= if you do.
 (setq make-backup-files nil)
 (setq auto-save-default t)
 #+END_SRC
+*** Automatically revert buffers for changed files
+#+begin_src emacs-lisp
+(global-auto-revert-mode 1)
+
+;; Revert Dired and other buffers
+(setq global-auto-revert-non-file-buffers t)
+#+end_src
+    
 *** Dired
 
 #+begin_src emacs-lisp
@@ -94,6 +107,16 @@ I don't use either, you might want to turn those from =nil= to =t= if you do.
 (defalias 'yes-or-no-p 'y-or-n-p)
 #+END_SRC
 
+*** Remember recently edited files
+#+begin_src emacs-lisp
+(recentf-mode 1)
+#+end_src
+*** Remember minibuffer prompt history
+#+begin_src emacs-lisp
+(setq history-length 25)
+(savehist-mode 1)
+#+end_src
+
 *** Async
 Lets us use asynchronous processes wherever possible, pretty useful.
 #+BEGIN_SRC emacs-lisp
@@ -107,6 +130,7 @@ Lets us use asynchronous processes wherever possible, pretty useful.
 #+begin_src emacs-lisp
 (save-place-mode t)    
 #+end_src
+    
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
 provides you with a quick look into your latest projects and files.
@@ -119,7 +143,7 @@ change the numbers to suit your liking
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((bookmarks  . 10)
-			              (recents  . 5)
+			              (recents  . 10)
 			              (agenda  . 5)
     			          (projects  . 2)))
 ;;			              (registers . 5)))
@@ -1056,14 +1080,17 @@ I can find some use for this.
 
 (setq org-src-window-setup 'current-window)
 (add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook'org-mode-hook 'yas-minor-mode)
-(add-hook'org-mode-hook 'abbrev-mode)
+(add-hook 'org-mode-hook 'yas-minor-mode)
+(add-hook 'org-mode-hook 'abbrev-mode)
+(add-hook 'org-mode-hook #'org-modern-mode)
     
 #+END_SRC
 
 ** PDF tool
 #+BEGIN_SRC emacs-lisp
-
+(when (file-directory-p "/usr/share/emacs/site-lisp/tex-utils")
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
+  (require 'xdvi-search))
 #+END_SRC
 ** Syntax highlighting for documents exported to HTML
 #+BEGIN_SRC emacs-lisp
@@ -1085,10 +1112,10 @@ I can find some use for this.
 ** Org Bullets
 Makes it all look a bit nicer, I hate looking at asterisks.
 #+BEGIN_SRC emacs-lisp
-  (use-package org-bullets
-    :ensure t
-    :config
-      (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+  ;; (use-package org-bullets
+  ;;   :ensure t
+  ;;   :config
+  ;;     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))  
 #+END_SRC
 
 ** Exporting options
@@ -1193,13 +1220,6 @@ This stuff is kind of moot now that I have org-roam
 #+END_SRC
 ** Org Roam
 #+BEGIN_SRC emacs-lisp
-;; (defun org-roam-node-insert-immediate (arg &rest args)
-;;   (interactive "P")
-;;   (let ((args (cons arg args))
-;;         org-roam-capture-templates (list (append (car org-roam-capture-templates)
-;;                                                  '(:immediate-finish t)))))
-;;   (apply #'org-roam-node-insert args))
-
 (use-package org-roam
   :ensure t
   :init
@@ -1219,18 +1239,22 @@ This stuff is kind of moot now that I have org-roam
       :unnarrowed t)
 
      ("p" "project" plain (file "~/Documents/org-files/templates/projectcap.org")
-     :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-     :unnarrowed t)
-    
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+      :unnarrowed t)
+     
      ("r" "random thoughts" plain (file "~/Documents/org-files/templates/random.org")
-     :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Musings")
-     :unnarrowed t)
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Musings")
+      :unnarrowed t)
 
-    ("m" "movie notes" plain (file "~/Documents/org-files/templates/movienotes.org")
+     ("m" "movie notes" plain (file "~/Documents/org-files/templates/movienotes.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Movies")
       :unnarrowed t)
 
-    ))
+     ("s" "series notes" plain (file "~/Documents/org-files/templates/movienotes.org")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Series")
+      :unnarrowed t)
+
+     ))
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n g" . org-roam-graph)
@@ -1246,8 +1270,11 @@ This stuff is kind of moot now that I have org-roam
   :config
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
-    
+
 #+END_SRC    
+
+#+RESULTS:
+
 * Diminishing modes
 The package =diminish= disables modes on the mode line but keeps them running, it just prevents them from showing up and taking up space.
 
