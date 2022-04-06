@@ -131,6 +131,14 @@ Lets us use asynchronous processes wherever possible, pretty useful.
 (save-place-mode t)    
 #+end_src
     
+** Custom keymap
+
+Define a custom keymap for myself
+
+#+begin_src emacs-lisp
+(define-prefix-command 'ak-map)
+(global-set-key (kbd "C-c b") 'ak-map)
+#+end_src
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
 provides you with a quick look into your latest projects and files.
@@ -694,17 +702,56 @@ If you wish to include the selected character in the killed region, change =zzz-
                    (switch-to-buffer "*scratch*")))
 #+END_SRC
 ** CRUX
-#+BEGIN_SRC emacs-lisp
+    #+BEGIN_SRC emacs-lisp
 (use-package crux
   :ensure t
   :bind
-  ("C-o" . crux-smart-open-line)
-  ("C-c o" . crux-smart-open-line-above)
-  ("C-c d" . crux-duplicate-current-line-or-region)
-  ("C-c j" . crux-top-join-line)
-  ("C-k" . crux-smart-kill-line)
-  ("C-c k" . crux-kill-line-backwards))
+  ;; ("C-o" . crux-smart-open-line)
+  ;; ("C-c o" . crux-smart-open-line-above)
+  ;; ("C-c d" . crux-duplicate-current-line-or-region)
+  ;; ("C-c j" . crux-top-join-line)
+  ("C-k" . crux-smart-kill-line))
+  ;; ("C-c k" . crux-kill-line-backwards))
+
+(define-prefix-command 'ak-crux-map)    
+(global-set-key (kbd "C-c k") 'ak-crux-map)
+    
+(define-key ak-crux-map (kbd "s") 'crux-sudo-edit)
+(define-key ak-crux-map (kbd "o") 'crux-smart-open-line)
+(define-key ak-crux-map (kbd "O") 'crux-smart-open-line-above)
+(define-key ak-crux-map (kbd "d") 'crux-duplicate-current-line-or-region)
+(define-key ak-crux-map (kbd "j") 'crux-top-join-line)
+(define-key ak-crux-map (kbd "k") 'crux-kill-line-backwards)
+(define-key ak-crux-map (kbd "C") 'crux-cleanup-buffer-or-region)
+(define-key ak-crux-map (kbd "R") 'crux-recentf-find-file)
+(define-key ak-crux-map (kbd "D") 'crux-recentf-find-directory)
+(define-key ak-crux-map (kbd "U") 'crux-view-url)
+(define-key ak-crux-map (kbd "u") 'crux-upcase-region)
+(define-key ak-crux-map (kbd "l") 'crux-downcase-region)
+(define-key ak-crux-map (kbd "c") 'crux-capitalize-region)
+(define-key ak-crux-map (kbd "0") 'crux-other-window-or-switch-buffer)
+(define-key ak-crux-map (kbd "a") 'crux-ispell-word-then-abbrev)
 #+END_SRC        
+
+crux ships with some handy advises that can enhance the operation of existing commands.
+*** (crux-with-region-or-buffer)
+
+You can use crux-with-region-or-buffer to make a command acting normally on a region to operate on the entire buffer in the absence of a region. Here are a few examples you can stuff in your config:
+#+begin_example
+(crux-with-region-or-buffer indent-region)
+(crux-with-region-or-buffer untabify)
+#+end_example
+*** (crux-with-region-or-line)
+Likewise, you can use crux-with-region-or-line to make a command alternately act on the current line if the mark is not active:
+#+begin_example
+(crux-with-region-or-line comment-or-uncomment-region)
+#+end_example
+*** (crux-with-region-or-point-to-eol)
+Sometimes you might want to act on the point until the end of the current line, rather than the whole line, in the absence of a region:
+#+begin_example
+(crux-with-region-or-point-to-eol kill-ring-save)
+#+end_example
+    
 
 * Kill ring
 There is a lot of customization to the kill ring, and while I have not used it much before,
@@ -1271,9 +1318,7 @@ This stuff is kind of moot now that I have org-roam
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
 
-#+END_SRC    
-
-#+RESULTS:
+#+END_SRC
 
 * Diminishing modes
 The package =diminish= disables modes on the mode line but keeps them running, it just prevents them from showing up and taking up space.
@@ -1390,7 +1435,7 @@ For a bit of fun, add xkcd cartoons to your dashboard
       (rand-id-xkcd-url nil))
   
   (with-temp-buffer
-;;    (setq rand-id-xkcd (if (internet-up-p) (string-to-number(xkcd-rand)) xkcd-latest)
+    ;;(setq rand-id-xkcd (if (internet-up-p) (string-to-number(xkcd-rand)) xkcd-latest)
     (setq rand-id-xkcd (string-to-number(xkcd-rand))
           rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
     (xkcd-kill-buffer))

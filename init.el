@@ -6,7 +6,7 @@
 ;;(setq file-name-handler-alist nil)
 
 ;;(defun startup/revert-file-name-handler-alist ()
- ;; (setq file-name-handler-alist startup/file-name-handler-alist))
+ ;; (setq file-name-handler-alist startup0/file-name-handler-alist))
 
 ;;(defun startup/reset-gc ()
 ;;  (setq gc-cons-threshold 16777216
