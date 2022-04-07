@@ -137,7 +137,7 @@ Define a custom keymap for myself
 
 #+begin_src emacs-lisp
 (define-prefix-command 'ak-map)
-(global-set-key (kbd "C-c b") 'ak-map)
+(global-set-key (kbd "C-`") 'ak-map)
 #+end_src
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
@@ -471,7 +471,7 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
   (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
 #+END_SRC
-
+    
 ** avy 
 As you invoke one of avy's functions, you will be prompted for a character that you'd like to jump to in the /visible portion of the current buffer/.
 Afterwards you will notice how all instances of said character have additional letter on top of them. Pressing those letters, that are next to your desired character will move your cursor over there.
@@ -546,20 +546,22 @@ let's make a quick fix and bind it properly.
     (forward-char 1)
     (backward-word)
     (kill-word 1))
-  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
+;;  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
+    (define-key ak-map "W" 'daedreth/kill-inner-word) 
 #+END_SRC
 
 ** Improved copy-word
 And again, the same as above but we make sure to not delete the source word.
 #+BEGIN_SRC emacs-lisp
-  (defun daedreth/copy-whole-word ()
-    (interactive)
-    (save-excursion
-      (forward-char 1)
-      (backward-word)
-      (kill-word 1)
-      (yank)))
-  (global-set-key (kbd "C-c w c") 'daedreth/copy-whole-word)
+(defun daedreth/copy-whole-word ()
+  (interactive)
+  (save-excursion
+    (forward-char 1)
+    (backward-word)
+    (kill-word 1)
+    (yank)))
+;;(global-set-key (kbd "C-c w c") 'daedreth/copy-whole-word)
+(define-key ak-map "w" 'daedreth/copy-whole-word) 
 #+END_SRC
 
 ** Copy a line
@@ -573,13 +575,15 @@ Regardless of where your cursor is, this quickly copies a line.
        (buffer-substring
         (point-at-bol)
         (point-at-eol)))))
-  (global-set-key (kbd "C-c l c") 'daedreth/copy-whole-line)
+;;  (global-set-key (kbd "C-c l c") 'daedreth/copy-whole-line)
+    (define-key ak-map "l" 'daedreth/copy-whole-line) 
 #+END_SRC
 
 ** Kill a line
 And this quickly deletes a line.
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "C-c l k") 'kill-whole-line)
+;;  (global-set-key (kbd "C-c l k") 'kill-whole-line)
+(define-key ak-map "L" 'kill-whole-line) 
 #+END_SRC
 * Minor conveniences
 Emacs is at it's best when it just does things for you, shows you the way, guides you so to speak.
@@ -593,6 +597,7 @@ Quickly edit =~/.emacs.d/config.org=
     (interactive)
     (find-file "~/.emacs.d/config.org"))
   (global-set-key (kbd "C-c e") 'config-visit)
+  (define-key ak-map "0" 'config-visit) 
 #+END_SRC
 
 ** Reloading the configuration
@@ -605,6 +610,7 @@ You can also manually invoke =config-reload=.
     (interactive)
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
   (global-set-key (kbd "C-c r") 'config-reload)
+  (define-key ak-map "R" 'config-reload) 
 #+END_SRC
 
 #+RESULTS:
@@ -751,8 +757,6 @@ Sometimes you might want to act on the point until the end of the current line, 
 #+begin_example
 (crux-with-region-or-point-to-eol kill-ring-save)
 #+end_example
-    
-
 * Kill ring
 There is a lot of customization to the kill ring, and while I have not used it much before,
 I decided that it was time to change that.
