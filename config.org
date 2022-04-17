@@ -707,10 +707,14 @@ If you wish to include the selected character in the killed region, change =zzz-
 
 ** Switch to scratch buffer
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-c z")
-                '(lambda ()
-                   (interactive)
-                   (switch-to-buffer "*scratch*")))
+;; (global-set-key (kbd "C-c z")
+;;                 (lambda ()
+;;                     (interactive)
+;;                     (switch-to-buffer "*scratch*")))
+(define-key ak-map "z" (lambda ()
+                         "Switch to scratch"
+                         (interactive)
+                         (switch-to-buffer "*scratch*")))
 #+END_SRC
 ** CRUX
     #+BEGIN_SRC emacs-lisp
