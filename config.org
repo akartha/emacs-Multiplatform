@@ -137,8 +137,16 @@ Define a custom keymap for myself
 
 #+begin_src emacs-lisp
 (define-prefix-command 'ak-map)
-(global-set-key (kbd "C-`") 'ak-map)
+(global-set-key (kbd "`") 'ak-map)
+(global-set-key (kbd "` `") 'self-insert-command)
+;;(define-key ak-map "`" "`")
 #+end_src
+** Server mode
+    #+begin_src emacs-lisp
+(server-start t)
+
+;;(define-key ak-map "9" 'server-start)
+    #+end_src
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
 provides you with a quick look into your latest projects and files.
@@ -158,7 +166,7 @@ change the numbers to suit your liking
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t
         dashboard-set-navigator nil)
-  (add-hook 'dashboard-mode-hook '(lambda ()
+  (add-hook 'dashboard-mode-hook (lambda ()
 	                                (visual-line-mode 1)))
   )
 
@@ -186,7 +194,7 @@ change the numbers to suit your liking
 ;;                                                    :face 'font-lock-keyword-face))
 
 
-(define-key ak-map "1" '(lambda ()
+(define-key ak-map "1" (lambda ()
                           (interactive)
                           (switch-to-buffer "*dashboard*")))
 
@@ -314,6 +322,7 @@ I don't know to be honest, but this little bit of code makes scrolling with emac
   :diminish
   :ensure t
   :config
+  (which-key-setup-side-window-right-bottom)
   (which-key-mode))
 
 #+end_src
@@ -486,7 +495,7 @@ Afterwards you will notice how all instances of said character have additional l
 I like =M-s= for it, same as =C-s= is for moving by searching string, now =M-s= is moving by searching characters.
 #+BEGIN_SRC emacs-lisp
 (define-prefix-command 'avy-custom-keymap)
-(global-set-key (kbd "M-s") 'avy-custom-keymap)
+(global-set-key (kbd "` y") 'avy-custom-keymap)
 ;;(define-key avy-custom-keymap "m" '(lambda () (interactive) (message "testing")))
 
 (use-package avy
@@ -504,6 +513,7 @@ I like =M-s= for it, same as =C-s= is for moving by searching string, now =M-s= 
 (define-key avy-custom-keymap "b" 'avy-goto-line-below) 
 (define-key avy-custom-keymap "c" 'avy-goto-char-timer) 
 (define-key avy-custom-keymap "w" 'avy-goto-word-0) 
+(define-key avy-custom-keymap "t" 'avy-transpose-lines-in-region) 
 
 #+END_SRC
     
@@ -551,8 +561,8 @@ let's make a quick fix and bind it properly.
     (forward-char 1)
     (backward-word)
     (kill-word 1))
-;;  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
-    (define-key ak-map "W" 'daedreth/kill-inner-word) 
+  ;;  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
+  (define-key ak-map "W" 'daedreth/kill-inner-word)
 #+END_SRC
 
 ** Improved copy-word
@@ -566,7 +576,8 @@ And again, the same as above but we make sure to not delete the source word.
     (kill-word 1)
     (yank)))
 ;;(global-set-key (kbd "C-c w c") 'daedreth/copy-whole-word)
-(define-key ak-map "w" 'daedreth/copy-whole-word) 
+(define-key ak-map "w" 'daedreth/copy-whole-word)
+
 #+END_SRC
 
 ** Copy a line
@@ -581,14 +592,22 @@ Regardless of where your cursor is, this quickly copies a line.
         (point-at-bol)
         (point-at-eol)))))
 ;;  (global-set-key (kbd "C-c l c") 'daedreth/copy-whole-line)
-    (define-key ak-map "l" 'daedreth/copy-whole-line) 
+    ;; (define-key ak-map "l" '(lambda ()
+    ;;                           (interactive)
+    ;;                           (daedreth/copy-whole-line)
+    ;;                           (message "Copied whole line")))
+(define-key ak-map "l" 'daedreth/copy-whole-line)
 #+END_SRC
 
 ** Kill a line
 And this quickly deletes a line.
 #+BEGIN_SRC emacs-lisp
 ;;  (global-set-key (kbd "C-c l k") 'kill-whole-line)
-(define-key ak-map "L" 'kill-whole-line) 
+;; (define-key ak-map "L" (lambda ()
+;;                           (interactive)
+;;                           (kill-whole-line)
+;;                           (message "Killed whole line")))
+(define-key ak-map "L" 'kill-whole-line)
 #+END_SRC
 * Minor conveniences
 Emacs is at it's best when it just does things for you, shows you the way, guides you so to speak.
@@ -614,8 +633,8 @@ You can also manually invoke =config-reload=.
     "Reloads ~/.emacs.d/config.org at runtime"
     (interactive)
     (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-  (global-set-key (kbd "C-c r") 'config-reload)
-  (define-key ak-map "R" 'config-reload) 
+  ;;(global-set-key (kbd "C-c r") 'config-reload)
+  (define-key ak-map "r" 'config-reload) 
 #+END_SRC
 
 #+RESULTS:
@@ -729,7 +748,7 @@ If you wish to include the selected character in the killed region, change =zzz-
   ;; ("C-c k" . crux-kill-line-backwards))
 
 (define-prefix-command 'ak-crux-map)    
-(global-set-key (kbd "C-c k") 'ak-crux-map)
+(global-set-key (kbd "C-` x") 'ak-crux-map)
     
 (define-key ak-crux-map (kbd "s") 'crux-sudo-edit)
 (define-key ak-crux-map (kbd "o") 'crux-smart-open-line)
@@ -1090,13 +1109,14 @@ These times are also something that I'd prefer stay in the past, since =magit= i
 great. It's easy and intuitive to use, shows its options at a keypress and much more.
 ** magit
 #+BEGIN_SRC emacs-lisp
-  (use-package magit
-    :ensure t
-    :config
-    (setq magit-push-always-verify nil)
-    (setq git-commit-summary-max-length 50)
-    :bind
-    ("M-g" . magit-status))
+(use-package magit
+  :ensure t
+  :config
+  (setq magit-push-always-verify nil)
+  (setq git-commit-summary-max-length 50))
+;; :bind
+;; ("M-g" . magit-status))
+(define-key ak-map "g" 'magit-status) 
 #+END_SRC
 
 * Remote editing
@@ -1161,7 +1181,7 @@ I can find some use for this.
 ** Line wrapping
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
-	    '(lambda ()
+	    (lambda ()
 	       (visual-line-mode 1)))
 #+END_SRC
 
