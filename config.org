@@ -625,8 +625,6 @@ Quickly edit =~/.emacs.d/config.org=
 #+END_SRC
 
 ** Reloading the configuration
-   
-Simply pressing =Control-c f= will reload this file, very handy.
 You can also manually invoke =config-reload=.
 #+BEGIN_SRC emacs-lisp
   (defun config-reload ()
@@ -748,7 +746,7 @@ If you wish to include the selected character in the killed region, change =zzz-
   ;; ("C-c k" . crux-kill-line-backwards))
 
 (define-prefix-command 'ak-crux-map)    
-(global-set-key (kbd "C-` x") 'ak-crux-map)
+(global-set-key (kbd "` x") 'ak-crux-map)
     
 (define-key ak-crux-map (kbd "s") 'crux-sudo-edit)
 (define-key ak-crux-map (kbd "o") 'crux-smart-open-line)
