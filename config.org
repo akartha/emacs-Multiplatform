@@ -143,7 +143,7 @@ Define a custom keymap for myself
 #+end_src
 ** Server mode
     #+begin_src emacs-lisp
-(server-start t)
+;;(server-start t)
 
 ;;(define-key ak-map "9" 'server-start)
     #+end_src
@@ -208,10 +208,13 @@ with a =.git= directory as projects and helps you manage them accordingly.
 ** Enable projectile globally
 This makes sure that everything can be a project.
 #+BEGIN_SRC emacs-lisp
-  (use-package projectile
-    :ensure t
-    :init
-      (projectile-mode 1))
+(use-package projectile
+  :ensure t
+  :init
+  (projectile-mode +1)
+  :bind (:map projectile-mode-map
+              ("C-c p" . projectile-command-map)))
+
 #+END_SRC
 
 ** Let projectile call make
@@ -226,11 +229,8 @@ Due to the fact that we attempt to use emacs as a desktop environment replacemen
 and external bar showing the time, the battery percentage and more system info would be great to have.
 
 One modeline-related setting that is missing and is instead placed at the bottom is =diminish=.
-** Spaceline!
-I may not use spacemacs, since I do not like evil-mode and find spacemacs incredibly bloated and slow,
-however it would be stupid not to acknowledge the best parts about it, the theme and their modified powerline setup.
+** Spaceline
 
-This enables spaceline, it looks better and works very well with my theme of choice.
 #+BEGIN_SRC emacs-lisp
   (use-package spaceline
     :ensure t
@@ -241,11 +241,6 @@ This enables spaceline, it looks better and works very well with my theme of cho
       (setq spaceline-line-p nil)
       (setq powerline-default-separator (quote arrow))
       (spaceline-spacemacs-theme))
-#+END_SRC
-
-** No separator!
-#+BEGIN_SRC emacs-lisp
-  (setq powerline-default-separator nil)
 #+END_SRC
 
 ** Cursor position
