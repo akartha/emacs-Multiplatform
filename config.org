@@ -61,13 +61,13 @@ Besides, it's only used for programming.
   :ensure t)
 #+end_src
 *** Pretty Symbols
-Changes =lambda= to an actual symbol and a few others as well, only in the GUI version though.
+Changes =lambda= to an actual symbol and a few others as well, only in the GUI version though. =I don't like it=
 #+BEGIN_SRC emacs-lisp
-(when window-system
-  (use-package pretty-mode
-    :ensure t
-    :config
-    (global-pretty-mode t)))
+;; (when window-system
+;;   (use-package pretty-mode
+;;     :ensure t
+;;     :config
+;;     (global-pretty-mode t)))
 #+END_SRC
 ** Functionality
 *** Disable backups and auto-saves
@@ -89,7 +89,8 @@ I don't use either, you might want to turn those from =nil= to =t= if you do.
 #+begin_src emacs-lisp
 (use-package dired
   :ensure nil
-  :custom ((dired-listing-switches "-agho --group-directories-first")
+  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
+;;  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=\'+%Y%m%d %H:%M:%S\'")
            (dired-recursive-copies 'always)
            (dired-recursive-deletes 'always)
            
@@ -99,7 +100,43 @@ I don't use either, you might want to turn those from =nil= to =t= if you do.
          ("C-x 4 C-j" . dired-jump-other-window))
 )
 (use-package dired-single
-  :ensure t) 
+  :ensure t)
+(use-package all-the-icons-dired
+  :ensure t
+  :hook (dired-mode . all-the-icons-dired-mode))
+
+(use-package dired-du
+  :ensure t)
+ ;; :hook (dired-mode . dired-du-mode))
+
+(use-package dired-open
+  :ensure t
+  :config
+  (setq dired-open-extensions '(("png" . "feh")
+                                ("m4a" . "vlc")
+                                ("mkv" . "vlc")
+                                ("mp4" . "vlc")
+                                ("mp3" . "vlc")
+                                ("avi" . "vlc")
+                                ("opus" . "vlc"))))
+
+(use-package dired-sidebar
+  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+  :ensure t
+  :commands (dired-sidebar-toggle-sidebar)
+  :init
+  (add-hook 'dired-sidebar-mode-hook
+            (lambda ()
+              (unless (file-remote-p default-directory)
+                (auto-revert-mode))))
+  :config
+  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+
+  (setq dired-sidebar-subtree-line-prefix "__")
+  (setq dired-sidebar-theme 'vscode)
+  (setq dired-sidebar-use-term-integration t)
+  (setq dired-sidebar-use-custom-font t))
 #+end_src
 
 *** Change yes-or-no questions into y-or-n questions
@@ -225,22 +262,25 @@ This makes sure that everything can be a project.
 * Modeline
 The modeline is the heart of emacs, it offers information at all times, it's persistent
 and verbose enough to gain a full understanding of modes and states you are in.
-Due to the fact that we attempt to use emacs as a desktop environment replacement,
-and external bar showing the time, the battery percentage and more system info would be great to have.
 
-One modeline-related setting that is missing and is instead placed at the bottom is =diminish=.
 ** Spaceline
 
 #+BEGIN_SRC emacs-lisp
-  (use-package spaceline
-    :ensure t
-    :config
-    (require 'spaceline-config)
-      (setq spaceline-buffer-encoding-abbrev-p nil)
-      (setq spaceline-line-column-p nil)
-      (setq spaceline-line-p nil)
-      (setq powerline-default-separator (quote arrow))
-      (spaceline-spacemacs-theme))
+(use-package spaceline
+  :ensure t
+  :config
+  (require 'spaceline-config)
+  (setq spaceline-buffer-encoding-abbrev-p nil)
+  ;;      (setq spaceline-line-column-p nil)
+  ;;    (setq spaceline-line-p nil)
+  (setq powerline-default-separator (quote utf-8))
+  (spaceline-spacemacs-theme))
+
+(use-package spaceline-all-the-icons
+  :ensure t
+  :after spaceline
+  :config (spaceline-all-the-icons-theme)
+  (spaceline-all-the-icons--setup-neotree))
 #+END_SRC
 
 ** Cursor position
@@ -375,10 +415,12 @@ Modified by me to also open the previous buffer in the newly opened window
 ** Swiper
 In emacs, you mostly use search to get around your buffers; swiper makes sure this is more efficient.
 #+BEGIN_SRC emacs-lisp
-  (use-package swiper
-    :ensure t
-    :bind ("C-s" . 'swiper))
+  ;; (use-package swiper
+  ;;   :ensure t
+  ;;   :bind ("C-s" . 'swiper))
 #+END_SRC
+
+#+RESULTS:
 
 ** buffers and why I hate list-buffers
 Another big thing is, buffers. If you use emacs, you use buffers, everyone loves them.
@@ -404,7 +446,7 @@ Unless you have the muscle memory, I recommend omitting this bit, as you may los
 I don't understand how ibuffer isn't the default option by now.
 It's vastly superior in terms of ergonomics and functionality, you can delete buffers, rename buffer, move buffers, organize buffers etc.
 #+BEGIN_SRC emacs-lisp
-(global-set-key (kbd "C-x b") 'ibuffer)
+;;(global-set-key (kbd "C-x b") 'ibuffer)
 #+END_SRC
 
 **** expert-mode
@@ -443,44 +485,277 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
 
 *** helm
 #+BEGIN_SRC emacs-lisp
-  (use-package helm
-    :diminish
-    :ensure t
-    :bind
-    ("C-x C-f" . 'helm-find-files)
-    ("C-x C-b" . 'helm-buffers-list)
-    ("M-x" . 'helm-M-x)
-    :config
-    (defun daedreth/helm-hide-minibuffer ()
-      (when (with-helm-buffer helm-echo-input-in-header-line)
-        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-          (overlay-put ov 'window (selected-window))
-          (overlay-put ov 'face
-                       (let ((bg-color (face-background 'default nil)))
-                         `(:background ,bg-color :foreground ,bg-color)))
-          (setq-local cursor-type nil))))
-    (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
-    (setq helm-autoresize-max-height 0
-          helm-autoresize-min-height 40
-          helm-M-x-fuzzy-match t
-          helm-buffers-fuzzy-matching t
-          helm-recentf-fuzzy-match t
-          helm-semantic-fuzzy-match t
-          helm-imenu-fuzzy-match t
-          helm-split-window-in-side-p nil
-          helm-move-to-line-cycle-in-source nil
-          helm-ff-search-library-in-sexp t
-          helm-scroll-amount 8 
-          helm-echo-input-in-header-line t)
-    :init
-    (helm-mode 1))
+    ;; (use-package helm
+    ;;   :diminish
+    ;;   :ensure t
+    ;;   :preface (require 'helm-config)
+    ;;   :bind
+    ;;   ("C-x C-f" . 'helm-find-files)
+    ;;   ("C-x C-b" . 'helm-buffers-list)
+    ;;   ("M-x" . 'helm-M-x)
+    ;;   :config
+    ;;   (defun daedreth/helm-hide-minibuffer ()
+    ;;     (when (with-helm-buffer helm-echo-input-in-header-line)
+	;; (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+	;;   (overlay-put ov 'window (selected-window))
+	;;   (overlay-put ov 'face
+	;; 	       (let ((bg-color (face-background 'default nil)))
+	;; 		 `(:background ,bg-color :foreground ,bg-color)))
+	;;   (setq-local cursor-type nil))))
+    ;;   (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
+    ;;   (setq helm-autoresize-max-height 0
+	;;   helm-autoresize-min-height 40
+	;;   helm-M-x-fuzzy-match t
+	;;   helm-buffers-fuzzy-matching t
+	;;   helm-recentf-fuzzy-match t
+	;;   helm-semantic-fuzzy-match t
+	;;   helm-imenu-fuzzy-match t
+	;;   helm-split-window-in-side-p nil
+	;;   helm-move-to-line-cycle-in-source nil
+	;;   helm-ff-search-library-in-sexp t
+	;;   helm-scroll-amount 8 
+	;;   helm-echo-input-in-header-line t)
+    ;;   :init
+    ;;   (helm-mode 1))
 
-  (require 'helm-config)    
-  (helm-autoresize-mode 1)
-  (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
-  (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
+  ;; ;;  (require 'helm-config)    
+  ;;   (helm-autoresize-mode 1)
+  ;;   (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
+  ;;   (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
 #+END_SRC
     
+** Vertico
+#+begin_src emacs-lisp
+;; Enable vertico
+(use-package vertico
+  :ensure t
+  :init
+  (vertico-mode)
+
+  ;; Different scroll margin
+  ;; (setq vertico-scroll-margin 0)
+
+  ;; Show more candidates
+  (setq vertico-count 20)
+
+  ;; Grow and shrink the Vertico minibuffer
+  ;; (setq vertico-resize t)
+
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  :custom
+  (setq vertico-cycle t)
+  :custom-face
+  (vertico-current ((t (:background "#3a3f5a"))))
+  )
+
+;; Persist history over Emacs restarts. Vertico sorts by history position.
+(use-package savehist
+  :init
+  (savehist-mode))
+
+;; A few more useful configurations...
+(use-package emacs
+  :init
+  ;; Add prompt indicator to `completing-read-multiple'.
+  ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  (defun crm-indicator (args)
+    (cons (format "[CRM%s] %s"
+                  (replace-regexp-in-string
+                   "\\`\\[.*?]\\*\\|\\[.*?]\\*\\'" ""
+                   crm-separator)
+                  (car args))
+          (cdr args)))
+  (advice-add #'completing-read-multiple :filter-args #'crm-indicator)
+
+  ;; Do not allow the cursor in the minibuffer prompt
+  (setq minibuffer-prompt-properties
+        '(read-only t cursor-intangible t face minibuffer-prompt))
+  (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
+  ;; Vertico commands are hidden in normal buffers.
+  ;; (setq read-extended-command-predicate
+  ;;       #'command-completion-default-include-p)
+
+  ;; Enable recursive minibuffers
+  (setq enable-recursive-minibuffers t))
+#+end_src
+
+** Consult
+    #+begin_src emacs-lisp
+    ;; Example configuration for Consult
+(use-package consult
+  :ensure t
+  ;; Replace bindings. Lazily loaded due by `use-package'.
+  :bind (;; C-c bindings (mode-specific-map)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
+         ;; Other custom bindings
+;;         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+
+  ;; Enable automatic preview at point in the *Completions* buffer. This is
+  ;; relevant when you use the default completion UI.
+  :hook (completion-list-mode . consult-preview-at-point-mode)
+
+  ;; The :init configuration is always executed (Not lazy)
+  :init
+
+  ;; Optionally configure the register formatting. This improves the register
+  ;; preview for `consult-register', `consult-register-load',
+  ;; `consult-register-store' and the Emacs built-ins.
+  (setq register-preview-delay 0.5
+        register-preview-function #'consult-register-format)
+
+  ;; Optionally tweak the register preview window.
+  ;; This adds thin lines, sorting and hides the mode line of the window.
+  (advice-add #'register-preview :override #'consult-register-window)
+
+  ;; Use Consult to select xref locations with preview
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+
+  ;; Configure other variables and modes in the :config section,
+  ;; after lazily loading the package.
+  :config
+
+  ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (kbd "M-."))
+  ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
+  (consult-customize
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-file-register
+   consult--source-recent-file consult--source-project-recent-file
+   ;; :preview-key (kbd "M-.")
+   :preview-key '(:debounce 0.4 any))
+
+  ;; Optionally configure the narrowing key.
+  ;; Both < and C-+ work reasonably well.
+  (setq consult-narrow-key "<") ;; (kbd "C-+")
+
+  ;; Optionally make narrowing help available in the minibuffer.
+  ;; You may want to use `embark-prefix-help-command' or which-key instead.
+  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
+
+  ;; By default `consult-project-function' uses `project-root' from project.el.
+  ;; Optionally configure a different project root function.
+  ;; There are multiple reasonable alternatives to chose from.
+  ;;;; 1. project.el (the default)
+  ;; (setq consult-project-function #'consult--default-project--function)
+  ;;;; 2. projectile.el (projectile-project-root)
+  ;; (autoload 'projectile-project-root "projectile")
+  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  ;;;; 3. vc.el (vc-root-dir)
+  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
+  ;;;; 4. locate-dominating-file
+  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
+)
+    #+end_src
+
+** Embark
+    #+begin_src emacs-lisp
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)         ;; pick some comfortable binding
+   ("C-;" . embark-dwim)        ;; good alternative: M-.
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+
+  :init
+
+  ;; Optionally replace the key help with a completing-read interface
+  (setq prefix-help-command #'embark-prefix-help-command)
+
+  :config
+
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+;; Consult users will also want the embark-consult package.
+(use-package embark-consult
+  :ensure t ; only need to install it, embark loads it after consult if found
+  :hook
+  (embark-collect-mode . consult-preview-at-point-mode))
+    #+end_src
+
+** Orderless
+
+    #+begin_src emacs-lisp
+;; Optionally use the `orderless' completion style.
+(use-package orderless
+  :ensure t
+  :init
+  ;; Configure a custom style dispatcher (see the Consult wiki)
+  ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
+  ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+  (setq completion-styles '(orderless basic)
+        completion-category-defaults nil
+        completion-category-overrides '((file (styles partial-completion)))))
+    #+end_src
+
+#+RESULTS:
+
+** Marginalia
+    #+begin_src emacs-lisp
+    (use-package marginalia
+    :after vertico
+    :ensure t
+    :custom (marginalia-annotators '(marginalia-annottators-heavy marginalia-annottators-light nil))
+    :init (marginalia-mode))
+    
+    #+end_src
 ** avy 
 As you invoke one of avy's functions, you will be prompted for a character that you'd like to jump to in the /visible portion of the current buffer/.
 Afterwards you will notice how all instances of said character have additional letter on top of them. Pressing those letters, that are next to your desired character will move your cursor over there.
@@ -861,7 +1136,7 @@ Each category also has additional settings.
 	 (go-mode . lsp-deferred)
 	 (python-mode . lsp-deferred)
      (rustic-mode . lsp-deferred)
-  (lsp-mode . lsp-enable-which-key-integration))
+     (lsp-mode . lsp-enable-which-key-integration))
 )
 
 ;; Optional - provides fancier overlays
@@ -872,10 +1147,16 @@ Each category also has additional settings.
   )
 
 ;; if you are helm user
-(use-package helm-lsp :commands helm-lsp-workspace-symbol)
-;; if you are ivy user
-(use-package lsp-ivy :commands lsp-ivy-workspace-symbol)
-(use-package lsp-treemacs :commands lsp-treemacs-errors-list)
+ ;; (use-package helm-lsp
+;;   :ensure t
+;;   :commands helm-lsp-workspace-symbol)
+;; ;; if you are ivy user
+;; (use-package lsp-ivy
+;;   :ensure t
+;;   :commands lsp-ivy-workspace-symbol)
+;; (use-package lsp-treemacs
+;;   :ensure t
+;;   :commands lsp-treemacs-errors-list)
 
 ;; optionally if you want to use debugger
 ;; (use-package dap-mode)
@@ -1096,6 +1377,34 @@ Each category also has additional settings.
     (setq-local buffer-save-without-query t)))
 #+end_src
 
+*** SQL
+    Requires the installation of pip package =sqlparse= using =pip3 install sqlparse=
+#+begin_src emacs-lisp
+(defun sqlparse-region (beg end)
+  (interactive "r")
+  (shell-command-on-region
+   beg end
+;;   "python3 -c 'import sys, sqlparse; print(sqlparse.format(sys.stdin.read(), identifiers = \"upper\", reindent = True, comma_first = True, indent_columns = True))'"
+    "sqlformat --keywords \"upper\" --reindent --indent_columns - "
+   t t))
+
+    
+#+end_src
+
+    #+begin_src emacs-lisp
+(use-package sqlformat
+  :ensure t)
+    
+    #+end_src
+
+*** awk
+    #+begin_src emacs-lisp
+      ;; (add-hook 'awk-mode-hook (lambda()
+      ;;                            (require 'live-awk)
+      ;;                            (live-awk-mode 1)))
+      ;; (require 'awk-it)
+    #+end_src
+
 * Git integration
 Countless are the times where I opened ansi-term to use =git= on something.
 These times are also something that I'd prefer stay in the past, since =magit= is
@@ -1146,7 +1455,7 @@ I can find some use for this.
 (setq org-log-into-drawer t)
 
 (setq org-agenda-files
-      '("~/Documents/org-files/"))
+      '("~/Dropbox/org-files/"))
 
 (setq org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
@@ -1245,6 +1554,11 @@ Here is how we add more of them!
 #+END_SRC 
 
     
+*** Freemind
+#+begin_src emacs-lisp
+;; (use-package ox-freemind
+;;   :ensure t)
+#+end_src
 ** Org Babel languages
 #+BEGIN_SRC emacs-lisp
 (org-babel-do-load-languages
@@ -1320,13 +1634,13 @@ This stuff is kind of moot now that I have org-roam
   (global-set-key (kbd "C-c c") 'org-capture)
 
   (setq org-capture-templates
-        '(("j" "Journal" entry (file+datetree "~/Documents/org-files/journal.org")
+        '(("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
            "* %?\nEntered on %U\n  %i\n  %a")
-          ("t" "Todo" entry (file+headline "~/Documents/org-files/todo.org" "Tasks")
+          ("t" "Todo" entry (file+headline "~/Dropbox/org-files/todo.org" "Tasks")
            "* TODO %?\n  %i\n  %a")
-          ("n" "Note" entry (file+headline "~/Documents/org-files/notes.org" "Notes")
+          ("n" "Note" entry (file+headline "~/Dropbox/org-files/notes.org" "Notes")
            "* Note %?\n%T")
-          ("l" "Links" entry (file+headline "~/Documents/org-files/Links.org" "Links")
+          ("l" "Links" entry (file+headline "~/Dropbox/org-files/Links.org" "Links")
            "* %? %^L %^g \n%T" :prepend t)
           ))
 ;;        org-roam-node-display-template "${title:55} ${tags:*}")
@@ -1339,7 +1653,7 @@ This stuff is kind of moot now that I have org-roam
   :init
   (setq org-roam-v2-ack t)
   :custom
-  (org-roam-directory (file-truename "~/Documents/org-files"))
+  (org-roam-directory (file-truename "~/Dropbox/org-files"))
   (org-roam-completion-everywhere t)
   (org-roam-node-display-template "${title:55} ${tags:*}")
   (org-roam-capture-templates
@@ -1348,23 +1662,23 @@ This stuff is kind of moot now that I have org-roam
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags:")
       :unnarrowed t)
 
-     ("b" "book notes" plain (file "~/Documents/org-files/templates/booknotes.org")
+     ("b" "book notes" plain (file "~/Dropbox/org-files/templates/booknotes.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Book")
       :unnarrowed t)
 
-     ("p" "project" plain (file "~/Documents/org-files/templates/projectcap.org")
+     ("p" "project" plain (file "~/Dropbox/org-files/templates/projectcap.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
       :unnarrowed t)
      
-     ("r" "random thoughts" plain (file "~/Documents/org-files/templates/random.org")
+     ("r" "random thoughts" plain (file "~/Dropbox/org-files/templates/random.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Musings")
       :unnarrowed t)
 
-     ("m" "movie notes" plain (file "~/Documents/org-files/templates/movienotes.org")
+     ("m" "movie notes" plain (file "~/Dropbox/org-files/templates/movienotes.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Movies")
       :unnarrowed t)
 
-     ("s" "series notes" plain (file "~/Documents/org-files/templates/movienotes.org")
+     ("s" "series notes" plain (file "~/Dropbox/org-files/templates/movienotes.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Series")
       :unnarrowed t)
 
@@ -1386,6 +1700,11 @@ This stuff is kind of moot now that I have org-roam
   (org-roam-db-autosync-mode))
 
 #+END_SRC
+** Org modern
+#+begin_src emacs-lisp
+(use-package org-modern
+  :ensure t)
+#+end_src
 
 * Diminishing modes
 The package =diminish= disables modes on the mode line but keeps them running, it just prevents them from showing up and taking up space.
@@ -1492,26 +1811,28 @@ For a bit of fun, add xkcd cartoons to your dashboard
   :ensure t)
 
 ;; Function to check for internet being up
-(defun internet-up-p (&optional host)
-  (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
-                     (if host host "www.google.com"))))
+;; (defun internet-up-p (&optional host)
+;;   (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
+;;                      (if host host "www.google.com"))))
 
 ;; (message (if (internet-up-p) "Up" "Down"))
-
-(let ((rand-id-xkcd nil)
-      (rand-id-xkcd-url nil))
+(defun reload-xkcd ()
+  "Load a random xkcd cartoon on the dashboard"
+  (interactive)
+  (let ((rand-id-xkcd nil)
+        (rand-id-xkcd-url nil))
   
-  (with-temp-buffer
-    ;;(setq rand-id-xkcd (if (internet-up-p) (string-to-number(xkcd-rand)) xkcd-latest)
-    (setq rand-id-xkcd (string-to-number(xkcd-rand))
+    (with-temp-buffer
+      (setq rand-id-xkcd (string-to-number(xkcd-rand))
           rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
     (xkcd-kill-buffer))
   (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
     (if (file-exists-p last-xkcd-png)
     	(setq dashboard-startup-banner last-xkcd-png
-              ;;    	      dashboard-banner-logo-title (number-to-string rand-id-xkcd)
-              ;;    	      dashboard-banner-logo-title (concat (number-to-string rand-id-xkcd) "\n" rand-id-xkcd-url)
     	      dashboard-banner-logo-title rand-id-xkcd-url
               dashboard-init-info xkcd-alt))))
+  (revert-buffer))
+
+(define-key ak-map "X" 'reload-xkcd)
 #+END_SRC 
     
