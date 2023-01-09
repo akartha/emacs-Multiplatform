@@ -4,19 +4,7 @@
 #+LANGUAGE: en
 #+OPTIONS: num:nil
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
-* Theme
-The most important part of every configuration.
-** A nice theme
-My new favourite one I guess, decent default values.
-#+BEGIN_SRC emacs-lisp
-(use-package modus-themes
-  ;;  :ensure t
-  :straight t
-  :init
-  (load-theme 'modus-vivendi t))
-;;(load-theme 'modus-operandi t))
-#+END_SRC
-* Basic Interface Settings
+* Basic Settings
 These are setting that do not depend on packages and are built-in enhancements to the UI.
 ** Custom file location
 #+begin_src emacs-lisp
@@ -24,6 +12,15 @@ These are setting that do not depend on packages and are built-in enhancements t
 (load custom-file 'noerror 'nomessage)
 #+end_src
 ** Looks
+*** A nice theme
+My new favourite one I guess, decent default values.
+#+BEGIN_SRC emacs-lisp
+(use-package modus-themes
+  :straight t
+  :init
+  (load-theme 'modus-vivendi t))
+;;(load-theme 'modus-operandi t))
+#+END_SRC
 *** Some standard UI and behavioral settings
 #+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil
@@ -75,6 +72,77 @@ These are setting that do not depend on packages and are built-in enhancements t
 (use-package all-the-icons
   :straight t)
 #+end_src
+
+*** Fontaine
+
+Hit "C-x C-U =" and see how the following values show up in the pop window, and you will see what a genius Prot is.
+
+=testing=
+/italics/
+*bold*
+
+
+
+#+begin_src emacs-lisp
+(use-package fontaine
+  :straight t)
+
+(setq fontaine-latest-state-file
+      (locate-user-emacs-file "fontaine-latest-state.eld"))
+
+(setq fontaine-presets
+      '((regular
+         :default-family "Hack Nerd Font"
+         :default-weight normal
+         :default-height 140
+         :fixed-pitch-family "Fira Code"
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "Noto Sans"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.0
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family "Source Code Pro"
+         :italic-slant italic
+         :line-spacing 1)
+        (large
+         :default-family "Hack Nerd Font Mono"
+;;         :default-family "Iosevka"
+         :default-weight normal
+         :default-height 180
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+         :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil ; use whatever the underlying face has
+         :italic-slant italic
+         :line-spacing 1)))
+
+(fontaine-restore-latest-preset)
+
+;; Use `fontaine-recovered-preset' if available, else fall back to the
+;; desired style from `fontaine-presets'.
+(if-let ((state fontaine-recovered-preset))
+    (fontaine-set-preset state)
+  (fontaine-set-preset 'regular))
+
+;; The other side of `fontaine-restore-latest-preset'.
+(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
+;; fontaine does not define any key bindings.  This is just a sample that
+;; respects the key binding conventions.  Evaluate:
+;;
+;;     (info "(elisp) Key Binding Conventions")
+(define-key global-map (kbd "C-c F") #'fontaine-set-preset)
+(define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
+
+#+end_src
+
 
 ** Functionality
 *** Dired
@@ -158,6 +226,18 @@ Define a custom keymap for myself
 
 ;;(define-key ak-map "9" 'server-start)
     #+end_src
+** Auto Update packages
+    #+begin_src emacs-lisp
+
+(use-package auto-package-update
+  :straight t
+  :config
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-interval 5
+        auto-package-update-prompt-before-update t
+        auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+    #+end_src
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
 provides you with a quick look into your latest projects and files.
@@ -166,25 +246,23 @@ change the numbers to suit your liking
 #+BEGIN_SRC emacs-lisp
 (use-package dashboard
   :straight t
-  :custom ((visual-line-mode t))
+  :custom (visual-line-mode t)
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((bookmarks  . 10)
 			              (recents  . 10)
 			              (agenda  . 5)
     			          (projects  . 2)))
-  ;;			              (registers . 5)))
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t
         dashboard-set-navigator nil
         dashboard-footer-messages (list (shell-command-to-string "fortune")))
   (add-hook 'dashboard-mode-hook (lambda ()
-	                                (visual-line-mode 1)))
+	                               (visual-line-mode 1)))
   :bind (:map ak-map
-              ("l" . (lambda ()
-                            (interactive)
-                            (switch-to-buffer "*dashboard*"))))
-  )
+              ("1" . (lambda ()
+                       (interactive)
+                       (switch-to-buffer "*dashboard*")))))
 
 #+END_SRC
 
@@ -486,6 +564,18 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
 
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
+
+;; Configure directory extension.
+(use-package vertico-directory
+  :after vertico
+  :ensure nil
+  ;; More convenient directory navigation commands
+  :bind (:map vertico-map
+              ("RET" . vertico-directory-enter)
+              ("DEL" . vertico-directory-delete-char)
+              ("M-DEL" . vertico-directory-delete-word))
+  ;; Tidy shadowed file names
+  :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 #+end_src
 
 ** Consult
@@ -705,15 +795,15 @@ Here I shall collect custom functions that make editing text easier.
 ** Mark-Multiple
 This extension allows you to quickly mark the next occurence of a region and edit them all at once.
 #+BEGIN_SRC emacs-lisp
-  (use-package mark-multiple
-    :straight t
-    :bind
-    ;;this needs revisiting`
-    ("C->" . 'mark-next-like-this)
-    ("C-<" . 'mark-previous-like-this)
-    ("C-c m" . 'mark-more-like-this-extended)
-    ("C-c a" . 'mark-all-like-this)
-    )
+(use-package mark-multiple
+  :straight t
+  :bind (:map ak-map
+              ((">" . mark-next-like-this)
+               ("<" . mark-previous-like-this)
+               ("+" . mark-more-like-this-extended)
+               ("=" . mark-all-like-this))))
+;; ("C-c m" . mark-more-like-this-extended)
+;; ("C-c a" . mark-all-like-this))
 #+END_SRC
 
 ** Semantically cycle through selections
@@ -787,6 +877,53 @@ And this quickly deletes a line.
 ;;                           (message "Killed whole line")))
 (define-key ak-map "L" 'kill-whole-line)
 #+END_SRC
+
+** Move lines up/down
+    Copied from this [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow post]]
+
+#+begin_src emacs-lisp
+;; move the line(s) spanned by the active region up/down (line transposing)
+(defun move-lines (n)
+  (let ((beg) (end) (keep))
+    (if mark-active
+        (save-excursion
+          (setq keep t)
+          (setq beg (region-beginning)
+                end (region-end))
+          (goto-char beg)
+          (setq beg (line-beginning-position))
+          (goto-char end)
+          (setq end (line-beginning-position 2)))
+      (setq beg (line-beginning-position)
+            end (line-beginning-position 2)))
+    (let ((offset (if (and (mark t)
+                           (and (>= (mark t) beg)
+                                (< (mark t) end)))
+                      (- (point) (mark t))))
+          (rewind (- end (point))))
+      (goto-char (if (< n 0) beg end))
+      (forward-line n)
+      (insert (delete-and-extract-region beg end))
+      (backward-char rewind)
+      (if offset (set-mark (- (point) offset))))
+    (if keep
+        (setq mark-active t
+              deactivate-mark nil))))
+
+(defun move-lines-up (n)
+  "move the line(s) spanned by the active region up by N lines."
+  (interactive "*p")
+  (move-lines (- (or n 1))))
+
+(defun move-lines-down (n)
+  "move the line(s) spanned by the active region down by N lines."
+  (interactive "*p")
+  (move-lines (or n 1)))
+
+(define-key ak-map "[" 'move-lines-up)
+(define-key ak-map "]" 'move-lines-down)
+#+end_src
+
 * Minor conveniences
 Emacs is at it's best when it just does things for you, shows you the way, guides you so to speak.
 This can be best achieved using a number of small extensions. While on their own they might not be particularly
@@ -798,7 +935,7 @@ Quickly edit =~/.emacs.d/config.org=
 (defun config-visit ()
   (interactive)
   (find-file "~/.emacs.d/config.org"))
-(global-set-key (kbd "C-c e") 'config-visit)
+;;(global-set-key (kbd "C-c e") 'config-visit)
 (define-key ak-map "0" 'config-visit) 
 #+END_SRC
 
@@ -903,21 +1040,22 @@ If you wish to include the selected character in the killed region, change =zzz-
   :bind
   ("C-k" . crux-smart-kill-line)
   (:map ak-crux-map
-        ("s" .  crux-sudo-edit)                       
+        ("s" . crux-sudo-edit)                       
         ("o" . crux-smart-open-line)                 
         ("O" . crux-smart-open-line-above)           
         ("d" . crux-duplicate-current-line-or-region)
         ("j" . crux-top-join-line)                   
         ("k" . crux-kill-line-backwards)             
-        ("C" . crux-cleanup-buffer-or-region)        
+        ("C" . crux-cleanup-buffer-or-region)
         ("R" . crux-recentf-find-file)               
         ("D" . crux-recentf-find-directory)          
-        ("U" . crux-view-url)                        
+   ;;     ("U" . crux-view-url)                        
         ("u" . crux-upcase-region)                   
         ("l" . crux-downcase-region)                 
         ("c" . crux-capitalize-region)               
         ("0" . crux-other-window-or-switch-buffer)   
-        ("a" . crux-ispell-word-then-abbrev)))
+        ("a" . crux-ispell-word-then-abbrev)
+        ("i" . crux-indent-defun)))
 #+END_SRC        
 
 crux ships with some handy advises that can enhance the operation of existing commands.
@@ -1300,7 +1438,7 @@ I can find some use for this.
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook 'yas-minor-mode)
 (add-hook 'org-mode-hook 'abbrev-mode)
-(add-hook 'org-mode-hook #'org-modern-mode)
+;;(add-hook 'org-mode-hook #'org-modern-mode)
 
 #+END_SRC
 
@@ -1535,6 +1673,11 @@ This stuff is kind of moot now that I have org-roam
   (org-roam-db-autosync-mode))
 
 #+END_SRC
+** Org present
+#+begin_src emacs-lisp
+(use-package org-present
+  :straight t)
+#+end_src
 ** Org modern
 #+begin_src emacs-lisp
 (use-package org-modern

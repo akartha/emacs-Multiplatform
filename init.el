@@ -17,6 +17,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; This is all kinds of necessary
+(setq gc-cons-threshold (* 50 1000 1000))
+
 (require 'package)
 (setq package-enable-at-startup nil)
 
@@ -24,6 +26,7 @@
 (setq package-archives '(("ELPA"  . "http://tromey.com/elpa/")
 			 ("gnu"   . "http://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
+			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
 			 ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
