@@ -1813,4 +1813,9 @@ For a bit of fun, add xkcd cartoons to your dashboard
 
 (define-key ak-map "X" 'reload-xkcd)
 #+END_SRC 
-    
+* Experimental features
+** Hyperbole
+#+begin_src emacs-lisp
+;; (use-package hyperbole
+;;   :straight t)
+#+end_src
