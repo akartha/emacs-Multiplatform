@@ -767,20 +767,22 @@ I like =M-s= for it, same as =C-s= is for moving by searching string, now =M-s= 
 
 (use-package avy
   :straight t)
-;; bind
-;; ("C-x a l" . avy-goto-line)
-;; ("M-s" . avy-goto-char-timer)
-;; ("M-#" . avy-goto-char-2)
-;; ("M-*" . avy-goto-word-0)
-;; ("M-[" . avy-goto-line-above)
-;; ("M-]" . avy-goto-line-below))
 
 (define-key avy-custom-keymap "l" 'avy-goto-line) 
-(define-key avy-custom-keymap "a" 'avy-goto-line-above) 
-(define-key avy-custom-keymap "b" 'avy-goto-line-below) 
+(define-key avy-custom-keymap "L" 'avy-move-line) 
+(define-key avy-custom-keymap "m" 'avy-move-region) 
+(define-key avy-custom-keymap "p" 'avy-goto-line-above) 
+(define-key avy-custom-keymap "n" 'avy-goto-line-below) 
 (define-key avy-custom-keymap "c" 'avy-goto-char-timer) 
 (define-key avy-custom-keymap "w" 'avy-goto-word-0) 
 (define-key avy-custom-keymap "t" 'avy-transpose-lines-in-region) 
+(define-key avy-custom-keymap "k" 'avy-kill-ring-save-whole-line) 
+(define-key avy-custom-keymap "K" 'avy-kill-whole-line) 
+(define-key avy-custom-keymap "r" 'avy-kill-ring-save-region) 
+(define-key avy-custom-keymap "R" 'avy-kill-region) 
+(define-key avy-custom-keymap "s" 'avy-goto-symbol-1) 
+(define-key avy-custom-keymap "h" 'avy-org-goto-heading-timer) 
+;;(define-key avy-custom-keymap "" ') 
 
 #+END_SRC
     
