@@ -1,6 +1,6 @@
 #+STARTUP: overview
-#+TITLE: Arun Kartha's Emacs
-#+CREATOR: Inspired by and liberally stolen from Dawid 'daedreth' Eckert - aka Uncle Dave (https://github.com/daedreth/UncleDavesEmacs)
+#+TITLE: Emacs Config - Linux
+#+CREATOR: Inspired by Dawid 'daedreth' Eckert and other much more talented people
 #+LANGUAGE: en
 #+OPTIONS: num:nil
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
@@ -13,13 +13,13 @@ These are setting that do not depend on packages and are built-in enhancements t
 #+end_src
 ** Looks
 *** A nice theme
-My new favourite one I guess, decent default values.
+
 #+BEGIN_SRC emacs-lisp
 (use-package modus-themes
   :straight t
   :init
-  (load-theme 'modus-vivendi t))
-;;(load-theme 'modus-operandi t))
+  ;; (load-theme 'modus-vivendi t))
+(load-theme 'modus-operandi t))
 #+END_SRC
 *** Some standard UI and behavioral settings
 #+begin_src emacs-lisp
@@ -154,7 +154,7 @@ Hit "C-x C-U =" and see how the following values show up in the pop window, and 
 ;;  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=\'+%Y%m%d %H:%M:%S\'")
            (dired-recursive-copies 'always)
            (dired-recursive-deletes 'always)
-           
+
     )
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump)
@@ -174,12 +174,12 @@ Hit "C-x C-U =" and see how the following values show up in the pop window, and 
   :straight t
   :config
   (setq dired-open-extensions '(("png" . "feh")
-                                ("m4a" . "vlc")
+                                ("m4a" . "mpv")
                                 ("mkv" . "vlc")
                                 ("mp4" . "vlc")
-                                ("mp3" . "vlc")
+                                ("mp3" . "mpv")
                                 ("avi" . "vlc")
-                                ("opus" . "vlc"))))
+                                ("opus" . "mpv"))))
 
 (use-package dired-sidebar
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
@@ -205,9 +205,9 @@ Hit "C-x C-U =" and see how the following values show up in the pop window, and 
 *** Async
 Lets us use asynchronous processes wherever possible, pretty useful.
 #+BEGIN_SRC emacs-lisp
-  (use-package async
-    :straight t
-    :init (dired-async-mode 1))
+(use-package async
+  :straight t
+  :init (dired-async-mode 1))
 #+END_SRC
 
 ** Custom keymap
@@ -221,13 +221,13 @@ Define a custom keymap for myself
 ;;(define-key ak-map "`" "`")
 #+end_src
 ** Server mode
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 ;;(server-start t)
 
 ;;(define-key ak-map "9" 'server-start)
-    #+end_src
+#+end_src
 ** Auto Update packages
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 
 (use-package auto-package-update
   :straight t
@@ -237,7 +237,7 @@ Define a custom keymap for myself
         auto-package-update-prompt-before-update t
         auto-package-update-hide-results t)
   (auto-package-update-maybe))
-    #+end_src
+#+end_src
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
 provides you with a quick look into your latest projects and files.
@@ -250,15 +250,15 @@ change the numbers to suit your liking
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((bookmarks  . 10)
-			              (recents  . 10)
-			              (agenda  . 5)
-    			          (projects  . 2)))
+                          (recents  . 10)
+                          (agenda  . 5)
+                          (projects  . 2)))
   (setq dashboard-set-heading-icons t
         dashboard-set-file-icons t
         dashboard-set-navigator nil
         dashboard-footer-messages (list (shell-command-to-string "fortune")))
   (add-hook 'dashboard-mode-hook (lambda ()
-	                               (visual-line-mode 1)))
+                                   (visual-line-mode 1)))
   :bind (:map ak-map
               ("1" . (lambda ()
                        (interactive)
@@ -284,7 +284,7 @@ This makes sure that everything can be a project.
 
 ** Let projectile call make
 #+BEGIN_SRC emacs-lisp
-  (global-set-key (kbd "<f5>") 'projectile-compile-project)
+(global-set-key (kbd "<f5>") 'projectile-compile-project)
 #+END_SRC
 
 * Modeline
@@ -332,8 +332,8 @@ set of enhancements aims to make it easier.
 
 ** a prerequisite for other packages
 #+BEGIN_SRC emacs-lisp
-;  (use-package ivy
- ;   :ensure t)
+                                        ;  (use-package ivy
+                                        ;   :ensure t)
 #+END_SRC
 
 ** which-key
@@ -362,14 +362,14 @@ this is bad, it also works less well with =exwm= for some reason.
 (use-package switch-window
   :straight t
   :config
-    (setq switch-window-input-style 'minibuffer
-     switch-window-increase 4
-     switch-window-threshold 2
-     switch-window-shortcut-style 'qwerty
-     switch-window-qwerty-shortcuts
+  (setq switch-window-input-style 'minibuffer
+        switch-window-increase 4
+        switch-window-threshold 2
+        switch-window-shortcut-style 'qwerty
+        switch-window-qwerty-shortcuts
         '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
   :bind
-    ([remap other-window] . switch-window))
+  ([remap other-window] . switch-window))
 #+END_SRC
 
 *** Following window splits
@@ -378,31 +378,31 @@ This annoyed me so much I wrote these two, they take care of it.
 
 Modified to also open the previous buffer in the newly opened window
 #+BEGIN_SRC emacs-lisp
-  (defun split-and-follow-horizontally ()
-    (interactive)
-    (split-window-below)
-    (balance-windows)
-    (other-window 1 nil)
-    (if (= prefix 1)
-        (switch-to-next-buffer)))
-  (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+(defun split-and-follow-horizontally ()
+  (interactive)
+  (split-window-below)
+  (balance-windows)
+  (other-window 1 nil)
+  (if (= prefix 1)
+      (switch-to-next-buffer)))
+(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
 
-  (defun split-and-follow-vertically ()
-    (interactive)
-    (split-window-right)
-    (balance-windows)
-    (other-window 1)
-    (if (= prefix 1)
-        (switch-to-next-buffer)))
-  (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+(defun split-and-follow-vertically ()
+  (interactive)
+  (split-window-right)
+  (balance-windows)
+  (other-window 1)
+  (if (= prefix 1)
+      (switch-to-next-buffer)))
+(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+END_SRC
 
 ** Swiper
 In emacs, you mostly use search to get around your buffers; swiper makes sure this is more efficient.
 #+BEGIN_SRC emacs-lisp
-  ;; (use-package swiper
-  ;;   :ensure t
-  ;;   :bind ("C-s" . 'swiper))
+;; (use-package swiper
+;;   :ensure t
+;;   :bind ("C-s" . 'swiper))
 #+END_SRC
 
 #+RESULTS:
@@ -414,11 +414,11 @@ Having many buffers is useful, but can be tedious to work with, let us see how w
 *** Always murder current buffer
 Doing =C-x k= should kill the current buffer at all times, we have =ibuffer= for more sophisticated thing.
 #+BEGIN_SRC emacs-lisp
-  (defun kill-current-buffer ()
-    "Kills the current buffer."
-    (interactive)
-    (kill-buffer (current-buffer)))
-  (global-set-key (kbd "C-x k") 'kill-current-buffer)
+(defun kill-current-buffer ()
+  "Kills the current buffer."
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
 #+END_SRC
 
 *** Kill buffers without asking for confirmation
@@ -446,22 +446,22 @@ seconds doing this than I'd like, here's a solution.
 
 This can be invoked using =C-M-s-k=. This keybinding makes sure you don't hit it unless you really want to.
 #+BEGIN_SRC emacs-lisp
-  (defun close-all-buffers ()
-    "Kill all buffers without regard for their origin."
-    (interactive)
-    (mapc 'kill-buffer (buffer-list)))
-  (global-set-key (kbd "C-M-s-k") 'close-all-buffers)
+(defun close-all-buffers ()
+  "Kill all buffers without regard for their origin."
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+(global-set-key (kbd "C-M-s-k") 'close-all-buffers)
 #+END_SRC
 
 ** Line numbers and programming
 I highly recommend not enabling =linum-relative-mode= globally, as it messed up something like =ansi-term= for instance.
 #+BEGIN_SRC emacs-lisp
-  (use-package linum-relative
-    :diminish
-    :straight t
-    :config
-      (setq linum-relative-current-symbol "")
-      (add-hook 'prog-mode-hook 'linum-relative-mode))
+(use-package linum-relative
+  :diminish
+  :straight t
+  :config
+  (setq linum-relative-current-symbol "")
+  (add-hook 'prog-mode-hook 'linum-relative-mode))
 #+END_SRC
 
 ** Helm
@@ -470,45 +470,45 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
 
 *** helm
 #+BEGIN_SRC emacs-lisp
-    ;; (use-package helm
-    ;;   :diminish
-    ;;   :ensure t
-    ;;   :preface (require 'helm-config)
-    ;;   :bind
-    ;;   ("C-x C-f" . 'helm-find-files)
-    ;;   ("C-x C-b" . 'helm-buffers-list)
-    ;;   ("M-x" . 'helm-M-x)
-    ;;   :config
-    ;;   (defun daedreth/helm-hide-minibuffer ()
-    ;;     (when (with-helm-buffer helm-echo-input-in-header-line)
-	;; (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-	;;   (overlay-put ov 'window (selected-window))
-	;;   (overlay-put ov 'face
-	;; 	       (let ((bg-color (face-background 'default nil)))
-	;; 		 `(:background ,bg-color :foreground ,bg-color)))
-	;;   (setq-local cursor-type nil))))
-    ;;   (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
-    ;;   (setq helm-autoresize-max-height 0
-	;;   helm-autoresize-min-height 40
-	;;   helm-M-x-fuzzy-match t
-	;;   helm-buffers-fuzzy-matching t
-	;;   helm-recentf-fuzzy-match t
-	;;   helm-semantic-fuzzy-match t
-	;;   helm-imenu-fuzzy-match t
-	;;   helm-split-window-in-side-p nil
-	;;   helm-move-to-line-cycle-in-source nil
-	;;   helm-ff-search-library-in-sexp t
-	;;   helm-scroll-amount 8 
-	;;   helm-echo-input-in-header-line t)
-    ;;   :init
-    ;;   (helm-mode 1))
+;; (use-package helm
+;;   :diminish
+;;   :ensure t
+;;   :preface (require 'helm-config)
+;;   :bind
+;;   ("C-x C-f" . 'helm-find-files)
+;;   ("C-x C-b" . 'helm-buffers-list)
+;;   ("M-x" . 'helm-M-x)
+;;   :config
+;;   (defun daedreth/helm-hide-minibuffer ()
+;;     (when (with-helm-buffer helm-echo-input-in-header-line)
+;; (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+;;   (overlay-put ov 'window (selected-window))
+;;   (overlay-put ov 'face
+;;         (let ((bg-color (face-background 'default nil)))
+;;       `(:background ,bg-color :foreground ,bg-color)))
+;;   (setq-local cursor-type nil))))
+;;   (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
+;;   (setq helm-autoresize-max-height 0
+;;   helm-autoresize-min-height 40
+;;   helm-M-x-fuzzy-match t
+;;   helm-buffers-fuzzy-matching t
+;;   helm-recentf-fuzzy-match t
+;;   helm-semantic-fuzzy-match t
+;;   helm-imenu-fuzzy-match t
+;;   helm-split-window-in-side-p nil
+;;   helm-move-to-line-cycle-in-source nil
+;;   helm-ff-search-library-in-sexp t
+;;   helm-scroll-amount 8
+;;   helm-echo-input-in-header-line t)
+;;   :init
+;;   (helm-mode 1))
 
-  ;; ;;  (require 'helm-config)    
-  ;;   (helm-autoresize-mode 1)
-  ;;   (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
-  ;;   (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
+;; ;;  (require 'helm-config)
+;;   (helm-autoresize-mode 1)
+;;   (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
+;;   (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
 #+END_SRC
-    
+
 ** Vertico
 #+begin_src emacs-lisp
 ;; Enable vertico
@@ -579,8 +579,8 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
 #+end_src
 
 ** Consult
-    #+begin_src emacs-lisp
-    ;; Example configuration for Consult
+#+begin_src emacs-lisp
+;; Example configuration for Consult
 (use-package consult
   :straight t
   ;; Replace bindings. Lazily loaded due by `use-package'.
@@ -600,7 +600,7 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
          ("C-M-#" . consult-register)
          ;; Other custom bindings
-;;         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ;;         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings (goto-map)
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
@@ -695,11 +695,11 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
   ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-)
-    #+end_src
+  )
+#+end_src
 
 ** Embark
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 (use-package embark
   :straight t
   :bind
@@ -725,11 +725,11 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   :straight t ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
-    #+end_src
+#+end_src
 
 ** Orderless
 
-    #+begin_src emacs-lisp
+#+begin_src emacs-lisp
 ;; Optionally use the `orderless' completion style.
 (use-package orderless
   :straight t
@@ -740,60 +740,59 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   (setq completion-styles '(basic substring partial-completion flex)
         completion-category-defaults nil
         completion-category-overrides '((file (styles partial-completion)))))
-    #+end_src
+#+end_src
 
 #+RESULTS:
 
 ** Marginalia
-    #+begin_src emacs-lisp
-    (use-package marginalia
-    :after vertico
-    :straight t
-    :custom (marginalia-annotators '(marginalia-annottators-heavy marginalia-annottators-light nil))
-    :init (marginalia-mode))
-    
-    #+end_src
-** avy 
+#+begin_src emacs-lisp
+(use-package marginalia
+  :after vertico
+  :straight t
+  :custom (marginalia-annotators '(marginalia-annottators-heavy marginalia-annottators-light nil))
+  :init (marginalia-mode))
+
+#+end_src
+** avy
 As you invoke one of avy's functions, you will be prompted for a character that you'd like to jump to in the /visible portion of the current buffer/.
 Afterwards you will notice how all instances of said character have additional letter on top of them. Pressing those letters, that are next to your desired character will move your cursor over there.
 
 [[https://github.com/abo-abo/avy][Avy github]]
-        
-I like =M-s= for it, same as =C-s= is for moving by searching string, now =M-s= is moving by searching characters.
+
 #+BEGIN_SRC emacs-lisp
 (define-prefix-command 'avy-custom-keymap)
 (global-set-key (kbd "` y") 'avy-custom-keymap)
-;;(define-key avy-custom-keymap "m" '(lambda () (interactive) (message "testing")))
+;; (define-key avy-custom-keymap "z" '(lambda () (interactive) (message "testing")))
 
 (use-package avy
-  :straight t)
-
-(define-key avy-custom-keymap "l" 'avy-goto-line) 
-(define-key avy-custom-keymap "L" 'avy-move-line) 
-(define-key avy-custom-keymap "m" 'avy-move-region) 
-(define-key avy-custom-keymap "p" 'avy-goto-line-above) 
-(define-key avy-custom-keymap "n" 'avy-goto-line-below) 
-(define-key avy-custom-keymap "c" 'avy-goto-char-timer) 
-(define-key avy-custom-keymap "w" 'avy-goto-word-0) 
-(define-key avy-custom-keymap "t" 'avy-transpose-lines-in-region) 
-(define-key avy-custom-keymap "k" 'avy-kill-ring-save-whole-line) 
-(define-key avy-custom-keymap "K" 'avy-kill-whole-line) 
-(define-key avy-custom-keymap "r" 'avy-kill-ring-save-region) 
-(define-key avy-custom-keymap "R" 'avy-kill-region) 
-(define-key avy-custom-keymap "s" 'avy-goto-symbol-1) 
-(define-key avy-custom-keymap "h" 'avy-org-goto-heading-timer) 
-;;(define-key avy-custom-keymap "" ') 
+  :straight t
+  :bind
+  (:map avy-custom-keymap
+        ("l" . avy-goto-line)
+        ("L" . avy-move-line)
+        ("m" . avy-move-region)
+        ("p" . avy-goto-line-above)
+        ("n" . avy-goto-line-below)
+        ("c" . avy-goto-char-timer)
+        ("w" . avy-goto-word-0)
+        ("t" . avy-transpose-lines-in-region)
+        ("k" . avy-kill-ring-save-whole-line)
+        ("K" . avy-kill-whole-line)
+        ("r" . avy-kill-ring-save-region)
+        ("R" . avy-kill-region)
+        ("s" . avy-goto-symbol-1)
+        ("h" . avy-org-goto-heading-timer)))
 
 #+END_SRC
-    
+
 ** Scroll with cursor stationary
 #+BEGIN_SRC emacs-lisp
- (global-set-key [C-down] (kbd "C-u 1 C-v"))
- (global-set-key [C-up] (kbd "C-u 1 M-v"))
+(global-set-key [C-down] (kbd "C-u 1 C-v"))
+(global-set-key [C-up] (kbd "C-u 1 M-v"))
 #+END_SRC
 * Text Manipulation
 Here I shall collect custom functions that make editing text easier.
-    
+
 ** Mark-Multiple
 This extension allows you to quickly mark the next occurence of a region and edit them all at once.
 #+BEGIN_SRC emacs-lisp
@@ -810,14 +809,14 @@ This extension allows you to quickly mark the next occurence of a region and edi
 
 ** Semantically cycle through selections
 #+BEGIN_SRC emacs-lisp
- (use-package expand-region
-	  :straight t
-	  :bind
-	  ("C-=" . 'er/expand-region)
-	  ("C-+" . 'er/contract-region)
-	  ("C-c q" . 'er/mark-inside-quotes)
-	  ("C-c Q" . 'er/mark-outside-quotes)
-	  )
+(use-package expand-region
+  :straight t
+  :bind
+  ("C-=" . 'er/expand-region)
+  ("C-+" . 'er/contract-region)
+  ("C-c q" . 'er/mark-inside-quotes)
+  ("C-c Q" . 'er/mark-outside-quotes)
+  )
 #+END_SRC
 
 ** Improved kill-word
@@ -825,14 +824,14 @@ Why on earth does a function called =kill-word= not .. kill a word.
 It instead deletes characters from your cursors position to the end of the word,
 let's make a quick fix and bind it properly.
 #+BEGIN_SRC emacs-lisp
-  (defun daedreth/kill-inner-word ()
-    "Kills the entire word your cursor is in. Equivalent to 'ciw' in vim."
-    (interactive)
-    (forward-char 1)
-    (backward-word)
-    (kill-word 1))
-  ;;  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
-  (define-key ak-map "W" 'daedreth/kill-inner-word)
+(defun daedreth/kill-inner-word ()
+  "Kills the entire word your cursor is in. Equivalent to 'ciw' in vim."
+  (interactive)
+  (forward-char 1)
+  (backward-word)
+  (kill-word 1))
+;;  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
+(define-key ak-map "W" 'daedreth/kill-inner-word)
 #+END_SRC
 
 ** Improved copy-word
@@ -853,19 +852,19 @@ And again, the same as above but we make sure to not delete the source word.
 ** Copy a line
 Regardless of where your cursor is, this quickly copies a line.
 #+BEGIN_SRC emacs-lisp
-  (defun daedreth/copy-whole-line ()
-    "Copies a line without regard for cursor position."
-    (interactive)
-    (save-excursion
-      (kill-new
-       (buffer-substring
-        (point-at-bol)
-        (point-at-eol)))))
+(defun daedreth/copy-whole-line ()
+  "Copies a line without regard for cursor position."
+  (interactive)
+  (save-excursion
+    (kill-new
+     (buffer-substring
+      (point-at-bol)
+      (point-at-eol)))))
 ;;  (global-set-key (kbd "C-c l c") 'daedreth/copy-whole-line)
-    ;; (define-key ak-map "l" '(lambda ()
-    ;;                           (interactive)
-    ;;                           (daedreth/copy-whole-line)
-    ;;                           (message "Copied whole line")))
+;; (define-key ak-map "l" '(lambda ()
+;;                           (interactive)
+;;                           (daedreth/copy-whole-line)
+;;                           (message "Copied whole line")))
 (define-key ak-map "l" 'daedreth/copy-whole-line)
 #+END_SRC
 
@@ -881,7 +880,7 @@ And this quickly deletes a line.
 #+END_SRC
 
 ** Move lines up/down
-    Copied from this [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow post]]
+Copied from this [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow post]]
 
 #+begin_src emacs-lisp
 ;; move the line(s) spanned by the active region up/down (line transposing)
@@ -926,10 +925,8 @@ And this quickly deletes a line.
 (define-key ak-map "]" 'move-lines-down)
 #+end_src
 
-* Minor conveniences
-Emacs is at it's best when it just does things for you, shows you the way, guides you so to speak.
-This can be best achieved using a number of small extensions. While on their own they might not be particularly
-impressive. Together they create a nice environment for you to work in.
+* Major conveniences
+These utilities create a nice environment that fits like a glove
 
 ** Visiting the configuration
 Quickly edit =~/.emacs.d/config.org=
@@ -938,7 +935,7 @@ Quickly edit =~/.emacs.d/config.org=
   (interactive)
   (find-file "~/.emacs.d/config.org"))
 ;;(global-set-key (kbd "C-c e") 'config-visit)
-(define-key ak-map "0" 'config-visit) 
+(define-key ak-map "0" 'config-visit)
 #+END_SRC
 
 ** Reloading the configuration
@@ -949,7 +946,7 @@ You can also manually invoke =config-reload=.
   (interactive)
   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
 ;;(global-set-key (kbd "C-c r") 'config-reload)
-(define-key ak-map "r" 'config-reload) 
+(define-key ak-map "r" 'config-reload)
 #+END_SRC
 
 ** Electric
@@ -959,17 +956,17 @@ Opening a bracket? It's closed for you already. Quoting something? It's closed f
 
 You can easily add and remove pairs yourself
 #+BEGIN_SRC emacs-lisp
-;(setq electric-pair-pairs '(
-;                           (?\{ . ?\})
-;                           (?\( . ?\))
-;                           (?\[ . ?\])
-;                           (?\" . ?\")
-;                           ))
+                                        ;(setq electric-pair-pairs '(
+                                        ;                           (?\{ . ?\})
+                                        ;                           (?\( . ?\))
+                                        ;                           (?\[ . ?\])
+                                        ;                           (?\" . ?\")
+                                        ;                           ))
 #+END_SRC
 
 And now to enable it
 #+BEGIN_SRC emacs-lisp
-;(electric-pair-mode t)
+                                        ;(electric-pair-mode t)
 #+END_SRC
 ** Beacon
 While changing buffers or workspaces, the first thing you do is look for your cursor.
@@ -1033,8 +1030,8 @@ If you wish to include the selected character in the killed region, change =zzz-
                          (switch-to-buffer "*scratch*")))
 #+END_SRC
 ** CRUX
-    #+BEGIN_SRC emacs-lisp
-(define-prefix-command 'ak-crux-map)    
+#+BEGIN_SRC emacs-lisp
+(define-prefix-command 'ak-crux-map)
 (global-set-key (kbd "` x") 'ak-crux-map)
 
 (use-package crux
@@ -1042,23 +1039,28 @@ If you wish to include the selected character in the killed region, change =zzz-
   :bind
   ("C-k" . crux-smart-kill-line)
   (:map ak-crux-map
-        ("s" . crux-sudo-edit)                       
-        ("o" . crux-smart-open-line)                 
-        ("O" . crux-smart-open-line-above)           
+        ;;     ("U" . crux-view-url)
+        ;;("a" . crux-ispell-word-then-abbrev)
+        ("." . crux-find-shell-init-file)
+        ("1" . crux-find-user-init-file)
+        ("a" . crux-move-beginning-of-line)
+        ("o" . crux-smart-open-line)
+        ("O" . crux-smart-open-line-above)
         ("d" . crux-duplicate-current-line-or-region)
-        ("j" . crux-top-join-line)                   
-        ("k" . crux-kill-line-backwards)             
+        ("j" . crux-top-join-line)
+        ("k" . crux-kill-line-backwards)
         ("C" . crux-cleanup-buffer-or-region)
-        ("R" . crux-recentf-find-file)               
-        ("D" . crux-recentf-find-directory)          
-   ;;     ("U" . crux-view-url)                        
-        ("u" . crux-upcase-region)                   
-        ("l" . crux-downcase-region)                 
-        ("c" . crux-capitalize-region)               
-        ("0" . crux-other-window-or-switch-buffer)   
-        ("a" . crux-ispell-word-then-abbrev)
-        ("i" . crux-indent-defun)))
-#+END_SRC        
+        ("r" . crux-recentf-find-file)
+        ("D" . crux-recentf-find-directory)
+        ("U" . crux-upcase-region)
+        ("L" . crux-downcase-region)
+        ("i" . crux-insert-date)
+        ("c" . crux-capitalize-region)
+        ("w" . crux-other-window-or-switch-buffer)
+        ("s" . crux-sudo-edit)
+        ("<f2>" . crux-rename-buffer-and-file)
+        ("<tab>" . crux-indent-defun)))
+#+END_SRC
 
 crux ships with some handy advises that can enhance the operation of existing commands.
 *** (crux-with-region-or-buffer)
@@ -1128,8 +1130,8 @@ Each category also has additional settings.
   (setq lsp-keymap-prefix "C-c l")
   :commands lsp lsp-deferred
   :hook (
-	 (go-mode . lsp-deferred)
-	 (python-mode . lsp-deferred)
+     (go-mode . lsp-deferred)
+     (python-mode . lsp-deferred)
      (rustic-mode . lsp-deferred)
      (lsp-mode . lsp-enable-which-key-integration))
 )
@@ -1180,7 +1182,7 @@ Each category also has additional settings.
 (use-package ob-go
   :straight t)
 #+END_SRC
- 
+
 *** c/c++
 #+BEGIN_SRC emacs-lisp
   (add-hook 'c++-mode-hook 'yas-minor-mode)
@@ -1364,13 +1366,13 @@ Each category also has additional settings.
     "sqlformat --keywords \"upper\" --reindent --indent_columns - "
    t t))
 
-    
+
 #+end_src
 
     #+begin_src emacs-lisp
 (use-package sqlformat
   :straight t)
-    
+
     #+end_src
 
 *** awk
@@ -1396,7 +1398,7 @@ great. It's easy and intuitive to use, shows its options at a keypress and much 
               ("g" . magit-status)))
 
 ;; ("M-g" . magit-status))
-;;(define-key ak-map "g" 'magit-status) 
+;;(define-key ak-map "g" 'magit-status)
 #+END_SRC
 
 * Remote editing
@@ -1411,7 +1413,7 @@ Pretty self-explanatory, useful as hell if you use exwm.
 #+END_SRC
 
 ** Tramp config
-I can find some use for this. 
+I can find some use for this.
 
 *** TODO Find config options for tramp
 * Org
@@ -1419,21 +1421,21 @@ I can find some use for this.
 
 #+BEGIN_SRC emacs-lisp
 (setq org-ellipsis "⤵"
-	  org-src-fontify-natively t
-	  org-src-tab-acts-natively t
-	  org-src-preserve-indentation t
-	  org-src-strip-leading-and-trailing-blank-lines t
-	  org-confirm-babel-evaluate nil
-	  org-image-actual-width nil
-	  org-agenda-start-with-log-mode t
-	  org-log-done 'time
-	  org-log-into-drawer t
-	  
-	  org-agenda-files '("~/Dropbox/org-files/")
-	  
-	  org-todo-keywords
+      org-src-fontify-natively t
+      org-src-tab-acts-natively t
+      org-src-preserve-indentation t
+      org-src-strip-leading-and-trailing-blank-lines t
+      org-confirm-babel-evaluate nil
+      org-image-actual-width nil
+      org-agenda-start-with-log-mode t
+      org-log-done 'time
+      org-log-into-drawer t
+
+      org-agenda-files '("~/Dropbox/org-files/")
+
+      org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
-	    (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)"  "|" "COMPLETED(c)" "CANC(k@)"))
+        (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)"  "|" "COMPLETED(c)" "CANC(k@)"))
 
       org-src-window-setup 'current-window)
 
@@ -1447,8 +1449,8 @@ I can find some use for this.
 ** Line wrapping
 #+BEGIN_SRC emacs-lisp
   (add-hook 'org-mode-hook
-	    (lambda ()
-	       (visual-line-mode 1)))
+        (lambda ()
+           (visual-line-mode 1)))
 #+END_SRC
 
 ** PDF tool
@@ -1473,7 +1475,7 @@ Makes it all look a bit nicer, I hate looking at asterisks.
   ;; (use-package org-bullets
   ;;   :ensure t
   ;;   :config
-  ;;     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))  
+  ;;     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
 #+END_SRC
 
 ** Exporting options
@@ -1495,7 +1497,7 @@ Here is how we add more of them!
 #+BEGIN_SRC emacs-lisp
   (use-package ox-twbs
     :straight t)
-#+END_SRC 
+#+END_SRC
 
 *** Reveal.js export
 #+BEGIN_SRC emacs-lisp
@@ -1526,9 +1528,9 @@ Here is how we add more of them!
   ;; %d	Date
   ;; %%	Literal %
   )
-#+END_SRC 
+#+END_SRC
 
-    
+
 *** Freemind
 #+begin_src emacs-lisp
 ;; (use-package ox-freemind
@@ -1542,7 +1544,7 @@ Here is how we add more of them!
    (restclient . t)
    (sql . t)
    ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html
-   
+
    ;; Header Arguments
    ;; The :colnames header argument defaults to "yes".
    ;; There are several SQL-specific header arguments:
@@ -1644,7 +1646,7 @@ This stuff is kind of moot now that I have org-roam
      ("p" "project" plain (file "~/Dropbox/org-files/templates/projectcap.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
       :unnarrowed t)
-     
+
      ("r" "random thoughts" plain (file "~/Dropbox/org-files/templates/random.org")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Musings")
       :unnarrowed t)
@@ -1700,7 +1702,7 @@ The package =diminish= disables modes on the mode line but keeps them running, i
     (diminish 'auto-revert-mode)
     (diminish 'yas-minor-mode)
     (diminish 'org-indent-mode))
-    
+
 #+END_SRC
 
 * Instant messaging
@@ -1765,7 +1767,7 @@ Memes, but it's fun and tiny.
   (setq mu4e-update-interval (* 10 60))
   (setq mu4e-get-mail-command "mbsync -a")
   (setq mu4e-maildir "~/Mail")
-  
+
   (setq mu4e-drafts-folder "/Gmail/[Gmail]/Drafts")
   (setq mu4e-sent-folder "/Gmail/[Gmail]/Sent Mail")
   (setq mu4e-refile-folder "/Gmail/[Gmail]/All Mail")
@@ -1801,20 +1803,20 @@ For a bit of fun, add xkcd cartoons to your dashboard
   (interactive)
   (let ((rand-id-xkcd nil)
         (rand-id-xkcd-url nil))
-  
+
     (with-temp-buffer
       (setq rand-id-xkcd (string-to-number(xkcd-rand))
           rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
     (xkcd-kill-buffer))
   (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
     (if (file-exists-p last-xkcd-png)
-    	(setq dashboard-startup-banner last-xkcd-png
-    	      dashboard-banner-logo-title rand-id-xkcd-url
+        (setq dashboard-startup-banner last-xkcd-png
+              dashboard-banner-logo-title rand-id-xkcd-url
               dashboard-init-info xkcd-alt))))
   (revert-buffer))
 
 (define-key ak-map "X" 'reload-xkcd)
-#+END_SRC 
+#+END_SRC
 * Experimental features
 ** Hyperbole
 #+begin_src emacs-lisp
