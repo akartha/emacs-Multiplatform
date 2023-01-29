@@ -5,7 +5,8 @@
 #+OPTIONS: num:nil
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
 * Basic Settings
-These are setting that do not depend on packages and are built-in enhancements to the UI.
+    
+    These are setting that do not depend on packages and are built-in enhancements to the UI.
 ** Custom file location
 #+begin_src emacs-lisp
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -18,8 +19,31 @@ These are setting that do not depend on packages and are built-in enhancements t
 (use-package modus-themes
   :straight t
   :init
+  (setq modus-themes-common-palette-overrides
+        '((fg-prompt fg-main)
+          (bg-prompt bg-yellow-nuanced) ; try to replace "nuanced" or "subtle" with "intense"
+
+          (comment yellow-faint)
+          (string green-warmer)
+
+          (fg-heading-1 blue-warmer)
+          (bg-heading-1 bg-blue-nuanced)
+          (overline-heading-1 blue)
+
+          (fg-heading-2 green-warmer)
+          (bg-heading-2 bg-green-nuanced)
+          (overline-heading-2 border)
+    
+          (fg-heading-3 fg-main)
+          (bg-heading-3 bg-dim)
+          (overline-heading-3 border))
+        
+        modus-themes-completions
+        '((matches . (extrabold underline))
+          (selection . (extrabold italic underline))))
+
   ;; (load-theme 'modus-vivendi t))
-(load-theme 'modus-operandi t))
+  (load-theme 'modus-operandi-tinted t)) ;;(load-theme 'modus-operandi-tinted/deuteranopia t))
 #+END_SRC
 *** Some standard UI and behavioral settings
 #+begin_src emacs-lisp
@@ -142,8 +166,6 @@ Hit "C-x C-U =" and see how the following values show up in the pop window, and 
 (define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
 
 #+end_src
-
-
 ** Functionality
 *** Dired
 
@@ -250,10 +272,11 @@ change the numbers to suit your liking
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((bookmarks  . 10)
-                          (recents  . 10)
-                          (agenda  . 5)
-                          (projects  . 2)))
+                          (recents  . 20)
+                          (projects  . 10)))
+  ;; (agenda  . 5)))
   (setq dashboard-set-heading-icons t
+        dashboard-center-content t
         dashboard-set-file-icons t
         dashboard-set-navigator nil
         dashboard-footer-messages (list (shell-command-to-string "fortune")))
@@ -529,8 +552,8 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   :custom
   (setq vertico-cycle t)
-  :custom-face
-  (vertico-current ((t (:background "#3a3f5a"))))
+  ;; :custom-face
+  ;; (vertico-current ((t (:background "#3f3f5a"))))
   )
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
@@ -739,10 +762,13 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
   (setq completion-styles '(basic substring partial-completion flex)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles partial-completion)))))
+        completion-category-overrides '((file (styles basic partial-completion)))))
 #+end_src
 
-#+RESULTS:
+    #+begin_src go
+    
+    
+    #+end_src
 
 ** Marginalia
 #+begin_src emacs-lisp
@@ -783,6 +809,16 @@ Afterwards you will notice how all instances of said character have additional l
         ("s" . avy-goto-symbol-1)
         ("h" . avy-org-goto-heading-timer)))
 
+(defun avy-org-table-1-char ()
+  "Avy navigation of cells in org-mode tables.  'SPC' can be used to jump to blank cells. "
+  (interactive)
+  ;; set some variables to limit candidates to the current table
+  (let ((table-begin (save-excursion (goto-char (org-table-begin)) (previous-line) (point)))
+        (table-end (save-excursion (goto-char (org-table-end)) (next-line) (point))))
+  ;; jump to the desired cell and re-align
+  (goto-char
+   (avy--generic-jump (concat "|\\{1\\}[^-\n|]+" (char-to-string (read-char "char: " t))) t 'post table-begin table-end))
+  (org-cycle)))
 #+END_SRC
 
 ** Scroll with cursor stationary
@@ -824,48 +860,45 @@ Why on earth does a function called =kill-word= not .. kill a word.
 It instead deletes characters from your cursors position to the end of the word,
 let's make a quick fix and bind it properly.
 #+BEGIN_SRC emacs-lisp
-(defun daedreth/kill-inner-word ()
+(defun ak/kill-inner-word ()
   "Kills the entire word your cursor is in. Equivalent to 'ciw' in vim."
   (interactive)
   (forward-char 1)
   (backward-word)
-  (kill-word 1))
-;;  (global-set-key (kbd "C-c w k") 'daedreth/kill-inner-word)
-(define-key ak-map "W" 'daedreth/kill-inner-word)
+  (kill-word 1)
+  (message "Killed current word"))
+(define-key ak-map "W" 'ak/kill-inner-word)
 #+END_SRC
 
 ** Improved copy-word
 And again, the same as above but we make sure to not delete the source word.
 #+BEGIN_SRC emacs-lisp
-(defun daedreth/copy-whole-word ()
+(defun ak/copy-whole-word ()
   (interactive)
   (save-excursion
     (forward-char 1)
     (backward-word)
     (kill-word 1)
-    (yank)))
-;;(global-set-key (kbd "C-c w c") 'daedreth/copy-whole-word)
-(define-key ak-map "w" 'daedreth/copy-whole-word)
+    (yank))
+  (message "Copied current word"))
+(define-key ak-map "w" 'ak/copy-whole-word)
 
 #+END_SRC
 
 ** Copy a line
 Regardless of where your cursor is, this quickly copies a line.
 #+BEGIN_SRC emacs-lisp
-(defun daedreth/copy-whole-line ()
+(defun ak/copy-whole-line ()
   "Copies a line without regard for cursor position."
   (interactive)
   (save-excursion
     (kill-new
      (buffer-substring
       (point-at-bol)
-      (point-at-eol)))))
-;;  (global-set-key (kbd "C-c l c") 'daedreth/copy-whole-line)
-;; (define-key ak-map "l" '(lambda ()
-;;                           (interactive)
-;;                           (daedreth/copy-whole-line)
-;;                           (message "Copied whole line")))
-(define-key ak-map "l" 'daedreth/copy-whole-line)
+      (point-at-eol))))
+  (message "Copied current line"))
+
+    (define-key ak-map "l" 'ak/copy-whole-line)
 #+END_SRC
 
 ** Kill a line
@@ -911,18 +944,18 @@ Copied from this [[https://stackoverflow.com/questions/2423834/move-line-region-
         (setq mark-active t
               deactivate-mark nil))))
 
-(defun move-lines-up (n)
+(defun ak/move-lines-up (n)
   "move the line(s) spanned by the active region up by N lines."
   (interactive "*p")
   (move-lines (- (or n 1))))
 
-(defun move-lines-down (n)
+(defun ak/move-lines-down (n)
   "move the line(s) spanned by the active region down by N lines."
   (interactive "*p")
   (move-lines (or n 1)))
 
-(define-key ak-map "[" 'move-lines-up)
-(define-key ak-map "]" 'move-lines-down)
+(define-key ak-map "[" 'ak/move-lines-up)
+(define-key ak-map "]" 'ak/move-lines-down)
 #+end_src
 
 * Major conveniences
@@ -931,22 +964,22 @@ These utilities create a nice environment that fits like a glove
 ** Visiting the configuration
 Quickly edit =~/.emacs.d/config.org=
 #+BEGIN_SRC emacs-lisp
-(defun config-visit ()
+(defun ak/config-visit ()
   (interactive)
   (find-file "~/.emacs.d/config.org"))
 ;;(global-set-key (kbd "C-c e") 'config-visit)
-(define-key ak-map "0" 'config-visit)
+(define-key ak-map "0" 'ak/config-visit)
 #+END_SRC
 
 ** Reloading the configuration
 You can also manually invoke =config-reload=.
 #+BEGIN_SRC emacs-lisp
-(defun config-reload ()
+(defun ak/config-reload ()
   "Reloads ~/.emacs.d/config.org at runtime"
   (interactive)
   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
 ;;(global-set-key (kbd "C-c r") 'config-reload)
-(define-key ak-map "r" 'config-reload)
+(define-key ak-map "r" 'ak/config-reload)
 #+END_SRC
 
 ** Electric
@@ -1130,16 +1163,18 @@ Each category also has additional settings.
   (setq lsp-keymap-prefix "C-c l")
   :commands lsp lsp-deferred
   :hook (
-     (go-mode . lsp-deferred)
-     (python-mode . lsp-deferred)
-     (rustic-mode . lsp-deferred)
-     (lsp-mode . lsp-enable-which-key-integration))
-)
+         (go-mode . lsp-deferred)
+         (python-mode . lsp-deferred)
+         (rustic-mode . lsp-deferred)
+         (lsp-mode . lsp-enable-which-key-integration))
+  )
 
 ;; Optional - provides fancier overlays
 
 (use-package lsp-ui
   :straight t
+  :hook (lsp-mode . lsp-ui-mode)
+;;  :config (setq lsp-ui-doc-enable t)
   :commands lsp-ui-mode
   )
 
@@ -1233,11 +1268,6 @@ Each category also has additional settings.
   (with-eval-after-load 'company
       (add-hook 'python-mode-hook 'company-mode))
 
-  (use-package company-jedi
-    :straight t
-    :config
-      (require 'company)
-      (add-to-list 'company-backends 'company-jedi))
 
   (defun python-mode-company-init ()
     (setq-local company-backends '((company-jedi
@@ -1301,6 +1331,12 @@ Each category also has additional settings.
          ("\\.eslintrc\\'" . json-mode))
   :config (setq-default js-indent-level 2))
 
+(use-package jq-mode
+  :straight t
+  :mode (("\\.jq$" . jq-mode)))
+
+(with-eval-after-load "json-mode"
+  (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively))
 
 #+END_SRC
 
@@ -1310,15 +1346,28 @@ Each category also has additional settings.
   :straight t
   :after json-mode
   :bind (("C-c f" . json-reformat-region)))
+
+(use-package jq-format
+  :straight t
+  :demand t
+  :after json-mode)    
 #+END_SRC
 
 *** Restclient
 #+BEGIN_SRC emacs-lisp
 (use-package restclient
   :straight t)
+(use-package company-restclient
+  :straight t)
 
 (use-package ob-restclient
   :straight t)
+
+(with-eval-after-load 'company
+  (add-hook 'restclient-mode-hook 'company-mode))
+
+(add-to-list 'company-backends 'company-restclient)
+
 #+END_SRC
 
 *** Rust
@@ -1383,6 +1432,16 @@ Each category also has additional settings.
       ;; (require 'awk-it)
     #+end_src
 
+*** Mermaid
+#+begin_src emacs-lisp
+(use-package mermaid-mode
+  :straight t)
+
+(use-package ob-mermaid
+  :straight t
+  :init (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
+    
+#+end_src
 * Git integration
 Countless are the times where I opened ansi-term to use =git= on something.
 These times are also something that I'd prefer stay in the past, since =magit= is
@@ -1439,18 +1498,25 @@ I can find some use for this.
 
       org-src-window-setup 'current-window)
 
+(defun ak/org-table-mark-field ()
+  "Mark the current table field."
+  (interactive)
+  ;; Do not try to jump to the beginning of field if the point is already there
+  (when (not (looking-back "|\\s-?"))
+    (org-table-beginning-of-field 1))
+  (set-mark-command nil)
+  (org-table-end-of-field 1))
+
+(define-key ak-map "-" 'ak/org-table-mark-field)
+
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook 'yas-minor-mode)
 (add-hook 'org-mode-hook 'abbrev-mode)
 ;;(add-hook 'org-mode-hook #'org-modern-mode)
 
-#+END_SRC
-
-** Line wrapping
-#+BEGIN_SRC emacs-lisp
-  (add-hook 'org-mode-hook
-        (lambda ()
-           (visual-line-mode 1)))
+(add-hook 'org-mode-hook
+          (lambda ()
+            (visual-line-mode 1)))
 #+END_SRC
 
 ** PDF tool
@@ -1594,6 +1660,11 @@ Here is how we add more of them!
    ;;     $1 ~ /J/
    ;;    #+end_src
    (go . t)
+
+   ;;https://github.com/ljos/jq-mode
+   (jq . t)
+    ;;https://github.com/arnm/ob-mermaid
+    (mermaid . t)
    ))
 #+END_SRC
 
@@ -1684,8 +1755,8 @@ This stuff is kind of moot now that I have org-roam
 #+end_src
 ** Org modern
 #+begin_src emacs-lisp
-(use-package org-modern
-  :straight t)
+;; (use-package org-modern
+;;   :straight t)
 #+end_src
 
 * Diminishing modes
@@ -1798,7 +1869,7 @@ For a bit of fun, add xkcd cartoons to your dashboard
 ;;                      (if host host "www.google.com"))))
 
 ;; (message (if (internet-up-p) "Up" "Down"))
-(defun reload-xkcd ()
+(defun ak/reload-xkcd ()
   "Load a random xkcd cartoon on the dashboard"
   (interactive)
   (let ((rand-id-xkcd nil)
@@ -1815,11 +1886,165 @@ For a bit of fun, add xkcd cartoons to your dashboard
               dashboard-init-info xkcd-alt))))
   (revert-buffer))
 
-(define-key ak-map "X" 'reload-xkcd)
+(define-key ak-map "X" 'ak/reload-xkcd)
 #+END_SRC
 * Experimental features
 ** Hyperbole
 #+begin_src emacs-lisp
 ;; (use-package hyperbole
 ;;   :straight t)
+#+end_src
+** Start page
+    #+begin_src emacs-lisp
+    (setq initial-buffer-choice "~/start-emacs.org")
+    #+end_src
+** Modus Theme customizations
+
+#+begin_src emacs-lisp
+;; (setq modus-themes-completions
+;;       '((matches . (extrabold underline))
+;;         (selection . (extrabold italic underline))))
+;; (setq modus-themes-org-blocks 'tinted-background)
+;; (setq modus-themes-prompts '(extrabold italic))
+
+;; These overrides are common to all Modus themes.  We also provide
+;; theme-specific options, such as `modus-operandi-palette-overrides'.
+;;
+;; In general, the theme-specific overrides are better for overriding
+;; color values, such as redefining what `blue-faint' looks like.  The
+;; common overrides are best used for changes to semantic color
+;; mappings, as we show below.
+
+;; Keep the background unspecified (like the default), but use a faint
+;; foreground color.
+;; (setq modus-themes-common-palette-overrides
+;;       '((fg-prompt cyan-faint)
+;;         (bg-prompt unspecified)))
+
+;; ;; Add a nuanced background to prompts that complements their foreground.
+;; (setq modus-themes-common-palette-overrides
+;;       '((fg-prompt cyan)
+;;         (bg-prompt bg-blue-nuanced)))
+
+;; ;; Add a yellow background and adjust the foreground accordingly.
+;; (setq modus-themes-common-palette-overrides
+;;       '((fg-prompt fg-main)
+;;         (bg-prompt bg-yellow-nuanced) ; try to replace "nuanced" or "subtle" with "intense"
+
+;;         (comment yellow-faint)
+;;         (string green-warmer)
+
+;;         (fg-heading-1 blue-warmer)
+;;         (bg-heading-1 bg-blue-nuanced)
+;;         (overline-heading-1 blue)
+
+;;         (fg-heading-2 fg-main)
+;;         (bg-heading-2 bg-dim)
+;;         (overline-heading-2 border)))
+
+#+end_src
+** Avy customs
+#+begin_src emacs-lisp
+;; (defun avy-goto-parens ()
+;;   (interactive)
+;;   (let ((avy-command this-command))   ; for look up in avy-orders-alist
+;;     (avy-jump "(+")))
+;; (add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
+;; ;;(global-define-key (kbd "s-p") 'avy-goto-parens)
+;; (define-key ak-map "(" 'avy-goto-parens)
+;; (defun avy-org-same-level (&optional all)
+;;   "Go to any org heading of the same level as the current one.
+
+;; By default, choices are limited to headings under common
+;; subheading, but if called with a prefix argument, will be
+;; buffer-global."
+;;   (interactive "P")
+;;   (let ((org-level (org-current-level)))
+;;     (avy--generic-jump
+;;      (format "^%s "
+;;              (regexp-quote
+;;               (make-string org-level ?*)))
+;;      nil
+;;      'pre
+;;      (unless (or all (= org-level 1))
+;;        (save-excursion
+;;          (outline-up-heading 1)
+;;          (point)))
+;;      (unless (or all (= org-level 1))
+;;        (save-excursion
+;;          (outline-up-heading 1)
+;;          (org-end-of-subtree))))))
+
+;; (defun avy-org-parent-level (&optional all)
+;;   "Go to any org heading one level above the current one.
+
+;; By default, choices are limited to headings under common
+;; subheading, but if called with a prefix argument, will be
+;; buffer-global."
+;;   (interactive "P")
+;;   (let ((org-level (org-current-level)))
+;;     (if (= org-level 1)
+;;         (message "Already at top level.")
+;;       (avy--generic-jump
+;;        (format "^%s "
+;;                (regexp-quote
+;;                 (make-string (- org-level 1) ?*)))
+;;        nil
+;;        'pre
+;;        (unless (or all (= org-level 2))
+;;          (save-excursion
+;;            (outline-up-heading 2)
+;;            (point)))
+;;        (unless (or all (= org-level 2))
+;;          (save-excursion
+;;            (outline-up-heading 2)
+;;            (org-end-of-subtree)))))))
+
+;; (defun avy-org-child-level (&optional all)
+;;   "Go to any org heading one level below the current one.
+
+;; By default, choices are limited to headings under common
+;; subheading, but if called with a prefix argument, will be
+;; buffer-global."
+;;   (interactive "P")
+;;   (if (save-excursion (org-goto-first-child))
+;;       (let ((org-level (org-current-level)))
+;;         (avy--generic-jump
+;;          (format "^%s "
+;;                  (regexp-quote
+;;                   (make-string (+ org-level 1) ?*)))
+;;          nil
+;;          'pre
+;;          (unless all
+;;            (save-excursion
+;;              (ignore-errors
+;;                (outline-up-heading 0))
+;;              (point)))
+;;          (unless all
+;;            (save-excursion
+;;              (ignore-errors
+;;                (outline-up-heading 0))
+;;              (org-end-of-subtree)))))
+;;     (message "Heading has no children.")))
+
+;; (defun avy-org-goto-level (&optional num)
+;;   "Prompt for an org level to go to, defaulting to the current one."
+;;   (interactive (list
+;;                 (read-number "Select heading level: " (org-current-level))))
+;;   (avy--generic-jump
+;;    (format "^%s " (regexp-quote (make-string num ?*)))
+;;    nil
+;;    'pre))
+#+end_src
+** Org table functions
+#+begin_src emacs-lisp
+ ;; (defun org-table-mark-field ()
+ ;;      "Mark the current table field."
+ ;;      (interactive)
+ ;;      ;; Do not try to jump to the beginning of field if the point is already there
+ ;;      (when (not (looking-back "|\\s-?"))
+ ;;        (org-table-beginning-of-field 1))
+ ;;      (set-mark-command nil)
+ ;;      (org-table-end-of-field 1))
+
 #+end_src

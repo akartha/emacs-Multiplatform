@@ -1,23 +1,28 @@
-;;; This fixed garbage collection, makes emacs start up faster ;;;;;;;
-;;(setq gc-cons-threshold 402653184
-;;      gc-cons-percentage 0.6)
-
-;;(defvar startup/file-name-handler-alist file-name-handler-alist)
-;;(setq file-name-handler-alist nil)
-
-;;(defun startup/revert-file-name-handler-alist ()
- ;; (setq file-name-handler-alist startup0/file-name-handler-alist))
-
-;;(defun startup/reset-gc ()
-;;  (setq gc-cons-threshold 16777216
-;;	gc-cons-percentage 0.1))
-
-;;(add-hook 'emacs-startup-hook 'startup/revert-file-name-handler-alist)
-;;(add-hook 'emacs-startup-hook 'startup/reset-gc)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; This is all kinds of necessary
-(setq gc-cons-threshold (* 50 1000 1000))
+
+;; -*- lexical-binding: t; -*-
+
+;; The default is 800 kilobytes.  Measured in bytes.
+;; Set the garbage collection threshold to high (100 MB) since LSP client-server communication generates a lot of output/garbage
+(setq gc-cons-threshold (* 100 1000 1000))
+
+;; To increase the amount of data Emacs reads from a process
+(setq read-process-output-max (* 1024 1024)) 
+
+;; Profile emacs startup
+(add-hook 'emacs-startup-hook
+          (lambda ()
+            (message "*** Emacs loaded in %s seconds with %d garbage collections."
+                     (emacs-init-time "%.2f")
+                     gcs-done)))
+
+;; Silence compiler warnings as they can be pretty disruptive
+(setq native-comp-async-report-warnings-errors nil)
+
+;; Set the right directory to store the native comp cache
+;;(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
+
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -32,9 +37,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Bootstrapping use-package
-(unless (package-installed-p 'use-package)
-  (package-refresh-contents)
-  (package-install 'use-package))
+;; (unless (package-installed-p 'use-package)
+;;   (package-refresh-contents)
+;;   (package-install 'use-package))
 
 (defvar bootstrap-version)
 (let ((bootstrap-file (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -46,6 +51,7 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
+(straight-use-package 'use-package)
 (straight-use-package 'org)
 
 ;;; This is the actual config file. It is omitted if it doesn't exist so emacs won't refuse to launch.
