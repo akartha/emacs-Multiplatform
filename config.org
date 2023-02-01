@@ -371,25 +371,15 @@ This makes sure that everything can be a project.
 #+end_src
 
 * Moving around emacs
-One of the most important things about a text editor is how efficient you manage
-to be when using it, how much time do basic tasks take you and so on and so forth.
-One of those tasks is moving around files and buffers, whatever you may use emacs for
-you /will/ be jumping around buffers like it's serious business, the following
-set of enhancements aims to make it easier.
+Moving around a buffer is where most of the drama in a text editor is
 
-** a prerequisite for other packages
-#+BEGIN_SRC emacs-lisp
-                                        ;  (use-package ivy
-                                        ;   :ensure t)
-#+END_SRC
-
-** which-key
+** Which-Key
 #+begin_src emacs-lisp
 (use-package which-key
   :diminish
   :straight t
   :config
-  (which-key-setup-side-window-right-bottom)
+  (which-key-setup-side-window-right-bottom) ;;prefer right side - but will go for bottom if there is not enough space
   (which-key-mode))
 
 #+end_src
@@ -411,10 +401,7 @@ With 3 or more, upon pressing =C-x o= , the buffers turn a solid color and each 
 #+END_SRC
 
 *** Following window splits
-After you split a window, your focus remains in the previous one.
-This annoyed me so much I wrote these two, they take care of it.
-
-Modified to also open the previous buffer in the newly opened window
+After you split a window, your focus remains in the previous one - unless the below is set up. Also opens the previous buffer in the newly opened window
 #+BEGIN_SRC emacs-lisp
 (defun split-and-follow-horizontally ()
   (interactive)
@@ -435,22 +422,12 @@ Modified to also open the previous buffer in the newly opened window
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 #+END_SRC
 
-** Swiper
-In emacs, you mostly use search to get around your buffers; swiper makes sure this is more efficient.
-#+BEGIN_SRC emacs-lisp
-;; (use-package swiper
-;;   :ensure t
-;;   :bind ("C-s" . 'swiper))
-#+END_SRC
-
-#+RESULTS:
-
-** buffers and why I hate list-buffers
+** Buffers
 Another big thing is, buffers. If you use emacs, you use buffers, everyone loves them.
 Having many buffers is useful, but can be tedious to work with, let us see how we can improve it.
 
 *** Always murder current buffer
-Doing =C-x k= should kill the current buffer at all times, we have =ibuffer= for more sophisticated thing.
+Doing =C-x k= should kill the current buffer at all times
 #+BEGIN_SRC emacs-lisp
 (defun kill-current-buffer ()
   "Kills the current buffer."
@@ -460,29 +437,12 @@ Doing =C-x k= should kill the current buffer at all times, we have =ibuffer= for
 #+END_SRC
 
 *** Kill buffers without asking for confirmation
-Unless you have the muscle memory, I recommend omitting this bit, as you may lose progress for no reason when working.
 #+BEGIN_SRC emacs-lisp
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 #+END_SRC
-
-*** Turn switch-to-buffer into ibuffer
-I don't understand how ibuffer isn't the default option by now.
-It's vastly superior in terms of ergonomics and functionality, you can delete buffers, rename buffer, move buffers, organize buffers etc.
-#+BEGIN_SRC emacs-lisp
-;;(global-set-key (kbd "C-x b") 'ibuffer)
-#+END_SRC
-
-**** expert-mode
-If you feel like you know how ibuffer works and need not to be asked for confirmation after every serious command, enable this as follows.
-#+BEGIN_SRC emacs-lisp
-;;;;;; (setq ibuffer-expert t)
-#+END_SRC
 *** close-all-buffers
-It's one of those things where I genuinely have to wonder why there is no built in functionality for it.
-Once in a blue moon I need to kill all buffers, and having ~150 of them open would mean I'd need to spend a few too many
-seconds doing this than I'd like, here's a solution.
 
-This can be invoked using =C-M-s-k=. This keybinding makes sure you don't hit it unless you really want to.
+The keybinding makes sure you don't hit it unless you really want to.
 #+BEGIN_SRC emacs-lisp
 (defun close-all-buffers ()
   "Kill all buffers without regard for their origin."
@@ -491,60 +451,14 @@ This can be invoked using =C-M-s-k=. This keybinding makes sure you don't hit it
 (global-set-key (kbd "C-M-s-k") 'close-all-buffers)
 #+END_SRC
 
-** Line numbers and programming
-I highly recommend not enabling =linum-relative-mode= globally, as it messed up something like =ansi-term= for instance.
+** Line numbers 
 #+BEGIN_SRC emacs-lisp
 (use-package linum-relative
   :diminish
   :straight t
   :config
   (setq linum-relative-current-symbol "")
-  (add-hook 'prog-mode-hook 'linum-relative-mode))
-#+END_SRC
-
-** Helm
-
-[[https://github.com/emacs-helm/helm][Helm github]]
-
-*** helm
-#+BEGIN_SRC emacs-lisp
-;; (use-package helm
-;;   :diminish
-;;   :ensure t
-;;   :preface (require 'helm-config)
-;;   :bind
-;;   ("C-x C-f" . 'helm-find-files)
-;;   ("C-x C-b" . 'helm-buffers-list)
-;;   ("M-x" . 'helm-M-x)
-;;   :config
-;;   (defun daedreth/helm-hide-minibuffer ()
-;;     (when (with-helm-buffer helm-echo-input-in-header-line)
-;; (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
-;;   (overlay-put ov 'window (selected-window))
-;;   (overlay-put ov 'face
-;;         (let ((bg-color (face-background 'default nil)))
-;;       `(:background ,bg-color :foreground ,bg-color)))
-;;   (setq-local cursor-type nil))))
-;;   (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
-;;   (setq helm-autoresize-max-height 0
-;;   helm-autoresize-min-height 40
-;;   helm-M-x-fuzzy-match t
-;;   helm-buffers-fuzzy-matching t
-;;   helm-recentf-fuzzy-match t
-;;   helm-semantic-fuzzy-match t
-;;   helm-imenu-fuzzy-match t
-;;   helm-split-window-in-side-p nil
-;;   helm-move-to-line-cycle-in-source nil
-;;   helm-ff-search-library-in-sexp t
-;;   helm-scroll-amount 8
-;;   helm-echo-input-in-header-line t)
-;;   :init
-;;   (helm-mode 1))
-
-;; ;;  (require 'helm-config)
-;;   (helm-autoresize-mode 1)
-;;   (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
-;;   (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
+  (add-hook 'prog-mode-hook 'linum-relative-mode)) ;;don't want it global
 #+END_SRC
 
 ** Vertico
@@ -636,7 +550,7 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
          ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
          ("C-M-#" . consult-register)
          ;; Other custom bindings
-         ;;         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
          ;; M-g bindings (goto-map)
          ("M-g e" . consult-compile-error)
          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
@@ -779,7 +693,6 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
 
  
 #+end_src
-
 
 ** Marginalia
 #+begin_src emacs-lisp
@@ -986,8 +899,7 @@ Copied from this [[https://stackoverflow.com/questions/2423834/move-line-region-
 #+end_src
 
 * Major conveniences
-These utilities create a nice environment that fits like a glove
-
+These utilities create a nice environment
 ** Visiting the configuration
 Quickly edit =~/.emacs.d/config.org=
 #+BEGIN_SRC emacs-lisp
@@ -1009,29 +921,9 @@ You can also manually invoke =config-reload=.
 (define-key ak-map "r" 'ak/config-reload)
 #+END_SRC
 
-** Electric
-If you write any code, you may enjoy this.
-Typing the first character in a set of 2, completes the second one after your cursor.
-Opening a bracket? It's closed for you already. Quoting something? It's closed for you already.
-
-You can easily add and remove pairs yourself
-#+BEGIN_SRC emacs-lisp
-                                        ;(setq electric-pair-pairs '(
-                                        ;                           (?\{ . ?\})
-                                        ;                           (?\( . ?\))
-                                        ;                           (?\[ . ?\])
-                                        ;                           (?\" . ?\")
-                                        ;                           ))
-#+END_SRC
-
-And now to enable it
-#+BEGIN_SRC emacs-lisp
-                                        ;(electric-pair-mode t)
-#+END_SRC
 ** Beacon
 While changing buffers or workspaces, the first thing you do is look for your cursor.
-Unless you know its position, you can not move it efficiently. Every time you change
-buffers, the current position of your cursor will be briefly highlighted now.
+Every time you change buffers, the current position of your cursor will be briefly highlighted
 #+BEGIN_SRC emacs-lisp
 (use-package beacon
   :diminish
@@ -1041,9 +933,8 @@ buffers, the current position of your cursor will be briefly highlighted now.
 #+END_SRC
 
 ** Rainbow
-Mostly useful if you are into web development or game development.
 Every time emacs encounters a hexadecimal code that resembles a color, it will automatically highlight
-it in the appropriate color. This is a lot cooler than you may think.
+it in the appropriate color. 
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-mode
   :diminish
@@ -1053,8 +944,7 @@ it in the appropriate color. This is a lot cooler than you may think.
 #+END_SRC
 
 ** Rainbow delimiters
-Colors parentheses and other delimiters depending on their depth, useful for any language using them,
-especially lisp.
+Colors parentheses and other delimiters depending on their depth
 #+BEGIN_SRC emacs-lisp
 (use-package rainbow-delimiters
   :diminish
@@ -1064,6 +954,7 @@ especially lisp.
 #+END_SRC
 ** Hungry deletion
 Backspace or Delete will get rid of all whitespace until the next non-whitespace character is encountered.
+Convenient, and very very occasionally - irritating
 
 #+BEGIN_SRC emacs-lisp
 (use-package hungry-delete
@@ -1140,13 +1031,6 @@ Sometimes you might want to act on the point until the end of the current line, 
 #+begin_example
 (crux-with-region-or-point-to-eol kill-ring-save)
 #+end_example
-** Popup Kill Ring
-With a simple M-y you can now browse your kill-ring like browsing autocompletion items.
-#+BEGIN_SRC emacs-lisp
-  (use-package popup-kill-ring
-    :straight t
-    :bind ("M-y" . popup-kill-ring))
-#+END_SRC
 * Programming
 Minor, non-completion related settings and plugins for writing code.
 ** yasnippet
@@ -1178,10 +1062,10 @@ Minor, non-completion related settings and plugins for writing code.
 
 #+END_SRC
 
-** specific languages
-Each category also has additional settings.
+** Specific languages
 
 *** lspmode settings
+Don't know enough about these to tweak much.
 #+BEGIN_SRC emacs-lisp
 (use-package lsp-mode
   :straight t
@@ -1469,7 +1353,7 @@ Each category also has additional settings.
   :init (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
     
 #+end_src
-* Magit integration
+* Magit 
 magit is great. It's easy and intuitive to use, shows its options at a keypress and much more.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
@@ -1895,13 +1779,13 @@ For a bit of fun, add xkcd cartoons to your dashboard
 
     (with-temp-buffer
       (setq rand-id-xkcd (string-to-number(xkcd-rand))
-          rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
-    (xkcd-kill-buffer))
-  (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
-    (if (file-exists-p last-xkcd-png)
-        (setq dashboard-startup-banner last-xkcd-png
-              dashboard-banner-logo-title rand-id-xkcd-url
-              dashboard-init-info xkcd-alt))))
+            rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
+      (xkcd-kill-buffer))
+    (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
+      (if (file-exists-p last-xkcd-png)
+          (setq dashboard-startup-banner last-xkcd-png
+                dashboard-banner-logo-title rand-id-xkcd-url
+                dashboard-init-info xkcd-alt))))
   (revert-buffer))
 
 (define-key ak-map "X" 'ak/reload-xkcd)
@@ -1970,9 +1854,9 @@ For a bit of fun, add xkcd cartoons to your dashboard
 ;; (add-to-list 'avy-orders-alist '(avy-goto-parens . avy-order-closest))
 ;; ;;(global-define-key (kbd "s-p") 'avy-goto-parens)
 ;; (define-key ak-map "(" 'avy-goto-parens)
+
 ;; (defun avy-org-same-level (&optional all)
 ;;   "Go to any org heading of the same level as the current one.
-
 ;; By default, choices are limited to headings under common
 ;; subheading, but if called with a prefix argument, will be
 ;; buffer-global."
@@ -2003,20 +1887,15 @@ For a bit of fun, add xkcd cartoons to your dashboard
 ;;   (let ((org-level (org-current-level)))
 ;;     (if (= org-level 1)
 ;;         (message "Already at top level.")
-;;       (avy--generic-jump
-;;        (format "^%s "
-;;                (regexp-quote
-;;                 (make-string (- org-level 1) ?*)))
-;;        nil
-;;        'pre
-;;        (unless (or all (= org-level 2))
-;;          (save-excursion
-;;            (outline-up-heading 2)
-;;            (point)))
-;;        (unless (or all (= org-level 2))
-;;          (save-excursion
-;;            (outline-up-heading 2)
-;;            (org-end-of-subtree)))))))
+;;       (avy--generic-jump (format "^%s " (regexp-quote (make-string (- org-level 1) ?*)))
+;;                          nil 'pre (unless (or all (= org-level 2))
+;;                                     (save-excursion
+;;                                       (outline-up-heading 2)
+;;                                       (point)))
+;;                          (unless (or all (= org-level 2))
+;;                            (save-excursion
+;;                              (outline-up-heading 2)
+;;                              (org-end-of-subtree)))))))
 
 ;; (defun avy-org-child-level (&optional all)
 ;;   "Go to any org heading one level below the current one.
@@ -2054,3 +1933,92 @@ For a bit of fun, add xkcd cartoons to your dashboard
 ;;    nil
 ;;    'pre))
 #+end_src
+* Outdated/Not used/Phased out
+** Helm
+
+[[https://github.com/emacs-helm/helm][Helm github]]
+
+Replaced, as I like the functionality provided by embark - and this is just not compatible.
+#+BEGIN_SRC emacs-lisp
+;; (use-package helm
+;;   :diminish
+;;   :ensure t
+;;   :preface (require 'helm-config)
+;;   :bind
+;;   ("C-x C-f" . 'helm-find-files)
+;;   ("C-x C-b" . 'helm-buffers-list)
+;;   ("M-x" . 'helm-M-x)
+;;   :config
+;;   (defun daedreth/helm-hide-minibuffer ()
+;;     (when (with-helm-buffer helm-echo-input-in-header-line)
+;; (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+;;   (overlay-put ov 'window (selected-window))
+;;   (overlay-put ov 'face
+;;         (let ((bg-color (face-background 'default nil)))
+;;       `(:background ,bg-color :foreground ,bg-color)))
+;;   (setq-local cursor-type nil))))
+;;   (add-hook 'helm-minibuffer-set-up-hook 'daedreth/helm-hide-minibuffer)
+;;   (setq helm-autoresize-max-height 0
+;;   helm-autoresize-min-height 40
+;;   helm-M-x-fuzzy-match t
+;;   helm-buffers-fuzzy-matching t
+;;   helm-recentf-fuzzy-match t
+;;   helm-semantic-fuzzy-match t
+;;   helm-imenu-fuzzy-match t
+;;   helm-split-window-in-side-p nil
+;;   helm-move-to-line-cycle-in-source nil
+;;   helm-ff-search-library-in-sexp t
+;;   helm-scroll-amount 8
+;;   helm-echo-input-in-header-line t)
+;;   :init
+;;   (helm-mode 1))
+
+;; ;;  (require 'helm-config)
+;;   (helm-autoresize-mode 1)
+;;   (define-key helm-find-files-map (kbd "C-b") 'helm-find-files-up-one-level)
+;;   (define-key helm-find-files-map (kbd "C-f") 'helm-execute-persistent-action)
+#+END_SRC
+
+** Swiper
+Replaced by Consult now.
+#+BEGIN_SRC emacs-lisp
+;; (use-package swiper
+;;   :ensure t
+;;   :bind ("C-s" . 'swiper))
+#+END_SRC
+
+#+RESULTS:
+
+** Ivy
+#+BEGIN_SRC emacs-lisp
+                                        ;  (use-package ivy
+                                        ;   :ensure t)
+#+END_SRC
+
+** Electric
+If you write any code, you may enjoy this. I, personally, felt this was more of an annoyance than help
+    
+Typing the first character in a set of 2, completes the second one after your cursor.
+Opening a bracket? It's closed for you already. Quoting something? It's closed for you already.
+
+You can easily add and remove pairs yourself
+#+BEGIN_SRC emacs-lisp
+                                        ;(setq electric-pair-pairs '(
+                                        ;                           (?\{ . ?\})
+                                        ;                           (?\( . ?\))
+                                        ;                           (?\[ . ?\])
+                                        ;                           (?\" . ?\")
+                                        ;                           ))
+#+END_SRC
+
+And now to enable it
+#+BEGIN_SRC emacs-lisp
+                                        ;(electric-pair-mode t)
+#+END_SRC
+** Popup Kill Ring
+With a simple M-y you can now browse your kill-ring like browsing autocompletion items.
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package popup-kill-ring
+  ;;   :straight t
+  ;;   :bind ("M-y" . popup-kill-ring))
+#+END_SRC
