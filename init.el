@@ -13,7 +13,7 @@
 ;; Profile emacs startup
 (add-hook 'emacs-startup-hook
           (lambda ()
-            (message "*** Emacs loaded in %s seconds with %d garbage collections."
+            (message "*** Emacs loaded in %s seconds with %d item(s) garbage collected."
                      (emacs-init-time "%.2f")
                      gcs-done)))
 
@@ -23,6 +23,14 @@
 ;; Set the right directory to store the native comp cache
 ;;(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
 
+(defvar my-framework-linux-p (equal (system-name) "arun-framework"))
+
+(defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
+
+;; (defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
+;;   "If non-nil, GNU Emacs is running on Termux.")
+;; (when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+;; (global-auto-revert-mode)  ; simplifies syncing
 
 (require 'package)
 (setq package-enable-at-startup nil)
@@ -57,20 +65,5 @@
 ;;; This is the actual config file. It is omitted if it doesn't exist so emacs won't refuse to launch.
 (when (file-readable-p "~/.emacs.d/config.org")
   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(helm-completion-style 'emacs)
- '(package-selected-packages
-   '(general all-the-icons rustic dired-single elcord erc-hl-nicks crux org-roam json lsp-jedi xkcd expand-region nov olivetti writeroom-mode pretty-mode modus-themes restclient lsp-ui lsp-mode company-lsp pdf-tools sudo-edit org elfeed engine-mode org-present org-easy-img-insert xml-format json-reformatter-jq json-mode go-mode org-download use-package org-pdfview dash csv-mode))
- '(send-mail-function 'smtpmail-send-it))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(default ((t (:inherit nil :extend nil :stipple nil :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 110 :width normal :foundry "ADBO" :family "Source Code Pr")))))
 
-(add-to-list 'load-path "~/.emacs.d/lisp/")
+;; (add-to-list 'load-path "~/.emacs.d/lisp/")

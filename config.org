@@ -5,47 +5,13 @@
 #+OPTIONS: num:nil
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
 * Basic Settings
-    
-    These are setting that do not depend on packages and are built-in enhancements to the UI.
+    These are settings that do not depend on packages and are built-in enhancements to the UI.
 ** Custom file location
 #+begin_src emacs-lisp
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
 #+end_src
-** Looks
-*** A nice theme
-
-#+BEGIN_SRC emacs-lisp
-(use-package modus-themes
-  :straight t
-  :init
-  (setq modus-themes-common-palette-overrides
-        '((fg-prompt fg-main)
-          (bg-prompt bg-yellow-nuanced) ; try to replace "nuanced" or "subtle" with "intense"
-
-          (comment yellow-faint)
-          (string green-warmer)
-
-          (fg-heading-1 blue-warmer)
-          (bg-heading-1 bg-blue-nuanced)
-          (overline-heading-1 blue)
-
-          (fg-heading-2 green-warmer)
-          (bg-heading-2 bg-green-nuanced)
-          (overline-heading-2 border)
-    
-          (fg-heading-3 fg-main)
-          (bg-heading-3 bg-dim)
-          (overline-heading-3 border))
-        
-        modus-themes-completions
-        '((matches . (extrabold underline))
-          (selection . (extrabold italic underline))))
-
-  ;; (load-theme 'modus-vivendi t))
-  (load-theme 'modus-operandi-tinted t)) ;;(load-theme 'modus-operandi-tinted/deuteranopia t))
-#+END_SRC
-*** Some standard UI and behavioral settings
+** Some standard UI and behavioral settings
 #+begin_src emacs-lisp
 (setq-default indent-tabs-mode nil
               tab-width 4)
@@ -91,83 +57,7 @@
 
 #+end_src
 
-*** All The Icons
-#+begin_src emacs-lisp
-(use-package all-the-icons
-  :straight t)
-#+end_src
-
-*** Fontaine
-
-Hit "C-x C-U =" and see how the following values show up in the pop window, and you will see what a genius Prot is.
-
-=testing=
-/italics/
-*bold*
-
-
-
-#+begin_src emacs-lisp
-(use-package fontaine
-  :straight t)
-
-(setq fontaine-latest-state-file
-      (locate-user-emacs-file "fontaine-latest-state.eld"))
-
-(setq fontaine-presets
-      '((regular
-         :default-family "Hack Nerd Font"
-         :default-weight normal
-         :default-height 140
-         :fixed-pitch-family "Fira Code"
-         :fixed-pitch-weight nil ; falls back to :default-weight
-         :fixed-pitch-height 1.0
-         :variable-pitch-family "Noto Sans"
-         :variable-pitch-weight normal
-         :variable-pitch-height 1.0
-         :bold-family nil ; use whatever the underlying face has
-         :bold-weight bold
-         :italic-family "Source Code Pro"
-         :italic-slant italic
-         :line-spacing 1)
-        (large
-         :default-family "Hack Nerd Font Mono"
-;;         :default-family "Iosevka"
-         :default-weight normal
-         :default-height 180
-         :fixed-pitch-family nil ; falls back to :default-family
-         :fixed-pitch-weight nil ; falls back to :default-weight
-         :fixed-pitch-height 1.0
-         :variable-pitch-family "FiraGO"
-         :variable-pitch-weight normal
-         :variable-pitch-height 1.05
-         :bold-family nil ; use whatever the underlying face has
-         :bold-weight bold
-         :italic-family nil ; use whatever the underlying face has
-         :italic-slant italic
-         :line-spacing 1)))
-
-(fontaine-restore-latest-preset)
-
-;; Use `fontaine-recovered-preset' if available, else fall back to the
-;; desired style from `fontaine-presets'.
-(if-let ((state fontaine-recovered-preset))
-    (fontaine-set-preset state)
-  (fontaine-set-preset 'regular))
-
-;; The other side of `fontaine-restore-latest-preset'.
-(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
-
-;; fontaine does not define any key bindings.  This is just a sample that
-;; respects the key binding conventions.  Evaluate:
-;;
-;;     (info "(elisp) Key Binding Conventions")
-(define-key global-map (kbd "C-c F") #'fontaine-set-preset)
-(define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
-
-#+end_src
-** Functionality
-*** Dired
+* Dired
 
 #+begin_src emacs-lisp
 (use-package dired
@@ -221,10 +111,185 @@ Hit "C-x C-U =" and see how the following values show up in the pop window, and 
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-font t))
 #+end_src
+* Auto Update packages
+#+begin_src emacs-lisp
+(use-package auto-package-update
+  :straight t
+  :config
+  (setq auto-package-update-delete-old-versions t
+        auto-package-update-interval 5
+        auto-package-update-prompt-before-update t
+        auto-package-update-hide-results t)
+  (auto-package-update-maybe))
+#+end_src
+* Looks
+** A nice theme
 
+#+BEGIN_SRC emacs-lisp
+(use-package modus-themes
+  :straight t
+  :init
+  ;; (setq modus-themes-common-palette-overrides
+  ;;       '((fg-prompt fg-main)
+  ;;         (bg-prompt bg-yellow-nuanced) ; try to replace "nuanced" or "subtle" with "intense"
 
+  ;;         (comment yellow-faint)
+  ;;         (string green-warmer)
 
-*** Async
+  ;;         (fg-heading-1 blue-warmer)
+  ;;         (bg-heading-1 bg-blue-nuanced)
+  ;;         (overline-heading-1 blue)
+
+  ;;         (fg-heading-2 green-warmer)
+  ;;         (bg-heading-2 bg-green-nuanced)
+  ;;         (overline-heading-2 border)
+  
+  ;;         (fg-heading-3 fg-main)
+  ;;         (bg-heading-3 bg-dim)
+  ;;         (overline-heading-3 border))
+  
+  ;;       modus-themes-completions
+  ;;       '((matches . (extrabold underline))
+  ;;         (selection . (extrabold italic underline))))
+
+  ;; (load-theme 'modus-vivendi t))
+  (load-theme 'modus-operandi-tinted t)) ;;(load-theme 'modus-operandi-tinted/deuteranopia t))
+#+END_SRC
+** Fontaine
+
+#+begin_src emacs-lisp
+(use-package fontaine
+  :straight t)
+
+(setq fontaine-latest-state-file
+      (locate-user-emacs-file "fontaine-latest-state.eld"))
+
+;; (setq fontaine-presets
+;;       '((regular
+;;          :default-family "Hack Nerd Font"
+;;          :default-weight normal
+;;          :default-height 110
+;;          :fixed-pitch-family "Fira Code"
+;;          :fixed-pitch-weight nil ; falls back to :default-weight
+;;          :fixed-pitch-height 1.0
+;;          :variable-pitch-family "Noto Sans"
+;;          :variable-pitch-weight normal
+;;          :variable-pitch-height 1.0
+;;          :bold-family nil ; use whatever the underlying face has
+;;          :bold-weight bold
+;;          :italic-family "Source Code Pro"
+;;          :italic-slant italic
+;;          :line-spacing 1)
+;;         (medium
+;;          :default-family "Iosevka Comfy"
+;;          :default-weight semilight
+;;          :default-height 140
+;;          :fixed-pitch-family nil ; falls back to :default-family
+;;          :fixed-pitch-weight nil ; falls back to :default-weight
+;;          :fixed-pitch-height 1.0
+;;          :variable-pitch-family "FiraGO"
+;;          :variable-pitch-weight normal
+;;          :variable-pitch-height 1.05
+;;          :bold-family nil ; use whatever the underlying face has
+;;          :bold-weight bold
+;;          :italic-family nil
+;;          :italic-slant italic
+;;          :line-spacing nil)
+;;         (large
+;;          :default-family "Hack Nerd Font Mono"
+;;          ;;         :default-family "Iosevka"
+;;          :default-weight semilight
+;;          :default-height 180
+;;          :fixed-pitch-family nil ; falls back to :default-family
+;;          :fixed-pitch-weight nil ; falls back to :default-weight
+;;          :fixed-pitch-height 1.0
+;;          :variable-pitch-family "FiraGO"
+;;          :variable-pitch-weight normal
+;;          :variable-pitch-height 1.05
+;;          :bold-family nil ; use whatever the underlying face has
+;;          :bold-weight bold
+;;          :italic-family nil ; use whatever the underlying face has
+;;          :italic-slant italic
+;;          :line-spacing 1)))
+
+(setq fontaine-presets
+      '((regular
+         :default-height 110)
+        (medium
+         :default-weight semilight
+         :default-height 140)
+        (large
+         :default-weight semilight
+         :default-height 180
+         :bold-weight extrabold)
+        (t ; our shared fallback properties
+         :default-family "Iosevka Comfy"
+         :default-weight normal
+         ;; :default-height 100
+         :fixed-pitch-family nil ; falls back to :default-family
+         :fixed-pitch-weight nil ; falls back to :default-weight
+         :fixed-pitch-height 1.0
+         :variable-pitch-family "FiraGO"
+         :variable-pitch-weight normal
+
+  :variable-pitch-height 1.05
+         :bold-family nil ; use whatever the underlying face has
+         :bold-weight bold
+         :italic-family nil
+         :italic-slant italic
+         :line-spacing nil)))
+    
+(fontaine-restore-latest-preset)
+
+;; Use `fontaine-recovered-preset' if available, else fall back to the
+;; desired style from `fontaine-presets'.
+;; (if-let ((state fontaine-recovered-preset))
+;;     (fontaine-set-preset state)
+;;   (fontaine-set-preset 'regular))
+(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+
+;; The other side of `fontaine-restore-latest-preset'.
+(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+
+(add-hook 'modus-themes-after-load-theme-hook #'fontaine-apply-current-preset)
+
+;; fontaine does not define any key bindings.  This is just a sample that
+;; respects the key binding conventions.  Evaluate:
+;;
+;;     (info "(elisp) Key Binding Conventions")
+(define-key global-map (kbd "C-c F") #'fontaine-set-preset)
+(define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
+
+#+end_src
+** All The Icons
+#+begin_src emacs-lisp
+(use-package all-the-icons
+  :straight t)
+#+end_src
+
+** Modeline
+Spaceline is the mode line of choice. looks nice and you can set nice separators. Using the =all-the-icons= package gives you more eye-candy.
+
+#+BEGIN_SRC emacs-lisp
+(use-package spaceline
+  :straight t
+  :config
+  (require 'spaceline-config)
+  (setq spaceline-buffer-encoding-abbrev-p nil
+        ;; spaceline-line-column-p nil
+        ;; spaceline-line-p nil
+        powerline-default-separator (quote utf-8))
+  (spaceline-spacemacs-theme))
+
+(use-package spaceline-all-the-icons
+  :straight t
+  :after spaceline
+  :config
+  (setq spaceline-all-the-icons-separator-type 'none)
+  (spaceline-all-the-icons-theme))
+  ;; (spaceline-all-the-icons--setup-neotree))
+#+END_SRC
+* Async
 Lets us use asynchronous processes wherever possible, pretty useful.
 #+BEGIN_SRC emacs-lisp
 (use-package async
@@ -247,18 +312,6 @@ Define a custom keymap for myself
 ;;(server-start t)
 
 ;;(define-key ak-map "9" 'server-start)
-#+end_src
-** Auto Update packages
-#+begin_src emacs-lisp
-
-(use-package auto-package-update
-  :straight t
-  :config
-  (setq auto-package-update-delete-old-versions t
-        auto-package-update-interval 5
-        auto-package-update-prompt-before-update t
-        auto-package-update-hide-results t)
-  (auto-package-update-maybe))
 #+end_src
 * Dashboard
 This is your new startup screen, together with projectile it works in unison and
@@ -310,41 +363,12 @@ This makes sure that everything can be a project.
 (global-set-key (kbd "<f5>") 'projectile-compile-project)
 #+END_SRC
 
-* Modeline
-The modeline is the heart of emacs, it offers information at all times, it's persistent
-and verbose enough to gain a full understanding of modes and states you are in.
+** Go projectile tools
+#+begin_src emacs-lisp
+;; (use-package go-projectile
+;;   :straight t)
 
-** Spaceline
-
-#+BEGIN_SRC emacs-lisp
-(use-package spaceline
-  :straight t
-  :config
-  (require 'spaceline-config)
-  (setq spaceline-buffer-encoding-abbrev-p nil
-        ;;      (setq spaceline-line-column-p nil)
-        ;;    (setq spaceline-line-p nil)
-        powerline-default-separator (quote utf-8))
-  (spaceline-spacemacs-theme))
-
-(use-package spaceline-all-the-icons
-  :straight t
-  :after spaceline
-  :config (spaceline-all-the-icons-theme)
-  (spaceline-all-the-icons--setup-neotree))
-#+END_SRC
-
-** System monitor
-A teeny-tiny system monitor that can be enabled or disabled at runtime, useful for checking performance
-with power-hungry processes in ansi-term
-
-symon can be toggled on and off with =Super + h=.
-#+BEGIN_SRC emacs-lisp
-;; (use-package symon
-;;   :ensure t
-;;   :bind
-;;   ("s-h" . symon-mode))
-#+END_SRC
+#+end_src
 
 * Moving around emacs
 One of the most important things about a text editor is how efficient you manage
@@ -369,18 +393,9 @@ set of enhancements aims to make it easier.
   (which-key-mode))
 
 #+end_src
-** windows, panes
-You probably use more than 2 panes/windows at times and cycling through all of them with =C-c o= is annoying to say the least and it's a lot of keystrokes and takes time
-
+** Windows, panes
 *** Switch-window
-This magnificent package takes care of this issue.
-It's unnoticeable if you have <3 panes open, but with 3 or more, upon pressing =C-x o=
-you will notice how your buffers turn a solid color and each buffer is asigned a letter
-(the list below shows the letters, you can modify them to suit your liking), upon pressing
-a letter asigned to a window, your will be taken to said window, easy to remember, quick to use
-and most importantly, it annihilates a big issue I had with emacs. An alternative is =ace-window=,
-however by default it also changes the behaviour of =C-x o= even if only 2 windows are open,
-this is bad, it also works less well with =exwm= for some reason.
+With 3 or more, upon pressing =C-x o= , the buffers turn a solid color and each buffer is asigned a letter. Pressing a letter asigned to a window will take you to the window.
 #+BEGIN_SRC emacs-lisp
 (use-package switch-window
   :straight t
@@ -544,17 +559,14 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   ;; (setq vertico-scroll-margin 0)
 
   ;; Show more candidates
-  (setq vertico-count 20)
+  (setq vertico-count 15)
 
   ;; Grow and shrink the Vertico minibuffer
   ;; (setq vertico-resize t)
 
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   :custom
-  (setq vertico-cycle t)
-  ;; :custom-face
-  ;; (vertico-current ((t (:background "#3f3f5a"))))
-  )
+  (setq vertico-cycle t))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
@@ -599,6 +611,7 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
               ("M-DEL" . vertico-directory-delete-word))
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
+
 #+end_src
 
 ** Consult
@@ -753,22 +766,20 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
 ** Orderless
 
 #+begin_src emacs-lisp
-;; Optionally use the `orderless' completion style.
+
 (use-package orderless
   :straight t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
   ;;       orderless-component-separator #'orderless-escapable-split-on-space)
-  (setq completion-styles '(basic substring partial-completion flex)
+  (setq completion-styles '(basic orderless)
         completion-category-defaults nil
-        completion-category-overrides '((file (styles basic partial-completion)))))
+        completion-category-overrides '((file (styles basic orderless)))))
+
+ 
 #+end_src
 
-    #+begin_src go
-    
-    
-    #+end_src
 
 ** Marginalia
 #+begin_src emacs-lisp
@@ -778,6 +789,15 @@ I highly recommend not enabling =linum-relative-mode= globally, as it messed up 
   :custom (marginalia-annotators '(marginalia-annottators-heavy marginalia-annottators-light nil))
   :init (marginalia-mode))
 
+#+end_src
+
+** All the icons in completion
+#+begin_src emacs-lisp
+(use-package all-the-icons-completion
+  :straight t 
+  :after (marginalia all-the-icons)
+  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+  :init (all-the-icons-completion-mode))
 #+end_src
 ** avy
 As you invoke one of avy's functions, you will be prompted for a character that you'd like to jump to in the /visible portion of the current buffer/.
@@ -795,30 +815,37 @@ Afterwards you will notice how all instances of said character have additional l
   :bind
   (:map avy-custom-keymap
         ("l" . avy-goto-line)
-        ("L" . avy-move-line)
+        ;;    ("L" . avy-move-line)
         ("m" . avy-move-region)
-        ("p" . avy-goto-line-above)
-        ("n" . avy-goto-line-below)
+        ;;        ("p" . avy-goto-line-above)
+        ;;      ("n" . avy-goto-line-below)
         ("c" . avy-goto-char-timer)
         ("w" . avy-goto-word-0)
         ("t" . avy-transpose-lines-in-region)
-        ("k" . avy-kill-ring-save-whole-line)
-        ("K" . avy-kill-whole-line)
+        ;;  ("k" . avy-kill-ring-save-whole-line)
+        ;;  ("K" . avy-kill-whole-line)
         ("r" . avy-kill-ring-save-region)
         ("R" . avy-kill-region)
         ("s" . avy-goto-symbol-1)
         ("h" . avy-org-goto-heading-timer)))
 
-(defun avy-org-table-1-char ()
-  "Avy navigation of cells in org-mode tables.  'SPC' can be used to jump to blank cells. "
+(defun ak/avy-org-table-1-char ()
+  "Avy navigation of cells in org-mode tables based on any char in the cell.
+    'SPC' can be used to jump to any cell. "
   (interactive)
   ;; set some variables to limit candidates to the current table
   (let ((table-begin (save-excursion (goto-char (org-table-begin)) (previous-line) (point)))
         (table-end (save-excursion (goto-char (org-table-end)) (next-line) (point))))
-  ;; jump to the desired cell and re-align
-  (goto-char
-   (avy--generic-jump (concat "|\\{1\\}[^-\n|]+" (char-to-string (read-char "char: " t))) t 'post table-begin table-end))
-  (org-cycle)))
+    ;; jump to the desired cell and re-align
+    ;; (goto-char
+    (avy-with avy-goto-word-0
+      (avy-jump (concat "|\\{1\\}[^-\n|]+" (char-to-string (read-char "char: " t)))
+                :window-flip nil
+                :beg table-begin
+                :end table-end )))
+(org-table-end-of-field 1 ))
+    
+(define-key ak-map "%" 'ak/avy-org-table-1-char)
 #+END_SRC
 
 ** Scroll with cursor stationary
@@ -1442,11 +1469,8 @@ Each category also has additional settings.
   :init (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
     
 #+end_src
-* Git integration
-Countless are the times where I opened ansi-term to use =git= on something.
-These times are also something that I'd prefer stay in the past, since =magit= is
-great. It's easy and intuitive to use, shows its options at a keypress and much more.
-** magit
+* Magit integration
+magit is great. It's easy and intuitive to use, shows its options at a keypress and much more.
 #+BEGIN_SRC emacs-lisp
 (use-package magit
   :straight t
@@ -1456,14 +1480,12 @@ great. It's easy and intuitive to use, shows its options at a keypress and much 
   :bind (:map ak-map
               ("g" . magit-status)))
 
-;; ("M-g" . magit-status))
-;;(define-key ak-map "g" 'magit-status)
 #+END_SRC
 
 * Remote editing
 
 ** Editing with sudo
-Pretty self-explanatory, useful as hell if you use exwm.
+Pretty self-explanatory.
 #+BEGIN_SRC emacs-lisp
  (use-package sudo-edit
    :straight t
@@ -1471,10 +1493,6 @@ Pretty self-explanatory, useful as hell if you use exwm.
      ("s-e" . sudo-edit))
 #+END_SRC
 
-** Tramp config
-I can find some use for this.
-
-*** TODO Find config options for tramp
 * Org
 ** Common settings
 
@@ -1820,7 +1838,7 @@ Memes, but it's fun and tiny.
 #+END_SRC
 
 * Mail
-** mu4e
+** mu14e
 #+begin_src emacs-lisp
 (use-package mu4e
   :straight nil
@@ -1896,7 +1914,7 @@ For a bit of fun, add xkcd cartoons to your dashboard
 #+end_src
 ** Start page
     #+begin_src emacs-lisp
-    (setq initial-buffer-choice "~/start-emacs.org")
+    ;; (setq initial-buffer-choice "~/start-emacs.org")
     #+end_src
 ** Modus Theme customizations
 
@@ -2035,16 +2053,4 @@ For a bit of fun, add xkcd cartoons to your dashboard
 ;;    (format "^%s " (regexp-quote (make-string num ?*)))
 ;;    nil
 ;;    'pre))
-#+end_src
-** Org table functions
-#+begin_src emacs-lisp
- ;; (defun org-table-mark-field ()
- ;;      "Mark the current table field."
- ;;      (interactive)
- ;;      ;; Do not try to jump to the beginning of field if the point is already there
- ;;      (when (not (looking-back "|\\s-?"))
- ;;        (org-table-beginning-of-field 1))
- ;;      (set-mark-command nil)
- ;;      (org-table-end-of-field 1))
-
 #+end_src
