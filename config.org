@@ -5,7 +5,7 @@
 #+OPTIONS: num:nil
 #+ATTR_HTML: :style margin-left: auto; margin-right: auto;
 * Basic Settings
-    These are settings that do not depend on packages and are built-in enhancements to the UI.
+    These are settings that do not depend on packages and are built-in enhancements to the UI.󰀠󰀠󰀜
 ** Custom file location
 #+begin_src emacs-lisp
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
@@ -649,6 +649,7 @@ The keybinding makes sure you don't hit it unless you really want to.
 #+end_src
 
 ** Embark
+    
 #+begin_src emacs-lisp
 (use-package embark
   :straight t
@@ -676,6 +677,7 @@ The keybinding makes sure you don't hit it unless you really want to.
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
+
 
 ** Orderless
 
@@ -1722,7 +1724,7 @@ Memes, but it's fun and tiny.
 #+END_SRC
 
 * Mail
-** mu14e
+** mu4e
 #+begin_src emacs-lisp
 (use-package mu4e
   :straight nil
