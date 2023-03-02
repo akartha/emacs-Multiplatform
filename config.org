@@ -677,8 +677,6 @@ The keybinding makes sure you don't hit it unless you really want to.
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 #+end_src
-
-
 ** Orderless
 
 #+begin_src emacs-lisp
@@ -1604,7 +1602,9 @@ This stuff is kind of moot now that I have org-roam
   :straight t
   :init
   (setq org-roam-v2-ack t)
+        ;; org-roam-database-connector 'sqlite-module)
   :custom
+  ;; (org-roam-database-connector 'sqlite-builtin)
   (org-roam-directory (file-truename "~/Dropbox/org-files"))
   (org-roam-completion-everywhere t)
   (org-roam-node-display-template "${title:55} ${tags:*}")
@@ -1797,6 +1797,26 @@ For a bit of fun, add xkcd cartoons to your dashboard
 #+begin_src emacs-lisp
 ;; (use-package hyperbole
 ;;   :straight t)
+#+end_src
+** EKG
+#+begin_src emacs-lisp
+(define-prefix-command 'ekg-custom-keymap)
+(global-set-key (kbd "` e") 'ekg-custom-keymap)
+
+(use-package ekg
+  :straight t
+  :bind
+  (:map ekg-custom-keymap
+        ("c" . ekg-capture)
+        ("a" . ekg-show-notes-with-tag)
+        ("u" . ekg-capture-url)
+        ("b" . ekg-browse-url)
+        ("t" . ekg-show-notes-for-today)
+        ("T" . ekg-show-notes-in-trash)
+        ("T" . ekg-show-notes-in-trash))
+  :config
+  (require 'emacsql-sqlite))
+
 #+end_src
 ** Start page
     #+begin_src emacs-lisp
