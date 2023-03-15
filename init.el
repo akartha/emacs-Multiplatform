@@ -1,8 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 ;; -*- lexical-binding: t; -*-
-
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Garbage Collection
 ;; The default is 800 kilobytes.  Measured in bytes.
 ;; Set the garbage collection threshold to high (100 MB) since LSP client-server communication generates a lot of output/garbage
 (setq gc-cons-threshold (* 100 1000 1000))
@@ -17,25 +16,34 @@
                      (emacs-init-time "%.2f")
                      gcs-done)))
 
-;; Silence compiler warnings as they can be pretty disruptive
-(setq native-comp-async-report-warnings-errors nil)
 
-;; Set the right directory to store the native comp cache
-;;(add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
+;;temporary for emacs 30 dev build
+;; (setq comp-deferred-compilation-deny-list '("powerline"))
+(defvar native-comp-deferred-compilation-deny-list nil)
+
+(when (and (fboundp 'native-comp-available-p)
+           (native-comp-available-p))
+  (progn
+    (setq native-comp-async-report-warnings-errors nil)
+    (setq comp-deferred-compilation t)
+    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
+    (setq package-native-compile t)
+    ))
+
+
+
+(add-to-list 'load-path (expand-file-name "custom-conf" user-emacs-directory))
+
+;; Silence compiler warnings as they can be pretty disruptive
+
 
 (defvar my-framework-linux-p (equal (system-name) "arun-framework"))
 
 (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
 
-;; (defvar my-phone-p (not (null (getenv "ANDROID_ROOT")))
-;;   "If non-nil, GNU Emacs is running on Termux.")
-;; (when my-phone-p (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
-;; (global-auto-revert-mode)  ; simplifies syncing
-
 (require 'package)
 (setq package-enable-at-startup nil)
 
-;;; remove SC if you are not using sunrise commander and org if you like outdated packages
 (setq package-archives '(("ELPA"  . "http://tromey.com/elpa/")
 			 ("gnu"   . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
@@ -43,11 +51,6 @@
 			 ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;; Bootstrapping use-package
-;; (unless (package-installed-p 'use-package)
-;;   (package-refresh-contents)
-;;   (package-install 'use-package))
 
 (defvar bootstrap-version)
 (let ((bootstrap-file (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -62,8 +65,28 @@
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 
-;;; This is the actual config file. It is omitted if it doesn't exist so emacs won't refuse to launch.
-(when (file-readable-p "~/.emacs.d/config.org")
-  (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; New approach to try out - loading custom settings from custom-conf directory
 
-;; (add-to-list 'load-path "~/.emacs.d/lisp/")
+;; Below are settings that do not depend on packages and are built-in enhancements to the UI.󰀠󰀠󰀜
+(require 'init-basic)
+
+(require 'custom-keymaps)
+
+(require 'init-looks)
+
+
+(require 'init-editing-functions)
+
+(require 'init-programming)
+
+(require 'init-org-settings)
+
+(require 'non-core)
+
+(require 'init-system-utils)
+
+;;; This is the actual config file. It is omitted if it doesn't exist so emacs won't refuse to launch.
+;; (when (file-readable-p "~/.emacs.d/config.org")
+;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
+
