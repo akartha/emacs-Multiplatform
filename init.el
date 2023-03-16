@@ -34,7 +34,6 @@
 
 
 
-(defvar my-framework-linux-p (equal (system-name) 'arun-framework))
 (defvar ak/my-framework-p (equal (system-name) "arun-framework"))
 (defvar ak/generic-windows-p (equal system-type 'windows-nt))
 (defvar ak/generic-linux-p (equal system-type 'gnu/linux))
