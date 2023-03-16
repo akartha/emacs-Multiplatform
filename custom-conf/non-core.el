@@ -12,16 +12,20 @@
 ;;                      (if host host "www.google.com"))))
 
 ;; (message (if (internet-up-p) "Up" "Down"))
-(defun ak/reload-xkcd ()
-  "Load a random xkcd cartoon on the dashboard"
-  (interactive)
+(defun ak/reload-xkcd (arg)
+  "Load a random xkcd cartoon on the dashboard
+   With prefix - load the latest xkcd cartoon"
+  (interactive "P")
   (let ((rand-id-xkcd nil)
         (rand-id-xkcd-url nil))
 
     (with-temp-buffer
-      (setq rand-id-xkcd (string-to-number(xkcd-rand))
-            rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
+      (if arg
+          (setq rand-id-xkcd (string-to-number(xkcd)))
+        (setq rand-id-xkcd (string-to-number( xkcd-rand))))
+      (setq rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
       (xkcd-kill-buffer))
+    
     (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
       (if (file-exists-p last-xkcd-png)
           (setq dashboard-startup-banner last-xkcd-png
@@ -257,8 +261,8 @@
 ;; ** Ivy ;;
 ;;;;;;;;;;;;
 
-                                        ;  (use-package ivy
-                                        ;   :ensure t)
+;  (use-package ivy
+;   :ensure t)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -270,18 +274,17 @@
 ;;                                                                                                        ;;
 ;; You can easily add and remove pairs yourself                                                           ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-                                        ;(setq electric-pair-pairs '(
-                                        ;                           (?\{ . ?\})
-                                        ;                           (?\( . ?\))
-                                        ;                           (?\[ . ?\])
-                                        ;                           (?\" . ?\")
-                                        ;                           ))
+;(setq electric-pair-pairs '(
+;                           (?\{ . ?\})
+;                           (?\( . ?\))
+;                           (?\[ . ?\])
+;                           (?\" . ?\")
+;                           ))
 
 
 ;; And now to enable it
 
-                                        ;(electric-pair-mode t)
+;(electric-pair-mode t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Popup Kill Ring                                                                      ;;
@@ -290,6 +293,7 @@
   ;; (use-package popup-kill-ring
   ;;   :straight t
   ;;   :bind ("M-y" . popup-kill-ring))
+
 
 
 (provide 'non-core)

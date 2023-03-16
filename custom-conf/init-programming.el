@@ -83,9 +83,10 @@
 
 (use-package go-mode
   :straight t
+  :after lsp-mode
   :config
-  (with-eval-after-load "lsp-mode"
-    (add-to-list 'lsp-enabled-clients 'gopls)))
+  ;; (with-eval-after-load "lsp-mode"
+    (add-to-list 'lsp-enabled-clients 'gopls))
 
 (setq lsp-gopls-staticcheck t
       lsp-eldoc-render-all t
@@ -108,7 +109,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;
-;; ;; *** c/c++ ;;
+;; ;;  c/c++ ;;
 ;;;;;;;;;;;;;;;;;;
 
 (add-hook 'c++-mode-hook 'yas-minor-mode)
@@ -175,7 +176,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; *** emacs-lisp ;;
+;; ;;  emacs-lisp ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
@@ -184,12 +185,14 @@
 
 (use-package slime
   :straight t
+  :if ak/my-framework-p
   :config
   (setq inferior-lisp-program "/usr/bin/sbcl")
   (setq slime-contribs '(slime-fancy)))
 
 (use-package slime-company
   :straight t
+  :if ak/my-framework-p
   :init
   (require 'company)
   (slime-setup '(slime-fancy slime-company)))
@@ -329,6 +332,7 @@
 
 (use-package ob-mermaid
   :straight t
+  :if ak/my-framework-p
   :init (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
 
 

@@ -3,11 +3,17 @@
 ;; Moving around a buffer is where most of the drama in a text editor is ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; ** Windows, panes                                                                                                                                                              ;;
-;; *** Switch-window                                                                                                                                                              ;;
-;; With 3 or more, upon pressing =C-x o= , the buffers turn a solid color and each buffer is asigned a letter. Pressing a letter asigned to a window will take you to the window. ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** Switch-window
+
+;; ;;With 3 or more, upon pressing =C-x o= ,
+;; ;; the buffers turn a solid color and each buffer is asigned a
+;; ;; letter. Pressing a letter asigned to a window will take you to
+;; ;; the window. ;; ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (use-package switch-window
   :straight t
   :config
@@ -21,10 +27,13 @@
   ([remap other-window] . switch-window))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Following window splits                                                                                                                              ;;
-;; After you split a window, your focus remains in the previous one - unless the below is set up. Also opens the previous buffer in the newly opened window ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; After you split a window, your focus remains in the previous one -
+;; unless the below is set up. Also opens the previous buffer in the
+;; newly opened window ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun split-and-follow-horizontally ()
   (interactive)
   (split-window-below)
@@ -45,9 +54,11 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Buffers                                                                                        ;;
-;; Another big thing is, buffers. If you use emacs, you use buffers, everyone loves them.            ;;
-;; Having many buffers is useful, but can be tedious to work with, let us see how we can improve it. ;;
+;; ** Buffers
+
+;; Another big thing is, buffers. If you use emacs, you use buffers,
+;; everyone loves them.  Having many buffers is useful, but can be
+;; tedious to work with, let us see how we can improve it. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Doing =C-x k= should kill the current buffer at all times
@@ -81,13 +92,17 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** avy                                                                                                                                                                                                  ;;
-;; As you invoke one of avy's functions, you will be prompted for a character that you'd like to jump to in the /visible portion of the current buffer/.                                                   ;;
-;; Afterwards you will notice how all instances of said character have additional letter on top of them. Pressing those letters, that are next to your desired character will move your cursor over there. ;;
-;;                                                                                                                                                                                                         ;;
-;; [[https://github.com/abo-abo/avy][Avy github]]                                                                                                                                                          ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; As you invoke one of avy's functions, you will be prompted for a
+;; character that you'd like to jump to in the /visible portion of the
+;; current buffer/.  ;; Afterwards you will notice how all instances
+;; of said character have additional letter on top of them. Pressing
+;; those letters, that are next to your desired character will move
+;; your cursor over there. ;; ;; [[https://github.com/abo-abo/avy][Avy
+;; github]] ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package avy
   :straight t
@@ -113,8 +128,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; * Hungry deletion                                                                                          ;;
-;; Backspace or Delete will get rid of all whitespace until the next non-whitespace character is encountered. ;;
-;; Convenient, and very very occasionally - irritating                                                        ;;
+
+;; Backspace or Delete will get rid of all whitespace until the next
+;; non-whitespace character is encountered. ;; Convenient, and very
+;; very occasionally - irritating ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package hungry-delete
@@ -126,8 +143,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Zapping to char                                                                                            ;;
-;; A nifty little package that kills all text between your cursor and a selected character.                      ;;
-;; If you wish to include the selected character in the killed region, change =zzz-up-to-char= to =zzz-to-char=. ;;
+
+;; A nifty little package that kills all text between your cursor and
+;; a selected character.  ;; If you wish to include the selected
+;; character in the killed region, change =zzz-up-to-char= to
+;; =zzz-to-char=. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   (use-package zzz-to-char
     :straight t
@@ -169,10 +189,13 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; crux ships with some handy advises that can enhance the operation of existing commands.                                                                                                                ;;
-;; *** (crux-with-region-or-buffer)                                                                                                                                                                       ;;
-;;                                                                                                                                                                                                        ;;
-;; You can use crux-with-region-or-buffer to make a command acting normally on a region to operate on the entire buffer in the absence of a region. Here are a few examples you can stuff in your config: ;;
+;; crux ships with some handy advises that can enhance the operation
+;; of existing commands.  ;; *** (crux-with-region-or-buffer) ;; ;;
+;; You can use crux-with-region-or-buffer to make a command acting
+;; normally on a region to operate on the entire buffer in the absence
+;; of a region. Here are a few examples you can stuff in your config:
+;; ;;
+
 ;; #+begin_example                                                                                                                                                                                        ;;
 ;; (crux-with-region-or-buffer indent-region)                                                                                                                                                             ;;
 ;; (crux-with-region-or-buffer untabify)                                                                                                                                                                  ;;
@@ -183,10 +206,14 @@
 ;; (crux-with-region-or-line comment-or-uncomment-region)                                                                                                                                                 ;;
 ;; #+end_example                                                                                                                                                                                          ;;
 ;; *** (crux-with-region-or-point-to-eol)                                                                                                                                                                 ;;
-;; Sometimes you might want to act on the point until the end of the current line, rather than the whole line, in the absence of a region:                                                                ;;
-;; #+begin_example                                                                                                                                                                                        ;;
-;; (crux-with-region-or-point-to-eol kill-ring-save)                                                                                                                                                      ;;
-;; #+end_example                                                                                                                                                                                          ;;
+
+;; Sometimes you might want to act on the point until the end of the
+;; current line, rather than the whole line, in the absence of a
+;; region: ;;
+
+;;#+begin_example
+;; (crux-with-region-or-point-to-eol
+;; kill-ring-save) ;; #+end_example ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -202,7 +229,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Mark-Multiple                                                                                    ;;
-;; This extension allows you to quickly mark the next occurence of a region and edit them all at once. ;;
+
+;; This extension allows you to quickly mark the next occurence of a
+;; region and edit them all at once. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package mark-multiple
   :straight t
@@ -243,7 +272,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved copy-word                                                        ;;
-;; And again, the same as above but we make sure to not delete the source word. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun ak/copy-whole-word ()
   (interactive)
@@ -257,7 +285,7 @@
 
  ;; ** Copy a line                                                 ;;
 ;; Regardless of where your cursor is, this quickly copies a line. ;;
-;; #                                                               ;;
+
 (defun ak/copy-whole-line ()
   "Copies a line without regard for cursor position."
   (interactive)
@@ -285,7 +313,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Move lines up/down                                                                                                      ;;
-;; Copied from this [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow post]] ;;
+
+;; Copied from this
+;; [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow
+;; post]] ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 

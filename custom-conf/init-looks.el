@@ -25,7 +25,7 @@
   ;;         (selection . (extrabold italic underline))))
 
   ;; (load-theme 'modus-vivendi t))
-  (load-theme 'modus-operandi-tinted t)) ;;(load-theme 'modus-operandi-tinted/deuteranopia t))
+  (load-theme 'modus-vivendi-tinted t)) ;;(load-theme 'modus-operandi-tinted/deuteranopia t))
 
 (use-package fontaine
   :straight t)
@@ -122,8 +122,8 @@
 
 (add-hook 'modus-themes-after-load-theme-hook #'fontaine-apply-current-preset)
 
-;; fontaine does not define any key bindings.  This is just a sample that
-;; respects the key binding conventions.  Evaluate:
+;; fontaine does not define any key bindings.  This is just a sample
+;; that respects the key binding conventions.  Evaluate:
 ;;
 ;;     (info "(elisp) Key Binding Conventions")
 (define-key global-map (kbd "C-c F") #'fontaine-set-preset)
@@ -142,7 +142,9 @@
         powerline-default-separator (quote utf-8))
   (spaceline-spacemacs-theme))
 
-;;Spaceline is the mode line of choice. looks nice and you can set nice separators. Using the =all-the-icons= package gives you more eye-candy.
+;;Spaceline is the mode line of choice. looks nice and you can set
+;;nice separators. Using the =all-the-icons= package gives you more
+;;eye-candy.
 (use-package spaceline-all-the-icons
   :straight t
   :after spaceline
@@ -158,16 +160,17 @@
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
 
-;; While changing buffers or workspaces, the first thing you do is look for your cursor.
-;; Every time you change buffers, the current position of your cursor will be briefly highlighted
+;; While changing buffers or workspaces, the first thing you do is
+;; look for your cursor.  Every time you change buffers, the current
+;; position of your cursor will be briefly highlighted
 (use-package beacon
   :diminish
   :straight t
   :config
   (beacon-mode 1))
 
-;; Every time emacs encounters a hexadecimal code that resembles a color, it will automatically highlight
-;; it in the appropriate color. 
+;; Every time emacs encounters a hexadecimal code that resembles a
+;; color, it will automatically highlight it in the appropriate color.
 
 (use-package rainbow-mode
   :diminish
@@ -183,12 +186,11 @@
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Diminishing modes                                                                                                                        ;;
-;; The package =diminish= disables modes on the mode line but keeps them running, it just prevents them from showing up and taking up space. ;;
-;;                                                                                                                                           ;;
-;; *THIS WILL BE REMOVED SOON AS USE-PACKAGE HAS THE FUNCTIONALITY BUILT IN*                                                                 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  Diminishing modes ;; The package =diminish= disables modes on the
+;; mode line but keeps them running, it just prevents them from
+;; showing up and taking up space. 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package diminish
   :straight t
   :init

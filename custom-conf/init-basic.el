@@ -1,5 +1,5 @@
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-(load custom-file 'noerror 'nomessage)
+;; (load custom-file 'noerror 'nomessage)
 ;;(setq native-comp-async-report-warnings-errors nil)
 
 (setq-default indent-tabs-mode nil
@@ -11,7 +11,7 @@
       make-backup-files nil
       auto-save-default t
       global-auto-revert-non-file-buffers t ;; Revert Dired and other buffers
-      history-length 25
+      history-length 50
       ;;Show the current line and column for your cursor.
       line-number-mode t
       column-number-mode t
@@ -31,7 +31,7 @@
 (recentf-mode 1)
 (save-place-mode t)     ;; Remember cursor position even after quitting file
 (display-time-mode 1)
-(global-subword-mode 1) ;;Emacs treats camelCase strings as a single word by default, this changes said behaviour.
+;; (global-subword-mode 1) 
 (show-paren-mode 1) ;;Highlights matching parens when the cursor is just behind one of them.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

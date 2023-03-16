@@ -17,9 +17,11 @@
                      gcs-done)))
 
 
+(add-to-list 'load-path (expand-file-name "custom-conf" user-emacs-directory))
+
 ;;temporary for emacs 30 dev build
-;; (setq comp-deferred-compilation-deny-list '("powerline"))
-(defvar native-comp-deferred-compilation-deny-list nil)
+(when (>= emacs-major-version 29)
+(defvar native-comp-deferred-compilation-deny-list nil))
 
 (when (and (fboundp 'native-comp-available-p)
            (native-comp-available-p))
@@ -27,22 +29,21 @@
     (setq native-comp-async-report-warnings-errors nil)
     (setq comp-deferred-compilation t)
     (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
-    (setq package-native-compile t)
-    ))
+    (setq package-native-compile t)))
 
 
 
-(add-to-list 'load-path (expand-file-name "custom-conf" user-emacs-directory))
 
-;; Silence compiler warnings as they can be pretty disruptive
+(defvar my-framework-linux-p (equal (system-name) 'arun-framework))
+(defvar ak/my-framework-p (equal (system-name) "arun-framework"))
+(defvar ak/generic-windows-p (equal system-type 'windows-nt))
+(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
+(defvar ak/generic-mac-p (equal system-type 'darwin))
 
-
-(defvar my-framework-linux-p (equal (system-name) "arun-framework"))
-
-(defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
+;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
 
 (require 'package)
-(setq package-enable-at-startup nil)
+;; (setq package-enable-at-startup nil)
 
 (setq package-archives '(("ELPA"  . "http://tromey.com/elpa/")
 			 ("gnu"   . "https://elpa.gnu.org/packages/")
@@ -74,7 +75,6 @@
 (require 'custom-keymaps)
 
 (require 'init-looks)
-
 
 (require 'init-editing-functions)
 

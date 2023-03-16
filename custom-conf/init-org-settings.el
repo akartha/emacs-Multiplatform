@@ -2,6 +2,11 @@
 ;; * Org Common settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(defvar ak/my-org-file-location nil)
+
+(when ak/my-framework-p
+  (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files")))
+                          
 (setq org-ellipsis "⤵"
       org-src-fontify-natively t
       org-src-tab-acts-natively t
@@ -13,13 +18,15 @@
       org-log-done 'time
       org-log-into-drawer t
 
-      org-agenda-files '("~/Dropbox/org-files/")
+      org-agenda-files ak/my-org-file-location
 
       org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
         (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)"  "|" "COMPLETED(c)" "CANC(k@)"))
 
       org-src-window-setup 'current-window)
+
+
 
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook 'yas-minor-mode)
@@ -71,7 +78,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** latex
 
-(setenv "PATH" (concat (getenv "PATH") ":/usr/bin"))
+;; (when ak/my-framework-p
+;;   (setenv "PATH" (concat (getenv "PATH") ":/usr/bin"))
 ;;  (when (file-directory-p "/usr/share/emacs/site-lisp/tex-utils")
 ;;    (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
 ;;    (require 'xdvi-search))
@@ -212,18 +220,28 @@
 ;; This stuff is kind of moot now that I have org-roam ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(global-set-key (kbd "C-c c") 'org-capture)
+;; (global-set-key (kbd "C-c c") 'org-capture)
 
-(setq org-capture-templates
-      '(("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
-         "* %?\nEntered on %U\n  %i\n  %a")
-        ("t" "Todo" entry (file+headline "~/Dropbox/org-files/todo.org" "Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ("n" "Note" entry (file+headline "~/Dropbox/org-files/notes.org" "Notes")
-         "* Note %?\n%T")
-        ("l" "Links" entry (file+headline "~/Dropbox/org-files/Links.org" "Links")
-         "* %? %^L %^g \n%T" :prepend t)
-        ))
+;; (setq org-capture-templates
+;;       '(("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
+;;          "* %?\nEntered on %U\n  %i\n  %a")
+;;         ("t" "Todo" entry (file+headline "~/Dropbox/org-files/todo.org" "Tasks")
+;;          "* TODO %?\n  %i\n  %a")
+;;         ("n" "Note" entry (file+headline "~/Dropbox/org-files/notes.org" "Notes")
+;;          "* Note %?\n%T")
+;;         ("l" "Links" entry (file+headline "~/Dropbox/org-files/Links.org" "Links")
+;;          "* %? %^L %^g \n%T" :prepend t)
+;;         ))
+;; (setq org-capture-templates
+;;       '(("j" "Journal" entry (file+datetree (format "%s/%s" ak/my-org-file-location "journal.org"))
+;;          "* %?\nEntered on %U\n  %i\n  %a")
+;;         ("t" "Todo" entry (file+headline (concat ak/my-org-file-location "todo.org") "Tasks")
+;;          "* TODO %?\n  %i\n  %a")
+;;         ("n" "Note" entry (file+headline (concat ak/my-org-file-location "notes.org") "Notes")
+;;          "* Note %?\n%T")
+;;         ("l" "Links" entry (file+headline (concat ak/my-org-file-location "Links.org") "Links")
+;;          "* %? %^L %^g \n%T" :prepend t)
+;;         ))
 ;;        org-roam-node-display-template "${title:55} ${tags:*}")
 
 ;;;;;;;;;;;;;;;;;
@@ -237,35 +255,29 @@
   ;; org-roam-database-connector 'sqlite-module)
   :custom
   ;; (org-roam-database-connector 'sqlite-builtin)
-  (org-roam-directory (file-truename "~/Dropbox/org-files"))
+  (org-roam-directory ak/my-org-file-location)
   (org-roam-completion-everywhere t)
   (org-roam-node-display-template "${title:55} ${tags:*}")
   (org-roam-capture-templates
-   '(("d" "default" plain
-      "%?"
+   '(("d" "default" plain "%?"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags:")
       :unnarrowed t)
 
-     ("b" "book notes" plain (file "~/Dropbox/org-files/templates/booknotes.org")
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Book")
-      :unnarrowed t)
+      ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Book")
+       :unnarrowed t)
 
-     ("p" "project" plain (file "~/Dropbox/org-files/templates/projectcap.org")
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
-      :unnarrowed t)
+      ("p" "project" plain "\n* Goals\n\n%?\n\n* Tasks\n\n** TODO Add Initial Tasks\n\n* Dates\n\n"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project")
+       :unnarrowed t)
 
-     ("r" "random thoughts" plain (file "~/Dropbox/org-files/templates/random.org")
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Musings")
-      :unnarrowed t)
+      ("r" "random thoughts" plain "\n* Thought\n\n%?\n\n** Context\n\n** Prompted By\n\n"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Musings")
+       :unnarrowed t)
 
-     ("m" "movie notes" plain (file "~/Dropbox/org-files/templates/movienotes.org")
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Movies")
-      :unnarrowed t)
-
-     ("s" "series notes" plain (file "~/Dropbox/org-files/templates/movienotes.org")
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Series")
-      :unnarrowed t)
-
+      ("m" "Movie/Series notes" plain "\n* Source\n- Title: %^{Title}\n- Director: %^{Director}\n- Year: %^{Year}\n- Watched?: %^{Prompt|Watched|Want to watch|Want to avoid}\n** Summary\n%^C\n\n%?"
+       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Movie Series")
+       :unnarrowed t)
      ))
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
