@@ -4,7 +4,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; ** Windows, panes                                                                                                                                                              ;;
+;; ** Windows, panes                                                                                         
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; *** Switch-window
 
@@ -28,28 +28,32 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; *** Following window splits                                                                                                                              ;;
+;; *** Following window splits                                                                         
 
 ;; After you split a window, your focus remains in the previous one -
 ;; unless the below is set up. Also opens the previous buffer in the
 ;; newly opened window ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun split-and-follow-horizontally ()
-  (interactive)
+(defun split-and-follow-horizontally (prefix)
+  (interactive "P")
   (split-window-below)
   (balance-windows)
   (other-window 1 nil)
-  (if (= prefix 1)
-      (switch-to-next-buffer)))
+  (if  prefix 
+      (switch-to-next-buffer)
+    (switch-to-prev-buffer)))
+
 (global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
 
-(defun split-and-follow-vertically ()
-  (interactive)
+(defun split-and-follow-vertically (prefix)
+  (interactive "P")
   (split-window-right)
   (balance-windows)
   (other-window 1)
-  (if (= prefix 1)
-      (switch-to-next-buffer)))
+  (if prefix
+      (switch-to-next-buffer)
+    (switch-to-prev-buffer)))
+
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
 
@@ -58,7 +62,7 @@
 
 ;; Another big thing is, buffers. If you use emacs, you use buffers,
 ;; everyone loves them.  Having many buffers is useful, but can be
-;; tedious to work with, let us see how we can improve it. ;;
+;; tedious to work with, let us see how we can improve it. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Doing =C-x k= should kill the current buffer at all times
@@ -93,7 +97,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** avy                                                                                                                                                                                                  ;;
+;; ** avy                                                                                                                  
 
 ;; As you invoke one of avy's functions, you will be prompted for a
 ;; character that you'd like to jump to in the /visible portion of the
@@ -127,7 +131,7 @@
 ;; * Text Manipulation
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * Hungry deletion                                                                                          ;;
+;; * Hungry deletion                                                                  
 
 ;; Backspace or Delete will get rid of all whitespace until the next
 ;; non-whitespace character is encountered. ;; Convenient, and very
@@ -142,7 +146,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Zapping to char                                                                                            ;;
+;; ** Zapping to char                                                                                            
 
 ;; A nifty little package that kills all text between your cursor and
 ;; a selected character.  ;; If you wish to include the selected
@@ -153,9 +157,9 @@
     :straight t
     :bind ("M-z" . zzz-up-to-char))
 
-;;;;;;;;;;;;;
-;; ** CRUX ;;
-;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;
+;; ** CRUX 
+;;;;;;;;;;;;;;;;;;;;;
 
 (define-prefix-command 'ak-crux-map)
 (global-set-key (kbd "` x") 'ak-crux-map)
@@ -188,24 +192,28 @@
         ("<tab>" . crux-indent-defun)))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; crux ships with some handy advises that can enhance the operation
-;; of existing commands.  ;; *** (crux-with-region-or-buffer) ;; ;;
+;; of existing commands.
+;; *** (crux-with-region-or-buffer) ;; ;;
 ;; You can use crux-with-region-or-buffer to make a command acting
 ;; normally on a region to operate on the entire buffer in the absence
 ;; of a region. Here are a few examples you can stuff in your config:
 ;; ;;
 
-;; #+begin_example                                                                                                                                                                                        ;;
-;; (crux-with-region-or-buffer indent-region)                                                                                                                                                             ;;
-;; (crux-with-region-or-buffer untabify)                                                                                                                                                                  ;;
-;; #+end_example                                                                                                                                                                                          ;;
-;; *** (crux-with-region-or-line)                                                                                                                                                                         ;;
-;; Likewise, you can use crux-with-region-or-line to make a command alternately act on the current line if the mark is not active:                                                                        ;;
-;; #+begin_example                                                                                                                                                                                        ;;
-;; (crux-with-region-or-line comment-or-uncomment-region)                                                                                                                                                 ;;
-;; #+end_example                                                                                                                                                                                          ;;
-;; *** (crux-with-region-or-point-to-eol)                                                                                                                                                                 ;;
+;; #+begin_example                                                                                                                                                                                     
+;; (crux-with-region-or-buffer indent-region)                                                                                                                                                          
+;; (crux-with-region-or-buffer untabify)                                                                                                                                                               
+;; #+end_example                                                                                                                                                                                       
+;; *** (crux-with-region-or-line)                                                                                                                                                                      
+
+;; Likewise, you can use crux-with-region-or-line to make a command
+;; alternately act on the current line if the mark is not active:
+
+;; #+begin_example                                                                                                                                                                                     
+;; (crux-with-region-or-line comment-or-uncomment-region)                                                                                                                                              
+;; #+end_example                                                                                                                                                                                       
+;; *** (crux-with-region-or-point-to-eol)                                                                                                                                                              
 
 ;; Sometimes you might want to act on the point until the end of the
 ;; current line, rather than the whole line, in the absence of a
@@ -213,13 +221,14 @@
 
 ;;#+begin_example
 ;; (crux-with-region-or-point-to-eol
-;; kill-ring-save) ;; #+end_example ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; kill-ring-save)
+;; #+end_example ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * Editing with sudo      ;;
-;; Pretty self-explanatory. ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; * Editing with sudo      
+;; Pretty self-explanatory. 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  (use-package sudo-edit
    :straight t
    :bind
@@ -228,7 +237,7 @@
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Mark-Multiple                                                                                    ;;
+;; ** Mark-Multiple             
 
 ;; This extension allows you to quickly mark the next occurence of a
 ;; region and edit them all at once. ;;
@@ -253,38 +262,40 @@
   ("C-=" . 'er/expand-region)
   ("C-+" . 'er/contract-region)
   ("C-c q" . 'er/mark-inside-quotes)
-  ("C-c Q" . 'er/mark-outside-quotes)
-  )
+  ("C-c Q" . 'er/mark-outside-quotes))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved kill-word ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defun ak/kill-inner-word ()
-  "Kills the entire word your cursor is in. Equivalent to 'ciw' in vim."
-  (interactive)
+(defun ak/kill-inner-word (n)
+  "Kills the entire word your cursor is in. n words if prefix argument supplied."
+  (interactive "*p")
   (forward-char 1)
   (backward-word)
-  (kill-word 1)
-  (message "Killed current word"))
+  (kill-word (or n 1))
+  (message (format "Killed %d word(s)" (or n 1))))
+
 (define-key ak-map "W" 'ak/kill-inner-word)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved copy-word                                                        ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun ak/copy-whole-word ()
-  (interactive)
+(defun ak/copy-whole-word (n)
+  "Copy current word, plus additional n words if prefix argument supplied"
+  (interactive "*p")
   (save-excursion
     (forward-char 1)
     (backward-word)
-    (kill-word 1)
+    (kill-word (or n 1))
     (yank))
-  (message "Copied current word"))
+  (message (format "Copied %d word(s)" (or n 1))))
+
 (define-key ak-map "w" 'ak/copy-whole-word)
 
- ;; ** Copy a line                                                 ;;
-;; Regardless of where your cursor is, this quickly copies a line. ;;
+ ;; ** Copy a line      
+;; Regardless of where your cursor is, this quickly copies a line. 
 
 (defun ak/copy-whole-line ()
   "Copies a line without regard for cursor position."
@@ -292,16 +303,17 @@
   (save-excursion
     (kill-new
      (buffer-substring
-      (point-at-bol)
-      (point-at-eol))))
+      ;; (point-at-bol)
+      (pos-bol)
+      (pos-eol))))
   (message "Copied current line"))
 
-    (define-key ak-map "l" 'ak/copy-whole-line)
+(define-key ak-map "l" 'ak/copy-whole-line)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Kill a line                   ;;
-;; And this quickly deletes a line. ;;
+;; ** Kill a line 
+;; And this quickly deletes a line
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;  (global-set-key (kbd "C-c l k") 'kill-whole-line)
 ;; (define-key ak-map "L" (lambda ()
@@ -363,11 +375,11 @@
 
 (defun ak/avy-org-table-1-char ()
   "Avy navigation of cells in org-mode tables based on any char in the cell.
-    'SPC' can be used to jump to any cell. "
+    `SPC` can be used to jump to any cell. "
   (interactive)
   ;; set some variables to limit candidates to the current table
-  (let ((table-begin (save-excursion (goto-char (org-table-begin)) (previous-line) (point)))
-        (table-end (save-excursion (goto-char (org-table-end)) (next-line) (point))))
+  (let ((table-begin (save-excursion (goto-char (org-table-begin)) (forward-line -1) (point)))
+        (table-end (save-excursion (goto-char (org-table-end)) (forward-line) (point))))
     ;; jump to the desired cell and re-align
     ;; (goto-char
     (avy-with avy-goto-word-0

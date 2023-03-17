@@ -4,8 +4,10 @@
 
 (defvar ak/my-org-file-location nil)
 
-(when ak/my-framework-p
-  (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files")))
+(cond (ak/my-framework-p
+       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files")))
+      (ak/my-mac-p
+       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files"))))
                           
 (setq org-ellipsis "⤵"
       org-src-fontify-natively t

@@ -259,15 +259,15 @@
 (use-package dired
   :straight nil
   :custom ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
-;;  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=\'+%Y%m%d %H:%M:%S\'")
+           ;;  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=\'+%Y%m%d %H:%M:%S\'")
            (dired-recursive-copies 'always)
            (dired-recursive-deletes 'always)
-
-    )
+           (dired-dwim-target t))
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump)
-         ("C-x 4 C-j" . dired-jump-other-window))
-)
+         ("C-x 4 C-j" . dired-jump-other-window)))
+
+
 (use-package dired-single
   :straight t)
 (use-package all-the-icons-dired

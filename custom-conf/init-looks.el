@@ -1,5 +1,7 @@
 (use-package modus-themes
   :straight t
+  :custom
+  (setq modus-themes-org-blocks 'tinted-background)
   :init
   ;; (setq modus-themes-common-palette-overrides
   ;;       '((fg-prompt fg-main)
@@ -33,56 +35,10 @@
 (setq fontaine-latest-state-file
       (locate-user-emacs-file "fontaine-latest-state.eld"))
 
-;; (setq fontaine-presets
-;;       '((regular
-;;          :default-family "Hack Nerd Font"
-;;          :default-weight normal
-;;          :default-height 110
-;;          :fixed-pitch-family "Fira Code"
-;;          :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "Noto Sans"
-;;          :variable-pitch-weight normal
-;;          :variable-pitch-height 1.0
-;;          :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          :italic-family "Source Code Pro"
-;;          :italic-slant italic
-;;          :line-spacing 1)
-;;         (medium
-;;          :default-family "Iosevka Comfy"
-;;          :default-weight semilight
-;;          :default-height 140
-;;          :fixed-pitch-family nil ; falls back to :default-family
-;;          :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "FiraGO"
-;;          :variable-pitch-weight normal
-;;          :variable-pitch-height 1.05
-;;          :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          :italic-family nil
-;;          :italic-slant italic
-;;          :line-spacing nil)
-;;         (large
-;;          :default-family "Hack Nerd Font Mono"
-;;          ;;         :default-family "Iosevka"
-;;          :default-weight semilight
-;;          :default-height 180
-;;          :fixed-pitch-family nil ; falls back to :default-family
-;;          :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "FiraGO"
-;;          :variable-pitch-weight normal
-;;          :variable-pitch-height 1.05
-;;          :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          :italic-family nil ; use whatever the underlying face has
-;;          :italic-slant italic
-;;          :line-spacing 1)))
 
 (setq fontaine-presets
       '((regular
+         :default-weight light
          :default-height 110)
         (medium
          :default-weight semilight
@@ -200,5 +156,54 @@
   (diminish 'auto-revert-mode)
   (diminish 'yas-minor-mode)
   (diminish 'org-indent-mode))
+
+
+;; (setq fontaine-presets
+;;       '((regular
+;;          :default-family "Hack Nerd Font"
+;;          :default-weight normal
+;;          :default-height 110
+;;          :fixed-pitch-family "Fira Code"
+;;          :fixed-pitch-weight nil ; falls back to :default-weight
+;;          :fixed-pitch-height 1.0
+;;          :variable-pitch-family "Noto Sans"
+;;          :variable-pitch-weight normal
+;;          :variable-pitch-height 1.0
+;;          :bold-family nil ; use whatever the underlying face has
+;;          :bold-weight bold
+;;          :italic-family "Source Code Pro"
+;;          :italic-slant italic
+;;          :line-spacing 1)
+;;         (medium
+;;          :default-family "Iosevka Comfy"
+;;          :default-weight semilight
+;;          :default-height 140
+;;          :fixed-pitch-family nil ; falls back to :default-family
+;;          :fixed-pitch-weight nil ; falls back to :default-weight
+;;          :fixed-pitch-height 1.0
+;;          :variable-pitch-family "FiraGO"
+;;          :variable-pitch-weight normal
+;;          :variable-pitch-height 1.05
+;;          :bold-family nil ; use whatever the underlying face has
+;;          :bold-weight bold
+;;          :italic-family nil
+;;          :italic-slant italic
+;;          :line-spacing nil)
+;;         (large
+;;          :default-family "Hack Nerd Font Mono"
+;;          ;;         :default-family "Iosevka"
+;;          :default-weight semilight
+;;          :default-height 180
+;;          :fixed-pitch-family nil ; falls back to :default-family
+;;          :fixed-pitch-weight nil ; falls back to :default-weight
+;;          :fixed-pitch-height 1.0
+;;          :variable-pitch-family "FiraGO"
+;;          :variable-pitch-weight normal
+;;          :variable-pitch-height 1.05
+;;          :bold-family nil ; use whatever the underlying face has
+;;          :bold-weight bold
+;;          :italic-family nil ; use whatever the underlying face has
+;;          :italic-slant italic
+;;          :line-spacing 1)))
 
 (provide 'init-looks)

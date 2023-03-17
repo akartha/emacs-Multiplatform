@@ -34,7 +34,14 @@
 
 
 
-(defvar ak/my-framework-p (equal (system-name) "arun-framework"))
+(defvar ak/my-framework-p nil)
+(defvar ak/my-mac-p nil)
+
+(cond ((string=  system-name "arun-framework")
+       (setq ak/my-framework-p t))
+      ((string= system-name "Arun-MBP14.local")
+       (setq ak/my-mac-p t)))
+
 (defvar ak/generic-windows-p (equal system-type 'windows-nt))
 (defvar ak/generic-linux-p (equal system-type 'gnu/linux))
 (defvar ak/generic-mac-p (equal system-type 'darwin))

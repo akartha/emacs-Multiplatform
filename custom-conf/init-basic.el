@@ -1,5 +1,5 @@
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
-;; (load custom-file 'noerror 'nomessage)
+(load custom-file 'noerror 'nomessage)
 ;;(setq native-comp-async-report-warnings-errors nil)
 
 (setq-default indent-tabs-mode nil
@@ -49,5 +49,16 @@
 
 (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
 (defalias 'yes-or-no-p 'y-or-n-p)
+
+(setq zoneinfo-style-world-list
+   '(("America/New_York" "New York")
+     ("America/Chicago" "Chicago")
+     ("Asia/Calcutta" "Bangalore")
+     ("America/Denver" "Denver")
+     ("America/Los_Angeles" "Seattle")
+     ("Europe/London" "London")
+     ("Europe/Paris" "Paris")
+     ("Asia/Tokyo" "Tokyo")))
+
 
 (provide 'init-basic)
