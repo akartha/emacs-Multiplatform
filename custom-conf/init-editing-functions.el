@@ -4,58 +4,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;; ** Windows, panes                                                                                         
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; *** Switch-window
-
-;; ;;With 3 or more, upon pressing =C-x o= ,
-;; ;; the buffers turn a solid color and each buffer is asigned a
-;; ;; letter. Pressing a letter asigned to a window will take you to
-;; ;; the window. ;; ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package switch-window
-  :straight t
-  :config
-  (setq switch-window-input-style 'minibuffer
-        switch-window-increase 4
-        switch-window-threshold 2
-        switch-window-shortcut-style 'qwerty
-        switch-window-qwerty-shortcuts
-        '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
-  :bind
-  ([remap other-window] . switch-window))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; *** Following window splits                                                                         
-
-;; After you split a window, your focus remains in the previous one -
-;; unless the below is set up. Also opens the previous buffer in the
-;; newly opened window ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun split-and-follow-horizontally (prefix)
-  (interactive "P")
-  (split-window-below)
-  (balance-windows)
-  (other-window 1 nil)
-  (if  prefix 
-      (switch-to-next-buffer)
-    (switch-to-prev-buffer)))
-
-(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
-
-(defun split-and-follow-vertically (prefix)
-  (interactive "P")
-  (split-window-right)
-  (balance-windows)
-  (other-window 1)
-  (if prefix
-      (switch-to-next-buffer)
-    (switch-to-prev-buffer)))
-
-(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Buffers
@@ -96,38 +44,6 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** avy                                                                                                                  
-
-;; As you invoke one of avy's functions, you will be prompted for a
-;; character that you'd like to jump to in the /visible portion of the
-;; current buffer/.  ;; Afterwards you will notice how all instances
-;; of said character have additional letter on top of them. Pressing
-;; those letters, that are next to your desired character will move
-;; your cursor over there. ;; ;; [[https://github.com/abo-abo/avy][Avy
-;; github]] ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package avy
-  :straight t
-  :bind
-  (:map avy-custom-keymap
-        ("l" . avy-goto-line)
-        ;;    ("L" . avy-move-line)
-        ("m" . avy-move-region)
-        ;;        ("p" . avy-goto-line-above)
-        ;;      ("n" . avy-goto-line-below)
-        ("c" . avy-goto-char-timer)
-        ("w" . avy-goto-word-0)
-        ("t" . avy-transpose-lines-in-region)
-        ;;  ("k" . avy-kill-ring-save-whole-line)
-        ;;  ("K" . avy-kill-whole-line)
-        ("r" . avy-kill-ring-save-region)
-        ("R" . avy-kill-region)
-        ("s" . avy-goto-symbol-1)
-        ("h" . avy-org-goto-heading-timer)))
-
-
 ;; * Text Manipulation
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -157,74 +73,6 @@
     :straight t
     :bind ("M-z" . zzz-up-to-char))
 
-;;;;;;;;;;;;;;;;;;;;;;
-;; ** CRUX 
-;;;;;;;;;;;;;;;;;;;;;
-
-(define-prefix-command 'ak-crux-map)
-(global-set-key (kbd "` x") 'ak-crux-map)
-
-(use-package crux
-  :straight t
-  :bind
-  ("C-k" . crux-smart-kill-line)
-  (:map ak-crux-map
-        ;;     ("U" . crux-view-url)
-        ;;("a" . crux-ispell-word-then-abbrev)
-        ("." . crux-find-shell-init-file)
-        ("1" . crux-find-user-init-file)
-        ("a" . crux-move-beginning-of-line)
-        ("o" . crux-smart-open-line)
-        ("O" . crux-smart-open-line-above)
-        ("d" . crux-duplicate-current-line-or-region)
-        ("j" . crux-top-join-line)
-        ("k" . crux-kill-line-backwards)
-        ("C" . crux-cleanup-buffer-or-region)
-        ("r" . crux-recentf-find-file)
-        ("D" . crux-recentf-find-directory)
-        ("U" . crux-upcase-region)
-        ("L" . crux-downcase-region)
-        ("i" . crux-insert-date)
-        ("c" . crux-capitalize-region)
-        ("w" . crux-other-window-or-switch-buffer)
-        ("s" . crux-sudo-edit)
-        ("<f2>" . crux-rename-buffer-and-file)
-        ("<tab>" . crux-indent-defun)))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; crux ships with some handy advises that can enhance the operation
-;; of existing commands.
-;; *** (crux-with-region-or-buffer) ;; ;;
-;; You can use crux-with-region-or-buffer to make a command acting
-;; normally on a region to operate on the entire buffer in the absence
-;; of a region. Here are a few examples you can stuff in your config:
-;; ;;
-
-;; #+begin_example                                                                                                                                                                                     
-;; (crux-with-region-or-buffer indent-region)                                                                                                                                                          
-;; (crux-with-region-or-buffer untabify)                                                                                                                                                               
-;; #+end_example                                                                                                                                                                                       
-;; *** (crux-with-region-or-line)                                                                                                                                                                      
-
-;; Likewise, you can use crux-with-region-or-line to make a command
-;; alternately act on the current line if the mark is not active:
-
-;; #+begin_example                                                                                                                                                                                     
-;; (crux-with-region-or-line comment-or-uncomment-region)                                                                                                                                              
-;; #+end_example                                                                                                                                                                                       
-;; *** (crux-with-region-or-point-to-eol)                                                                                                                                                              
-
-;; Sometimes you might want to act on the point until the end of the
-;; current line, rather than the whole line, in the absence of a
-;; region: ;;
-
-;;#+begin_example
-;; (crux-with-region-or-point-to-eol
-;; kill-ring-save)
-;; #+end_example ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; * Editing with sudo      
 ;; Pretty self-explanatory. 
@@ -234,23 +82,6 @@
    :bind
      ("s-e" . sudo-edit))
 
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Mark-Multiple             
-
-;; This extension allows you to quickly mark the next occurence of a
-;; region and edit them all at once. ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package mark-multiple
-  :straight t
-  :bind (:map ak-map
-              ((">" . mark-next-like-this)
-               ("<" . mark-previous-like-this)
-               ("+" . mark-more-like-this-extended)
-               ("=" . mark-all-like-this))))
-;; ("C-c m" . mark-more-like-this-extended)
-;; ("C-c a" . mark-all-like-this))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -373,23 +204,6 @@
 (define-key ak-map "[" 'ak/move-lines-up)
 (define-key ak-map "]" 'ak/move-lines-down)
 
-(defun ak/avy-org-table-1-char ()
-  "Avy navigation of cells in org-mode tables based on any char in the cell.
-    `SPC` can be used to jump to any cell. "
-  (interactive)
-  ;; set some variables to limit candidates to the current table
-  (let ((table-begin (save-excursion (goto-char (org-table-begin)) (forward-line -1) (point)))
-        (table-end (save-excursion (goto-char (org-table-end)) (forward-line) (point))))
-    ;; jump to the desired cell and re-align
-    ;; (goto-char
-    (avy-with avy-goto-word-0
-      (avy-jump (concat "|\\{1\\}[^-\n|]+" (char-to-string (read-char "char: " t)))
-                :window-flip nil
-                :beg table-begin
-                :end table-end )))
-(org-table-end-of-field 1 ))
-    
-(define-key ak-map "%" 'ak/avy-org-table-1-char)
 
 
 

@@ -2,6 +2,12 @@
 ;; * XKCD                                                ;;
 ;; For a bit of fun, add xkcd cartoons to your dashboard ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (require 'init-looks)
+;; (require 'custom-keymaps)
+;; (require 'init-system-utils)
+
+
+(add-to-list 'recentf-exclude "~/\.emacs\.d/xkcd/*")
 
 (use-package xkcd
   :straight t)

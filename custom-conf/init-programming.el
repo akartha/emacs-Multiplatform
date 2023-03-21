@@ -3,6 +3,8 @@
 ;; ;; Minor, non-completion related settings and plugins for writing code. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (require 'company)
+;; (require 
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ;; ** yasnippet ;;

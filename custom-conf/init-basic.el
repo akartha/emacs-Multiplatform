@@ -1,3 +1,7 @@
+ (require 'bind-key)
+ (require 'straight)
+(require 'use-package)
+
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
 ;;(setq native-comp-async-report-warnings-errors nil)
@@ -60,5 +64,25 @@
      ("Europe/Paris" "Paris")
      ("Asia/Tokyo" "Tokyo")))
 
+
+;; below is from https://www.emacswiki.org/emacs/ExecPath
+(defun set-exec-path-from-shell-PATH ()
+  "Set up Emacs' `exec-path' and PATH environment variable to match
+that used by the user's shell.
+
+This is particularly useful under Mac OS X and macOS, where GUI
+apps are not started from a shell."
+  (interactive)
+  (let ((path-from-shell (replace-regexp-in-string
+			  "[ \t\n]*$" "" (shell-command-to-string
+					  "$SHELL --login -c 'echo $PATH'"
+						    ))))
+    (setenv "PATH" path-from-shell)
+    (setq exec-path (split-string path-from-shell path-separator))))
+
+(when
+    (or ak/generic-linux-p
+        ak/generic-mac-p)
+        (set-exec-path-from-shell-PATH))
 
 (provide 'init-basic)
