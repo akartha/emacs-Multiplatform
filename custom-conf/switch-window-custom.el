@@ -51,4 +51,30 @@
 
 (global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
 
+
+
+
+;;;;;;;;;;;;;;;;;;
+;; Centaur Tabs ;;
+;;;;;;;;;;;;;;;;;;
+
+(use-package centaur-tabs
+  :straight t
+  :demand
+  :init
+  (setq centaur-tabs-enable-key-bindings t)
+  :config
+  (centaur-tabs-mode t)
+  (setq centaur-tabs-set-modified-marker t
+        centaur-tabs-height 24
+        centaur-tab-style "slant"
+        centaur-tabs-set-icons t
+        centaur-tabs-gray-out-icons 'buffer
+        uniquify-separator "/"
+        uniquify-buffer-name-style 'forward
+        centaur-tabs-show-count t ))
+  ;; :bind
+  ;; ("C-<prior>" . centaur-tabs-backward)
+  ;; ("C-<next>" . centaur-tabs-forward))
+
 (provide 'switch-window-custom)

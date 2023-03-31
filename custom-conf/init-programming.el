@@ -249,6 +249,13 @@
   :demand t
   :after json-mode)    
 
+(require 'json-snatcher)
+
+(defun ak/jq-print-path ()
+  "Print the jq-path to the JSON value under point, and save it in the kill ring."
+  (interactive)
+  (jsons-print-path-jq))
+
 ;; *** Restclient
 (use-package restclient
   :straight t)
@@ -368,6 +375,15 @@
         git-commit-summary-max-length 50)
   :bind (:map ak-map
               ("g" . magit-status)))
+
+;;;;;;;;;;;;;
+;; verb.el ;;
+;;;;;;;;;;;;;
+
+(use-package verb
+  :straight t
+  :mode ("\\.org\\'" . org-mode)
+  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 
 

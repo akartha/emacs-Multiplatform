@@ -1,4 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; * XKCD                                                ;;
 ;; For a bit of fun, add xkcd cartoons to your dashboard ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -19,8 +19,8 @@
 
 ;; (message (if (internet-up-p) "Up" "Down"))
 (defun ak/reload-xkcd (arg)
-  "Load a random xkcd cartoon on the dashboard
-   With prefix - load the latest xkcd cartoon"
+  "Load a random xkcd cartoon on the dashboard.
+With PREFIX - load the latest xkcd cartoon"
   (interactive "P")
   (let ((rand-id-xkcd nil)
         (rand-id-xkcd-url nil))
@@ -67,6 +67,9 @@
   
   :config
   (require 'emacsql-sqlite))
+
+
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Modus Theme customizations ;;

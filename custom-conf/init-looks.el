@@ -88,26 +88,54 @@
 (use-package all-the-icons
   :straight t)
 
-(use-package spaceline
-  :straight t
-  :config
-  (require 'spaceline-config)
-  (setq spaceline-buffer-encoding-abbrev-p nil
-        ;; spaceline-line-column-p nil
-        ;; spaceline-line-p nil
-        powerline-default-separator (quote utf-8))
-  (spaceline-spacemacs-theme))
+;; (use-package spaceline
+;;   :straight t
+;;   :config
+;;   (require 'spaceline-config)
+;;   (setq spaceline-buffer-encoding-abbrev-p nil
+;;         ;; spaceline-line-column-p nil
+;;         ;; spaceline-line-p nil
+;;         powerline-default-separator (quote utf-8))
+;;   (spaceline-spacemacs-theme))
 
-;;Spaceline is the mode line of choice. looks nice and you can set
-;;nice separators. Using the =all-the-icons= package gives you more
-;;eye-candy.
-(use-package spaceline-all-the-icons
-  :straight t
-  :after spaceline
+;; ;;Spaceline is the mode line of choice. looks nice and you can set
+;; ;;nice separators. Using the =all-the-icons= package gives you more
+;; ;;eye-candy.
+;; (use-package spaceline-all-the-icons
+;;   :straight t
+;;   :after spaceline
+;;   :config
+;;   (setq spaceline-all-the-icons-separator-type 'none)
+;;   (spaceline-all-the-icons-theme))
+;;   ;; (spaceline-all-the-icons--setup-neotree))
+
+(use-package lambda-line
+  :straight (:type git :host github :repo "lambda-emacs/lambda-line") 
+  :custom
+  (lambda-line-icon-time t) ;; requires ClockFace font (see below)
+  ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
+  (lambda-line-position 'bottom) ;; Set position of status-line 
+  (lambda-line-abbrev t) ;; abbreviate major modes
+  (lambda-line-hspace "  ")  ;; add some cushion
+  (lambda-line-prefix t) ;; use a prefix symbol
+  (lambda-line-prefix-padding nil) ;; no extra space for prefix 
+  (lambda-line-status-invert nil )  ;; no invert colors
+  (lambda-line-gui-ro-symbol  "⨂") ;; symbols
+  (lambda-line-gui-mod-symbol "⬤") 
+  (lambda-line-gui-rw-symbol  "◯") 
+  (lambda-line-space-top +.05)  ;; padding on top and bottom of line
+  (lambda-line-space-bottom -.05)
+  (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
+  (display-time-mode t)
+  (lambda-line-visual-bell nil)
   :config
-  (setq spaceline-all-the-icons-separator-type 'none)
-  (spaceline-all-the-icons-theme))
-  ;; (spaceline-all-the-icons--setup-neotree))
+  ;; activate lambda-line 
+  (lambda-line-mode)
+  (lambda-line-clockface-update-fontset "ClockFaceRectSolid")
+  ;; set divider line in footer
+  (when (eq lambda-line-position 'top)
+    (setq-default mode-line-format (list "%_"))
+    (setq mode-line-format (list "%_"))))
 
 
 (use-package all-the-icons-completion
