@@ -3,8 +3,11 @@
 ;; ;; Minor, non-completion related settings and plugins for writing code. ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; (require 'company)
-;; (require 
+(use-package exec-path-from-shell
+  :straight t
+  :if ak/my-mac-p
+  :config
+  (exec-path-from-shell-initialize))
 
 ;;;;;;;;;;;;;;;;;;;;;
 ;; ;; ** yasnippet ;;
