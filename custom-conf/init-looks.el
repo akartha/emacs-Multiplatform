@@ -35,38 +35,6 @@
 (setq fontaine-latest-state-file
       (locate-user-emacs-file "fontaine-latest-state.eld"))
 
-
-;; (setq fontaine-presets
-;;       '((regular
-;;          :default-family "Iosevka Comfy"
-;;          :default-weight light
-;;          :default-height 110)
-;;         (medium
-;;          :default-family "FreeSerif"
-;;          :default-weight semilight
-;;          :default-height 140)
-;;         (large
-;;          :default-weight semilight
-;;          :default-height 180
-;;          :bold-weight extrabold)
-;;         (t ; our shared fallback properties
-;;          :default-family "Noto Sans"
-;;          :default-weight normal
-;;          ;; :default-height 100
-;;          ;; :fixed-pitch-family nil ; falls back to :default-family
-;;          ;; :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "FiraGO"
-;;          ;; :variable-pitch-family "FreeSerif"
-;;          :variable-pitch-weight normal
-
-;;   :variable-pitch-height 1.05
-;;          ;; :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          ;; :italic-family nil
-;;          :italic-slant italic
-;;          :line-spacing nil)))
-
 ;; Iosevka Comfy            == monospaced, supports ligatures
 ;; Iosevka Comfy Fixed      == monospaced, no ligatures
 ;; Iosevka Comfy Duo        == quasi-proportional, supports ligatures
@@ -74,56 +42,56 @@
 ;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
 ;; Iosevka Comfy Motion     == monospaced, supports ligatures, fancier glyphs
 ;; Iosevka Comfy Motion Duo == as above, but quasi-proportional
-(setq fontaine-presets
-      '((tiny
-         :default-family "Iosevka Comfy Wide Fixed"
-         :default-height 90)
-        (small
-         :default-family "Iosevka Comfy Fixed"
-         :default-height 100)
-        (regular
-         :default-height 110)
-        (medium
-         :default-height 130)
-        (large
-         :default-weight semilight
-         :default-height 150
-         :bold-weight extrabold)
-        (code-demo
-         :default-weight semilight
-         :default-height 170
-         :bold-weight extrabold)
-        (presentation
-         :default-weight semilight
-         :default-height 220
-         :bold-weight extrabold)
-        (reading
-         :default-family "Iosevka Comfy Motion Duo"
-         :default-weight semilight
-         :default-height 175
-         :line-spacing 10)              ;this is in pixels
-
-        (t
-         ;; I keep all properties for didactic purposes, but most can be
-         ;; omitted.  See the fontaine manual for the technicalities:
-         ;; <https://protesilaos.com/emacs/fontaine>.
-         :default-family "Iosevka Comfy"
-         :default-weight regular
-         :default-height 100
-         :fixed-pitch-family nil ; falls back to :default-family
-         :fixed-pitch-weight nil ; falls back to :default-weight
-         :fixed-pitch-height 1.0
-         :fixed-pitch-serif-family nil ; falls back to :default-family
-         :fixed-pitch-serif-weight nil ; falls back to :default-weight
-         :fixed-pitch-serif-height 1.0
-         :variable-pitch-family "Iosevka Comfy Motion Duo"
-         :variable-pitch-weight nil
-         :variable-pitch-height 1.0
-         :bold-family nil ; use whatever the underlying face has
-         :bold-weight bold
-         :italic-family "Iosevka Comfy Motion"
-         :italic-slant italic
-         :line-spacing nil)))
+(when ak/my-framework-p
+  (setq fontaine-presets
+        '((tiny
+           :default-family "Iosevka Comfy Wide Fixed"
+           :default-height 90)
+          (small
+           :default-family "Iosevka Comfy Fixed"
+           :default-height 100)
+          (regular
+           :default-height 110)
+          (medium
+           :default-height 130)
+          (large
+           :default-weight semilight
+           :default-height 150
+           :bold-weight extrabold)
+          (code-demo
+           :default-weight semilight
+           :default-height 170
+           :bold-weight extrabold)
+          (presentation
+           :default-weight semilight
+           :default-height 220
+           :bold-weight extrabold)
+          (reading
+           :default-family "Iosevka Comfy Motion Duo"
+           :default-weight semilight
+           :default-height 175
+           :line-spacing 10)              ;this is in pixels
+          (t
+           ;; I keep all properties for didactic purposes, but most can be
+           ;; omitted.  See the fontaine manual for the technicalities:
+           ;; <https://protesilaos.com/emacs/fontaine>.
+           :default-family "Iosevka Comfy"
+           :default-weight regular
+           :default-height 100
+           :fixed-pitch-family nil ; falls back to :default-family
+           :fixed-pitch-weight nil ; falls back to :default-weight
+           :fixed-pitch-height 1.0
+           :fixed-pitch-serif-family nil ; falls back to :default-family
+           :fixed-pitch-serif-weight nil ; falls back to :default-weight
+           :fixed-pitch-serif-height 1.0
+           :variable-pitch-family "Iosevka Comfy Motion Duo"
+           :variable-pitch-weight nil
+           :variable-pitch-height 1.0
+           :bold-family nil ; use whatever the underlying face has
+           :bold-weight bold
+           :italic-family "Iosevka Comfy Motion"
+           :italic-slant italic
+           :line-spacing nil))))
 
 (fontaine-restore-latest-preset)
 

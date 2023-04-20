@@ -223,13 +223,25 @@
 ;; ;; *** json ;;
 ;;;;;;;;;;;;;;;;;
 
+(define-prefix-command 'ak-json-manipulation-map)
+(global-set-key (kbd "` j") 'ak-json-manipulation-map)
 
 (use-package json-mode
   :straight t
   :mode (("\\.json\\'" . json-mode)
          ("\\.tmpl\\'" . json-mode)
          ("\\.eslintrc\\'" . json-mode))
-  :config (setq-default js-indent-level 2))
+  :config (setq-default js-indent-level 2)
+  :bind
+  ;;("C-k" . crux-smart-kill-line)
+  (:map ak-json-manipulation-map
+        ("b" . json-mode-beautify)
+        ("s" . json-mode-show-path)
+        ("w" . json-mode-kill-path)
+        ("t" . json-toggle-boolean)
+        ("n" . json-nullify-sexp)
+        ("+" . json-increment-number-at-point)
+        ("-" . json-decrement-number-at-point)))
 
 (use-package jq-mode
   :straight t
