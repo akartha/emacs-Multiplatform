@@ -49,11 +49,11 @@
            :default-height 90)
           (small
            :default-family "Iosevka Comfy Fixed"
-           :default-height 100)
-          (regular
            :default-height 110)
-          (medium
+          (regular
            :default-height 130)
+          (medium
+           :default-height 140)
           (large
            :default-weight semilight
            :default-height 150
