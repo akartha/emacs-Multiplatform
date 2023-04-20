@@ -30,6 +30,9 @@
         ("w" . crux-other-window-or-switch-buffer)
         ("s" . crux-sudo-edit)
         ("<f2>" . crux-rename-buffer-and-file)
+        ("<delete>" . crux-delete-file-and-buffer)
+        (";" . crux-duplicate-and-comment-current-line-or-region)
+        ("<f3>" . crux-kill-buffer-truename)
         ("<tab>" . crux-indent-defun)))
 
 

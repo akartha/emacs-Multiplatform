@@ -5,13 +5,9 @@
 
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Buffers
-
-;; Another big thing is, buffers. If you use emacs, you use buffers,
-;; everyone loves them.  Having many buffers is useful, but can be
-;; tedious to work with, let us see how we can improve it. 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Doing =C-x k= should kill the current buffer at all times
 
@@ -35,12 +31,12 @@
 
 ;; ** Line numbers 
 
-(use-package linum-relative
-  :diminish
-  :straight t
-  :config
-  (setq linum-relative-current-symbol "")
-  (add-hook 'prog-mode-hook 'linum-relative-mode)) ;;don't want it global
+;; (use-package linum-relative
+;;   :diminish
+;;   :straight t
+;;   :config
+;;   (setq linum-relative-current-symbol "")
+;;   (add-hook 'prog-mode-hook 'linum-relative-mode)) ;;don't want it global
 
 
 
@@ -201,8 +197,8 @@
   (interactive "*p")
   (move-lines (or n 1)))
 
-(define-key ak-map "[" 'ak/move-lines-up)
-(define-key ak-map "]" 'ak/move-lines-down)
+;; (define-key ak-map "[" 'ak/move-lines-up)
+;; (define-key ak-map "]" 'ak/move-lines-down)
 
 
 

@@ -31,23 +31,6 @@
     (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
     (setq package-native-compile t)))
 
-
-
-
-(defvar ak/my-framework-p nil)
-(defvar ak/my-mac-p nil)
-
-(cond ((string=  (system-name) "arun-framework")
-       (setq ak/my-framework-p t))
-      ((string= (system-name) "Arun-MBP14.local")
-       (setq ak/my-mac-p t)))
-
-(defvar ak/generic-windows-p (equal system-type 'windows-nt))
-(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
-(defvar ak/generic-mac-p (equal system-type 'darwin))
-
-;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
-
 (require 'package)
 ;; (setq package-enable-at-startup nil)
 
@@ -72,10 +55,25 @@
 (straight-use-package 'use-package)
 (straight-use-package 'org)
 
+
+
+(defvar ak/my-framework-p nil)
+(defvar ak/my-mac-p nil)
+
+(cond ((string=  (system-name) "arun-framework")
+       (setq ak/my-framework-p t))
+      ((string= (system-name) "Arun-MBP14.local")
+       (setq ak/my-mac-p t)))
+
+(defvar ak/generic-windows-p (equal system-type 'windows-nt))
+(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
+(defvar ak/generic-mac-p (equal system-type 'darwin))
+
+;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; New approach to try out - loading custom settings from custom-conf directory
-
-;; Below are settings that do not depend on packages and are built-in enhancements to the UI.󰀠󰀠󰀜
 
 ;;(require 'bind-key)
 
@@ -103,7 +101,6 @@
 
 
 
-;;; This is the actual config file. It is omitted if it doesn't exist so emacs won't refuse to launch.
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
 

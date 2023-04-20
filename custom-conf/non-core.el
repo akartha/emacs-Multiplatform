@@ -47,26 +47,26 @@ With PREFIX - load the latest xkcd cartoon"
 ;; ** EKG ;;
 ;;;;;;;;;;;;
 
-(define-prefix-command 'ekg-custom-keymap)
-(global-set-key (kbd "` e") 'ekg-custom-keymap)
+;; (define-prefix-command 'ekg-custom-keymap)
+;; (global-set-key (kbd "` e") 'ekg-custom-keymap)
 
-(use-package ekg
-  :straight t
-  :bind
-  (:map ekg-custom-keymap
-        ("c" . ekg-capture)
-        ("a" . ekg-show-notes-with-tag)
-        ("u" . ekg-capture-url)
-        ("b" . ekg-browse-url)
-        ("t" . ekg-show-notes-for-today)
-        ("m" . ekg-show-notes-latest-modified)
-        ("p" . ekg-show-notes-latest-captured)
-        ("T" . ekg-show-notes-in-trash)
-        :map ekg-notes-mode-map
-        ("q" . kill-current-buffer))
+;; (use-package ekg
+;;   :straight t
+;;   :bind
+;;   (:map ekg-custom-keymap
+;;         ("c" . ekg-capture)
+;;         ("a" . ekg-show-notes-with-tag)
+;;         ("u" . ekg-capture-url)
+;;         ("b" . ekg-browse-url)
+;;         ("t" . ekg-show-notes-for-today)
+;;         ("m" . ekg-show-notes-latest-modified)
+;;         ("p" . ekg-show-notes-latest-captured)
+;;         ("T" . ekg-show-notes-in-trash)
+;;         :map ekg-notes-mode-map
+;;         ("q" . kill-current-buffer))
   
-  :config
-  (require 'emacsql-sqlite))
+;;   :config
+;;   (require 'emacsql-sqlite))
 
 
 

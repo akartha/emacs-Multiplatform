@@ -36,11 +36,11 @@
 ;; ;; ** company mode ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package company
-  :straight t
-  :config
-  (setq company-idle-delay 0
-        company-minimum-prefix-length 1))
+;; (use-package company
+;;   :straight t
+;;   :config
+;;   (setq company-idle-delay 0
+;;         company-minimum-prefix-length 1))
 
 
 ;; ** Specific languages
@@ -106,8 +106,8 @@
 
 (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
 
-(with-eval-after-load 'company
-  (add-hook 'go-mode-hook 'company-mode))
+;; (with-eval-after-load 'company
+;;   (add-hook 'go-mode-hook 'company-mode))
 
 (use-package ob-go
   :straight t)
@@ -127,19 +127,19 @@
     (require 'flycheck-clang-analyzer)
     (flycheck-clang-analyzer-setup)))
 
-(with-eval-after-load 'company
-  (add-hook 'c++-mode-hook 'company-mode)
-  (add-hook 'c-mode-hook 'company-mode))
+;; (with-eval-after-load 'company
+;;   (add-hook 'c++-mode-hook 'company-mode)
+;;   (add-hook 'c-mode-hook 'company-mode))
 
-(use-package company-c-headers
-  :straight t)
+;; (use-package company-c-headers
+;;   :straight t)
 
-(use-package company-irony
-  :straight t
-  :config
-  (setq company-backends '((company-c-headers
-                            company-dabbrev-code
-                            company-irony))))
+;; (use-package company-irony
+;;   :straight t
+;;   :config
+;;   (setq company-backends '((company-c-headers
+;;                             company-dabbrev-code
+;;                             company-irony))))
 
 (use-package irony
   :diminish
@@ -164,20 +164,20 @@
 (add-hook 'python-mode-hook 'yas-minor-mode)
 (add-hook 'python-mode-hook 'flycheck-mode)
 
-(with-eval-after-load 'company
-  (add-hook 'python-mode-hook 'company-mode))
+;; (with-eval-after-load 'company
+;;   (add-hook 'python-mode-hook 'company-mode))
 
 
-(defun python-mode-company-init ()
-  (setq-local company-backends '((company-jedi
-                                  company-etags
-                                  company-dabbrev-code))))
+;; (defun python-mode-company-init ()
+;;   (setq-local company-backends '((company-jedi
+;;                                   company-etags
+;;                                   company-dabbrev-code))))
 
-(use-package company-jedi
-  :straight t
-  :config
-  (require 'company)
-  (add-hook 'python-mode-hook 'python-mode-company-init))
+;; (use-package company-jedi
+;;   :straight t
+;;   :config
+;;   (require 'company)
+;;   (add-hook 'python-mode-hook 'python-mode-company-init))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -186,7 +186,7 @@
 
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
-(add-hook 'emacs-lisp-mode-hook 'company-mode)
+;; (add-hook 'emacs-lisp-mode-hook 'company-mode)
 
 (use-package slime
   :straight t
@@ -195,44 +195,56 @@
   (setq inferior-lisp-program "/usr/bin/sbcl")
   (setq slime-contribs '(slime-fancy)))
 
-(use-package slime-company
-  :straight t
-  :if ak/my-framework-p
-  :init
-  (require 'company)
-  (slime-setup '(slime-fancy slime-company)))
+;; (use-package slime-company
+;;   :straight t
+;;   :if ak/my-framework-p
+;;   :init
+;;   (require 'company)
+;;   (slime-setup '(slime-fancy slime-company)))
 
 
 ;; *** bash
 
 (add-hook 'shell-mode-hook 'yas-minor-mode)
 (add-hook 'shell-mode-hook 'flycheck-mode)
-(add-hook 'shell-mode-hook 'company-mode)
+;; (add-hook 'shell-mode-hook 'company-mode)
 
-(defun shell-mode-company-init ()
-  (setq-local company-backends '((company-shell
-                                  company-shell-env
-                                  company-etags
-                                  company-dabbrev-code))))
+;; (defun shell-mode-company-init ()
+;;   (setq-local company-backends '((company-shell
+;;                                   company-shell-env
+;;                                   company-etags
+;;                                   company-dabbrev-code))))
 
-(use-package company-shell
-  :straight t
-  :config
-  (require 'company)
-  (add-hook 'shell-mode-hook 'shell-mode-company-init))
+;; (use-package company-shell
+;;   :straight t
+;;   :config
+;;   (require 'company)
+;;   (add-hook 'shell-mode-hook 'shell-mode-company-init))
 
 
 ;;;;;;;;;;;;;;;;;
 ;; ;; *** json ;;
 ;;;;;;;;;;;;;;;;;
 
+(define-prefix-command 'ak-json-manipulation-map)
+(global-set-key (kbd "` j") 'ak-json-manipulation-map)
 
 (use-package json-mode
   :straight t
   :mode (("\\.json\\'" . json-mode)
          ("\\.tmpl\\'" . json-mode)
          ("\\.eslintrc\\'" . json-mode))
-  :config (setq-default js-indent-level 2))
+  :config (setq-default js-indent-level 2)
+  :bind
+  ;;("C-k" . crux-smart-kill-line)
+  (:map ak-json-manipulation-map
+        ("b" . json-mode-beautify)
+        ("s" . json-mode-show-path)
+        ("w" . json-mode-kill-path)
+        ("t" . json-toggle-boolean)
+        ("n" . json-nullify-sexp)
+        ("+" . json-increment-number-at-point)
+        ("-" . json-decrement-number-at-point)))
 
 (use-package jq-mode
   :straight t
@@ -262,16 +274,16 @@
 ;; *** Restclient
 (use-package restclient
   :straight t)
-(use-package company-restclient
-  :straight t)
+;; (use-package company-restclient
+;;   :straight t)
 
 (use-package ob-restclient
   :straight t)
 
-(with-eval-after-load 'company
-  (add-hook 'restclient-mode-hook 'company-mode))
+;; (with-eval-after-load 'company
+;;   (add-hook 'restclient-mode-hook 'company-mode))
 
-(add-to-list 'company-backends 'company-restclient)
+;; (add-to-list 'company-backends 'company-restclient)
 
 
 ;;;;;;;;;;;;;;;;;
