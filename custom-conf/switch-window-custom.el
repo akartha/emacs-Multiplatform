@@ -1,4 +1,0 @@
-
-
-
-(provide 'switch-window-custom)
