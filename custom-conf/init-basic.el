@@ -1,6 +1,4 @@
- (require 'bind-key)
- (require 'straight)
-(require 'use-package)
+;; -*- lexical-binding: t; -*-
 
 (setq custom-file (locate-user-emacs-file "custom-vars.el"))
 (load custom-file 'noerror 'nomessage)
@@ -24,8 +22,30 @@
       scroll-conservatively 100
       kill-ring-max 100
 ;;;    Indenting
-      indent-line-function 'insert-tab)
+      indent-line-function 'insert-tab
+      ;; Sentence end need not be "  " (double space)
+      sentence-end-double-space nil)
 
+;; More performant rapid scrolling over unfontified regions. May cause brief
+;; spells of inaccurate fontification immediately after scrolling.
+(setq fast-but-imprecise-scrolling t)
+(when (> emacs-major-version 27)
+  (setq redisplay-skip-fontification-on-input t))
+
+;; Resizing the Emacs frame can be a terribly expensive part of changing the
+;; font. By inhibiting this, we halve startup times, particularly when we use
+;; fonts that are larger than the system default (which would resize the frame).
+(setq frame-inhibit-implied-resize t)
+
+;; Remove command line options that aren't relevant to our current OS; that
+;; means less to process at startup.
+(unless ak/generic-mac-p   (setq command-line-ns-option-alist nil))
+(unless ak/generic-linux-p (setq command-line-x-option-alist nil))
+
+;; Performance on Windows is considerably worse than elsewhere.
+(when ak/generic-windows-p
+  ;; Reduce the workload when doing file IO
+  (setq w32-get-true-file-attributes nil))
 
 (savehist-mode 1)
 (tool-bar-mode -1)
@@ -37,6 +57,17 @@
 (display-time-mode 1)
 ;; (global-subword-mode 1) 
 (show-paren-mode 1) ;;Highlights matching parens when the cursor is just behind one of them.
+;; Turn on transient-mark-mode
+(transient-mark-mode 1)
+
+;;; Text mode and Auto Fill mode
+; Set default Emacs mode to text-mode. In addition, turn on
+; word-wrapping and either auto filling of text or longlines-mode,
+; which auto fills in Emacs buffers but not when you copy the text.
+(setq default-major-mode 'text-mode)
+;;(add-hook 'text-mode-hook 'turn-on-auto-fill)
+(add-hook 'text-mode-hook 'visual-line-mode)
+(add-hook 'text-mode-hook 'toggle-word-wrap)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Scroll with cursor stationary ;;
@@ -54,6 +85,10 @@
 (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
 (defalias 'yes-or-no-p 'y-or-n-p)
 
+
+;; Turn on show-paren-mode. Highlights matching parentheses
+;; (show-paren-mode 1)
+
 (setq zoneinfo-style-world-list
    '(("America/New_York" "New York")
      ("America/Chicago" "Chicago")
@@ -69,9 +104,7 @@
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match
 that used by the user's shell.
-
-This is particularly useful under Mac OS X and macOS, where GUI
-apps are not started from a shell."
+Does not work with mac- so I have a package for that"
   (interactive)
   (let ((path-from-shell (replace-regexp-in-string
 			  "[ \t\n]*$" "" (shell-command-to-string

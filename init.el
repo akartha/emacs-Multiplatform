@@ -1,13 +1,4 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; -*- lexical-binding: t; -*-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Garbage Collection
-;; The default is 800 kilobytes.  Measured in bytes.
-;; Set the garbage collection threshold to high (100 MB) since LSP client-server communication generates a lot of output/garbage
-(setq gc-cons-threshold (* 100 1000 1000))
-
-;; To increase the amount of data Emacs reads from a process
-(setq read-process-output-max (* 1024 1024)) 
 
 ;; Profile emacs startup
 (add-hook 'emacs-startup-hook
@@ -19,20 +10,8 @@
 
 (add-to-list 'load-path (expand-file-name "custom-conf" user-emacs-directory))
 
-;;temporary for emacs 30 dev build
-(when (>= emacs-major-version 29)
-(defvar native-comp-deferred-compilation-deny-list nil))
-
-(when (and (fboundp 'native-comp-available-p)
-           (native-comp-available-p))
-  (progn
-    (setq native-comp-async-report-warnings-errors nil)
-    (setq comp-deferred-compilation t)
-    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory))
-    (setq package-native-compile t)))
 
 (require 'package)
-;; (setq package-enable-at-startup nil)
 
 (setq package-archives '(("ELPA"  . "http://tromey.com/elpa/")
 			 ("gnu"   . "https://elpa.gnu.org/packages/")
@@ -52,8 +31,19 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-;; (straight-use-package 'use-package)
-;; (straight-use-package 'org)
+(straight-use-package 'use-package)
+(eval-when-compile
+  (eval-after-load 'advice
+    `(setq ad-redefinition-action 'accept))
+  (setq use-package-verbose nil
+        use-package-compute-statistics nil
+        ;use-package-ignore-unknown-keywords t
+        use-package-minimum-reported-time 0.01
+        ;; use-package-expand-minimally t
+        use-package-enable-imenu-support t)
+  (require 'use-package))
+
+(straight-use-package 'org)
 
 
 
@@ -74,11 +64,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (setq ak/my-package-list
-      '(use-package
-         org
-         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-         ;; Custom options for below are defined in init-system-utils ;;
-         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+      '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; Custom options for below are defined in init-system-utils.el ;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         avy
         crux
         marginalia
@@ -97,14 +85,16 @@
         corfu
         switch-window
         savehist
+        popper ;;added Mon 24 Apr 2023 02:47:04 PM EDT
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; custom options defined in init-editing-functions ;;
+        ;; custom options defined in init-editing-functions.el ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         hungry-delete
         mark-multiple 
         expand-region
+        jinx
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; Custom options for below are set in the init-looks library ;;
+        ;; Custom options for below are set in the init-looks.el library ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         modus-themes 
         fontaine
@@ -114,13 +104,14 @@
         rainbow-delimiters
         diminish
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; custom options for below are in init-org-settings ;;
+        ;; custom options for below are in init-org-settings.el ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         org-superstar
         ox-reveal
         org-roam
+        pdf-tools
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-        ;; custom options for below are set in the init-programming library ;;
+        ;; custom options for below are set in the init-programming.el library ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         exec-path-from-shell
         yasnippet

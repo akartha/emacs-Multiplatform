@@ -1,3 +1,4 @@
+;; -*- lexical-binding: t; -*-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; * Hungry deletion
 ;; Backspace or Delete will get rid of all whitespace until the next
@@ -95,5 +96,23 @@
 ;;                           (message "Killed whole line")))
 (define-key ak-map "L" 'kill-whole-line)
 
+
+;; Better defaults for upcase/downcase
+(use-package simple
+  :config
+  (global-set-key (kbd "M-u") 'upcase-dwim)
+  (global-set-key (kbd "M-l") 'downcase-dwim)
+  (global-set-key (kbd "M-c") 'capitalize-dwim)
+  
+  ;; Change case with impunity 
+  (put 'downcase-region 'disabled nil)
+  (put 'upcase-region 'disabled nil))
+
+(use-package jinx
+  ;; :hook (emacs-startup . global-jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct)
+  :config (dolist
+              (hook '(text-mode-hook org-mode-hook))
+            (add-hook hook #'jinx-mode)))
 
 (provide 'init-editing-functions)
