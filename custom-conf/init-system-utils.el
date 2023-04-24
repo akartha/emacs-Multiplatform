@@ -1,9 +1,111 @@
+(require 'projectile)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** Switch-window
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(use-package switch-window
+  ;; :straight t
+  :config
+  (setq switch-window-input-style 'minibuffer
+        switch-window-increase 4
+        switch-window-threshold 2
+        switch-window-shortcut-style 'qwerty
+        switch-window-qwerty-shortcuts
+        '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+  :bind
+  ([remap other-window] . switch-window))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** avy
+;; ;; https://github.com/abo-abo/avy
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+(define-prefix-command 'avy-custom-keymap)
+(global-set-key (kbd "` y") 'avy-custom-keymap)
+
+
+(use-package avy
+  ;; :straight t
+  :bind
+  (:map avy-custom-keymap
+        ("l" . avy-goto-line)
+        ;;    ("L" . avy-move-line)
+        ("m" . avy-move-region)
+        ;;        ("p" . avy-goto-line-above)
+        ;;      ("n" . avy-goto-line-below)
+        ("c" . avy-goto-char-timer)
+        ("w" . avy-goto-word-0)
+        ("t" . avy-transpose-lines-in-region)
+        ;;  ("k" . avy-kill-ring-save-whole-line)
+        ;;  ("K" . avy-kill-whole-line)
+        ("r" . avy-kill-ring-save-region)
+        ("R" . avy-kill-region)
+        ("s" . avy-goto-symbol-1)
+        ("h" . avy-org-goto-heading-timer)))
+
+
+(defun ak/avy-org-table-1-char ()
+  "Avy navigation of cells in org-mode tables based on any char in the cell.
+    `SPC` can be used to jump to any cell. "
+  (interactive)
+  ;; set some variables to limit candidates to the current table
+  (let ((table-begin (save-excursion (goto-char (org-table-begin)) (forward-line -1) (point)))
+        (table-end (save-excursion (goto-char (org-table-end)) (forward-line) (point))))
+    ;; jump to the desired cell and re-align
+    ;; (goto-char
+    (avy-with avy-goto-word-0
+      (avy-jump (concat "|\\{1\\}[^-\n|]+" (char-to-string (read-char "char: " t)))
+                :window-flip nil
+                :beg table-begin
+                :end table-end )))
+(org-table-end-of-field 1 ))
+    
+(define-key ak-map "%" 'ak/avy-org-table-1-char)
+
+;;;;;;;;;;;;;;;;;;;;;;
+;; ** CRUX 
+;;;;;;;;;;;;;;;;;;;;;
+
+(define-prefix-command 'ak-crux-map)
+(global-set-key (kbd "` x") 'ak-crux-map)
+
+(use-package crux
+  :bind
+  ("C-k" . crux-smart-kill-line)
+  (:map ak-crux-map
+        ;;     ("U" . crux-view-url)
+        ;;("a" . crux-ispell-word-then-abbrev)
+        ("." . crux-find-shell-init-file)
+        ("1" . crux-find-user-init-file)
+        ("a" . crux-move-beginning-of-line)
+        ("o" . crux-smart-open-line)
+        ("O" . crux-smart-open-line-above)
+        ("d" . crux-duplicate-current-line-or-region)
+        ("j" . crux-top-join-line)
+        ("k" . crux-kill-line-backwards)
+        ("C" . crux-cleanup-buffer-or-region)
+        ("r" . crux-recentf-find-file)
+        ("D" . crux-recentf-find-directory)
+        ("U" . crux-upcase-region)
+        ("L" . crux-downcase-region)
+        ("i" . crux-insert-date)
+        ("c" . crux-capitalize-region)
+        ("w" . crux-other-window-or-switch-buffer)
+        ("s" . crux-sudo-edit)
+        ("<f2>" . crux-rename-buffer-and-file)
+        ("<delete>" . crux-delete-file-and-buffer)
+        (";" . crux-duplicate-and-comment-current-line-or-region)
+        ("<f3>" . crux-kill-buffer-truename)
+        ("<tab>" . crux-indent-defun)))
+
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
 ;;;;;;;;;;;;;;;;
 
 (use-package vertico
-  :straight (:files (:defaults "extensions/*"))
   :init
   (vertico-mode)
 
@@ -64,15 +166,11 @@
   ;; Tidy shadowed file names
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
-
-
 ;;;;;;;;;;;;;;;;
 ;; ** Consult ;;
 ;;;;;;;;;;;;;;;;
 
 (use-package consult
-  :straight t
-  ;; Replace bindings. Lazily loaded due by `use-package'.
   :bind (;; C-c bindings (mode-specific-map)
          ("C-c h" . consult-history)
          ("C-c m" . consult-mode-command)
@@ -129,7 +227,6 @@
 
   ;; The :init configuration is always executed (Not lazy)
   :init
-
   ;; Optionally configure the register formatting. This improves the register
   ;; preview for `consult-register', `consult-register-load',
   ;; `consult-register-store' and the Emacs built-ins.
@@ -178,8 +275,8 @@
   ;;;; 1. project.el (the default)
   ;; (setq consult-project-function #'consult--default-project--function)
   ;;;; 2. projectile.el (projectile-project-root)
-  ;; (autoload 'projectile-project-root "projectile")
-  ;; (setq consult-project-function (lambda (_) (projectile-project-root)))
+  (autoload 'projectile-project-root "projectile")
+  (setq consult-project-function (lambda (_) (projectile-project-root)))
   ;;;; 3. vc.el (vc-root-dir)
   ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
   ;;;; 4. locate-dominating-file
@@ -190,22 +287,15 @@
 ;;;;;;;;;;;;;;;
 ;; ** Embark ;;
 ;;;;;;;;;;;;;;;
-    
-
 (use-package embark
-  :straight t
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
    ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-
   :init
-
   ;; Optionally replace the key help with a completing-read interface
   (setq prefix-help-command #'embark-prefix-help-command)
-
   :config
-
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
                '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
@@ -214,7 +304,6 @@
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
-  :straight t ; only need to install it, embark loads it after consult if found
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -223,7 +312,6 @@
 ;;;;;;;;;;;;;;;;;;
 
 (use-package orderless
-  :straight t
   :init
   ;; Configure a custom style dispatcher (see the Consult wiki)
   ;; (setq orderless-style-dispatchers '(+orderless-dispatch)
@@ -239,27 +327,16 @@
 
 (use-package marginalia
   :after vertico
-  :straight t
+  ;; :straight t
   :custom (marginalia-annotators '(marginalia-annottators-heavy marginalia-annottators-light nil))
   :init (marginalia-mode))
-
-;; ** All the icons in completion
-
-;; (use-package all-the-icons-completion
-;;   :straight t 
-;;   :after (marginalia all-the-icons)
-;;   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-;;   :init (all-the-icons-completion-mode))
-
 
 ;;;;;;;;;;;
 ;; DIRED ;;
 ;;;;;;;;;;;
 
 (use-package dired
-  :straight nil
   :custom ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
-           ;;  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=\'+%Y%m%d %H:%M:%S\'")
            (dired-recursive-copies 'always)
            (dired-recursive-deletes 'always)
            (dired-dwim-target t))
@@ -268,18 +345,10 @@
          ("C-x 4 C-j" . dired-jump-other-window)))
 
 
-(use-package dired-single
-  :straight t)
 (use-package all-the-icons-dired
-  :straight t
   :hook (dired-mode . all-the-icons-dired-mode))
 
-(use-package dired-du
-  :straight t)
- ;; :hook (dired-mode . dired-du-mode))
-
 (use-package dired-open
-  :straight t
   :config
   (setq dired-open-extensions '(("png" . "feh")
                                 ("m4a" . "mpv")
@@ -291,7 +360,6 @@
 
 (use-package dired-sidebar
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-  :straight t
   :commands (dired-sidebar-toggle-sidebar)
   :init
   (add-hook 'dired-sidebar-mode-hook
@@ -312,25 +380,19 @@
 ;; Lets us use asynchronous processes wherever possible, pretty useful.
 
 (use-package async
-  :straight t
   :init (dired-async-mode 1))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; This is your new startup screen, together with projectile it works in unison and ;;
-;; ;; provides you with a quick look into your latest projects and files.              ;;
-;; ;; Change the welcome message to whatever string you want and                       ;;
-;; ;; change the numbers to suit your liking                                           ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; Dashboard
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package dashboard
-  :straight t
   :custom (visual-line-mode t)
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((bookmarks  . 10)
                           (recents  . 20)
                           (projects  . 10)))
-  ;; (agenda  . 5)))
   (setq dashboard-set-heading-icons t
         dashboard-center-content t
         dashboard-set-file-icons t
@@ -343,17 +405,17 @@
                        (interactive)
                        (switch-to-buffer "*dashboard*")))))
 
-;; ** Which-Key
+ ;;;;;;;;;;;;;;;;;;
+ ;; ** Which-Key ;;
+ ;;;;;;;;;;;;;;;;;;
 
 (use-package which-key
   :diminish
-  :straight t
   :config
   (which-key-setup-side-window-right-bottom) ;;prefer right side - but will go for bottom if there is not enough space
   (which-key-mode))
 
 (use-package corfu
-  :straight t
   ;; Optional customizations
   :custom
   ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
@@ -393,96 +455,8 @@
   (setq tab-always-indent 'complete))
 
 
-(use-package hydra
-  :straight t )
-
-(when ak/my-framework-p
-  (defhydra hydra-jump-to-directory
-    (:color amaranth
-            :timeout 5)
-    "Jump to directory"
-    ("h" (find-file "~/") "Home")
-    ("d" (find-file "~/Documents") "Documents")
-    ("v" (find-file "~/Dropbox") "Dropbox")
-    ("a" (find-file "~/Dropbox/articles/") "Articles")
-    ("e" (find-file "~/.emacs.d/") "Emacs")
-    ("c" (find-file "~/.emacs.d/custom-conf/") "Emacs custom config")
-    ("s" (find-file "~/scripts/") "Scripts")
-    ("p" (find-file "~/projects/") "Projects")
-    ("o" (find-file "~/Dropbox/org-files/") "Org Folder")
-    ("x" (find-file "~/.emacs.d/xkcd/") "xkcd folder")
-    ("q" nil "Quit" :color blue))
-  (defhydra hydra-jump-to-config
-    (:color amaranth
-            :timeout 5)
-    "Open Config files"
-    ("b" (find-file "~/.bashrc") ".bashrc")
-    ("p" (find-file "~/.bash_profile") ".bash_profile")
-    ("e" (find-file "~/.emacs.d/init.el") "emacs init")
-    ("i" (find-file "~/.i3/config") "i3 config")
-    ("q" nil "Quit" :color blue))
-
-  (define-key ak-map "d" 'hydra-jump-to-directory/body)
-  (define-key ak-map "c" 'hydra-jump-to-config/body))
-
-(defhydra hydra-move-lines
-  (:color amaranth
-          :timeout 5)
-  "Move selected lines up/down"
-  ("[" (ak/move-lines-up 1) "Move up")
-  ("]" (ak/move-lines-down 1) "Move down")
-  ("q" nil "Quit" :color blue))
-
-(defhydra hydra-launcher (:color blue)
-  "Launch"
-  ("h" man "man")
-  ("n" (browse-url "http://www.nytimes.com/") "nytimes")
-  ("w" (browse-url "http://www.emacswiki.org/") "emacswiki")
-  ("g" (browse-url "http://www.github.com/") "github")
-  ("c" (browse-url "https://chat.openai.com/") "ChatGPT")
-  ("x" (browse-url "https://xkcd.com/") "xkcd browser")
-  ("s" shell "shell")
-  ("X" xkcd "xkcd - emacs")
-  ("q" nil "cancel"))
-
-(global-set-key (kbd "C-c r") 'hydra-launcher/body)
-
-(define-key ak-map "m" 'hydra-move-lines/body)
-  ;; (global-set-key (kbd "C-c 0") 'hydra-move-lines/body)
-
-;; ;; (require 'rect)
-;; (defhydra hydra-rectangle (:body-pre (rectangle-mark-mode 1)
-;;                            :color pink
-;;                            :post (deactivate-mark))
-;;   "
-;;   ^_k_^     _d_elete    _s_tring
-;; _h_   _l_   _o_k        _y_ank
-;;   ^_j_^     _n_ew-copy  _r_eset
-;; ^^^^        _e_xchange  _u_ndo
-;; ^^^^        ^ ^         _p_aste
-;; "
-;;   ("h" rectangle-backward-char nil)
-;;   ("l" rectangle-forward-char nil)
-;;   ("k" rectangle-previous-line nil)
-;;   ("j" rectangle-next-line nil)
-;;   ("e" hydra-ex-point-mark nil)
-;;   ("n" copy-rectangle-as-kill nil)
-;;   ("d" delete-rectangle nil)
-;;   ("r" (if (region-active-p)
-;;            (deactivate-mark)
-;;          (rectangle-mark-mode 1)) nil)
-;;   ("y" yank-rectangle nil)
-;;   ("u" undo nil)
-;;   ("s" string-rectangle nil)
-;;   ("p" kill-rectangle nil)
-;;   ("o" nil nil))
-
-;; ;; Recommended binding:
-;; ;; (global-set-key (kbd "C-x SPC") 'hydra-rectangle/body)
-;; (define-key ak-map (kbd "<f2>") 'hydra-rectangle/body)
-
 (use-package auto-package-update
-  :straight t
+  ;; :straight t
   :config
   (setq auto-package-update-delete-old-versions t
         auto-package-update-interval 5

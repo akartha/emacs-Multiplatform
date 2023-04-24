@@ -1,36 +1,10 @@
+
 (use-package modus-themes
-  :straight t
+  ;; :straight t
   :custom
   (setq modus-themes-org-blocks 'tinted-background)
   :init
-  ;; (setq modus-themes-common-palette-overrides
-  ;;       '((fg-prompt fg-main)
-  ;;         (bg-prompt bg-yellow-nuanced) ; try to replace "nuanced" or "subtle" with "intense"
-
-  ;;         (comment yellow-faint)
-  ;;         (string green-warmer)
-
-  ;;         (fg-heading-1 blue-warmer)
-  ;;         (bg-heading-1 bg-blue-nuanced)
-  ;;         (overline-heading-1 blue)
-
-  ;;         (fg-heading-2 green-warmer)
-  ;;         (bg-heading-2 bg-green-nuanced)
-  ;;         (overline-heading-2 border)
-  
-  ;;         (fg-heading-3 fg-main)
-  ;;         (bg-heading-3 bg-dim)
-  ;;         (overline-heading-3 border))
-  
-  ;;       modus-themes-completions
-  ;;       '((matches . (extrabold underline))
-  ;;         (selection . (extrabold italic underline))))
-
-  ;; (load-theme 'modus-vivendi t))
-  (load-theme 'modus-vivendi-tinted t)) ;;(load-theme 'modus-operandi-tinted/deuteranopia t))
-
-(use-package fontaine
-  :straight t)
+  (load-theme 'modus-vivendi-tinted t)) ;;other themes - modus-vivendi, modus-operandi, modus-operandi-tinted/deuteranopia, etc.
 
 (setq fontaine-latest-state-file
       (locate-user-emacs-file "fontaine-latest-state.eld"))
@@ -68,8 +42,8 @@
            :bold-weight extrabold)
           (reading
            :default-family "Iosevka Comfy Motion Duo" 
-           :default-weight semilight
-           :default-height 175
+           :default-weight regular
+           :default-height 185
            :line-spacing 10)              ;this is in pixels
           (t
            ;; I keep all properties for didactic purposes, but most can be
@@ -165,32 +139,11 @@
 (define-key global-map (kbd "C-c F") #'fontaine-set-preset)
 (define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
 
-(use-package all-the-icons
-  :straight t)
+;; (use-package all-the-icons
+;;   :straight t)
 
-;; (use-package spaceline
-;;   :straight t
-;;   :config
-;;   (require 'spaceline-config)
-;;   (setq spaceline-buffer-encoding-abbrev-p nil
-;;         ;; spaceline-line-column-p nil
-;;         ;; spaceline-line-p nil
-;;         powerline-default-separator (quote utf-8))
-;;   (spaceline-spacemacs-theme))
-
-;; ;;Spaceline is the mode line of choice. looks nice and you can set
-;; ;;nice separators. Using the =all-the-icons= package gives you more
-;; ;;eye-candy.
-;; (use-package spaceline-all-the-icons
-;;   :straight t
-;;   :after spaceline
-;;   :config
-;;   (setq spaceline-all-the-icons-separator-type 'none)
-;;   (spaceline-all-the-icons-theme))
-;;   ;; (spaceline-all-the-icons--setup-neotree))
 
 (use-package lambda-line
-  :straight (:type git :host github :repo "lambda-emacs/lambda-line") 
   :custom
   (lambda-line-icon-time t) ;; requires ClockFace font (see below)
   ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
@@ -219,7 +172,7 @@
 
 
 (use-package all-the-icons-completion
-  :straight t 
+  ;; :straight t 
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
@@ -229,7 +182,6 @@
 ;; position of your cursor will be briefly highlighted
 (use-package beacon
   :diminish
-  :straight t
   :config
   (beacon-mode 1))
 
@@ -238,7 +190,6 @@
 
 (use-package rainbow-mode
   :diminish
-  :straight t
   :init
   (add-hook 'prog-mode-hook 'rainbow-mode))
 
@@ -246,7 +197,7 @@
 
 (use-package rainbow-delimiters
   :diminish
-  :straight t
+  ;; :straight t
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
@@ -256,7 +207,7 @@
 ;; showing up and taking up space. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package diminish
-  :straight t
+  ;; :straight t
   :init
   (diminish 'visual-line-mode)
   (diminish 'subword-mode)
@@ -266,52 +217,5 @@
   (diminish 'org-indent-mode))
 
 
-;; (setq fontaine-presets
-;;       '((regular
-;;          :default-family "Hack Nerd Font"
-;;          :default-weight normal
-;;          :default-height 110
-;;          :fixed-pitch-family "Fira Code"
-;;          :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "Noto Sans"
-;;          :variable-pitch-weight normal
-;;          :variable-pitch-height 1.0
-;;          :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          :italic-family "Source Code Pro"
-;;          :italic-slant italic
-;;          :line-spacing 1)
-;;         (medium
-;;          :default-family "Iosevka Comfy"
-;;          :default-weight semilight
-;;          :default-height 140
-;;          :fixed-pitch-family nil ; falls back to :default-family
-;;          :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "FiraGO"
-;;          :variable-pitch-weight normal
-;;          :variable-pitch-height 1.05
-;;          :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          :italic-family nil
-;;          :italic-slant italic
-;;          :line-spacing nil)
-;;         (large
-;;          :default-family "Hack Nerd Font Mono"
-;;          ;;         :default-family "Iosevka"
-;;          :default-weight semilight
-;;          :default-height 180
-;;          :fixed-pitch-family nil ; falls back to :default-family
-;;          :fixed-pitch-weight nil ; falls back to :default-weight
-;;          :fixed-pitch-height 1.0
-;;          :variable-pitch-family "FiraGO"
-;;          :variable-pitch-weight normal
-;;          :variable-pitch-height 1.05
-;;          :bold-family nil ; use whatever the underlying face has
-;;          :bold-weight bold
-;;          :italic-family nil ; use whatever the underlying face has
-;;          :italic-slant italic
-;;          :line-spacing 1)))
 
 (provide 'init-looks)

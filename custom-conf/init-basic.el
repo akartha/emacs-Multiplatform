@@ -85,4 +85,26 @@ apps are not started from a shell."
         ak/generic-mac-p)
         (set-exec-path-from-shell-PATH))
 
+(add-to-list 'recentf-exclude "~/\.emacs\.d/xkcd/*")
+
+(defvar ak/my-org-file-location nil)
+
+(cond (ak/my-framework-p
+       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files")))
+      (ak/my-mac-p
+       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files"))))
+
+(define-prefix-command 'ak-map)
+(global-set-key (kbd "`") 'ak-map)
+(global-set-key (kbd "` `") 'self-insert-command)
+
+;;;;;;;;;;;;;;;;;
+;; ** PDF tool ;;
+;;;;;;;;;;;;;;;;;
+
+(when (and (or ak/my-framework-p ak/my-mac-p)
+    (file-directory-p "/usr/share/emacs/site-lisp/tex-utils"))
+  (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
+  (require 'xdvi-search))
+
 (provide 'init-basic)

@@ -6,7 +6,6 @@
 (global-set-key (kbd "` x") 'ak-crux-map)
 
 (use-package crux
-  :straight t
   :bind
   ("C-k" . crux-smart-kill-line)
   (:map ak-crux-map

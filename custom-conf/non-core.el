@@ -1,23 +1,203 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; * XKCD                                                ;;
-;; For a bit of fun, add xkcd cartoons to your dashboard ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'init-looks)
-;; (require 'custom-keymaps)
-;; (require 'init-system-utils)
+(require 'xkcd)
 
 
-(add-to-list 'recentf-exclude "~/\.emacs\.d/xkcd/*")
+;; Switch to scratch buffer
+(define-key ak-map "z" (lambda ()
+                         "Switch to scratch"
+                         (interactive)
+                         (switch-to-buffer "*scratch*")))
 
-(use-package xkcd
-  :straight t)
+;; Switch to scratch buffer
+(define-key ak-map "Z" (lambda ()
+                         "Create new scratch buffer to scratch"
+                         (interactive)
+                         (switch-to-buffer "*scratch*")))
 
-;; Function to check for internet being up
-;; (defun internet-up-p (&optional host)
-;;   (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
-;;                      (if host host "www.google.com"))))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** Following window splits
+;; Also opens the previous buffer in the
+;; newly opened window ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun split-and-follow-horizontally (prefix)
+  (interactive "P")
+  (split-window-below)
+  (balance-windows)
+  (other-window 1 nil)
+  (if  prefix 
+      (switch-to-next-buffer)
+    (switch-to-prev-buffer)))
 
-;; (message (if (internet-up-p) "Up" "Down"))
+(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
+
+(defun split-and-follow-vertically (prefix)
+  (interactive "P")
+  (split-window-right)
+  (balance-windows)
+  (other-window 1)
+  (if prefix
+      (switch-to-next-buffer)
+    (switch-to-prev-buffer)))
+
+(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Buffers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Doing =C-x k= should kill the current buffer at all times
+
+(defun kill-current-buffer ()
+  "Kills the current buffer."
+  (interactive)
+  (kill-buffer (current-buffer)))
+(global-set-key (kbd "C-x k") 'kill-current-buffer)
+
+;; *** Kill buffers without asking for confirmation
+
+(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+
+;; *** close-all-buffers
+
+(defun close-all-buffers ()
+  "Kill all buffers without regard for their origin."
+  (interactive)
+  (mapc 'kill-buffer (buffer-list)))
+(global-set-key (kbd "C-M-s-k") 'close-all-buffers)
+
+(when ak/my-framework-p
+  (defhydra hydra-jump-to-directory
+    (:color amaranth
+            :timeout 5)
+    "Jump to directory"
+    ("h" (find-file "~/") "Home")
+    ("d" (find-file "~/Documents") "Documents")
+    ("v" (find-file "~/Dropbox") "Dropbox")
+    ("a" (find-file "~/Dropbox/articles/") "Articles")
+    ("e" (find-file "~/.emacs.d/") "Emacs")
+    ("c" (find-file "~/.emacs.d/custom-conf/") "Emacs custom config")
+    ("s" (find-file "~/scripts/") "Scripts")
+    ("p" (find-file "~/projects/") "Projects")
+    ("o" (find-file "~/Dropbox/org-files/") "Org Folder")
+    ("x" (find-file "~/.emacs.d/xkcd/") "xkcd folder")
+    ("q" nil "Quit" :color blue))
+  (defhydra hydra-jump-to-config
+    (:color amaranth
+            :timeout 5)
+    "Open Config files"
+    ("b" (find-file "~/.bashrc") ".bashrc")
+    ("p" (find-file "~/.bash_profile") ".bash_profile")
+    ("e" (find-file "~/.emacs.d/init.el") "emacs init")
+    ("i" (find-file "~/.i3/config") "i3 config")
+    ("q" nil "Quit" :color blue))
+
+  (define-key ak-map "d" 'hydra-jump-to-directory/body)
+  (define-key ak-map "c" 'hydra-jump-to-config/body))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Custom function to mark a field in an org table ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun ak/org-table-mark-field ()
+  "Mark the current table field."
+  (interactive)
+  ;; Do not try to jump to the beginning of field if the point is already there
+  (when (not (looking-back "|\\s-?" nil))
+    (org-table-beginning-of-field 1))
+  (set-mark-command nil)
+  (org-table-end-of-field 1))
+
+(define-key ak-map "-" 'ak/org-table-mark-field)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Move lines up/down                                                                                                      ;;
+
+;; Copied from this
+;; [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow
+;; post]] ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; move the line(s) spanned by the active region up/down (line transposing)
+(defun move-lines (n)
+  (let ((beg) (end) (keep))
+    (if mark-active
+        (save-excursion
+          (setq keep t)
+          (setq beg (region-beginning)
+                end (region-end))
+          (goto-char beg)
+          (setq beg (line-beginning-position))
+          (goto-char end)
+          (setq end (line-beginning-position 2)))
+      (setq beg (line-beginning-position)
+            end (line-beginning-position 2)))
+    (let ((offset (if (and (mark t)
+                           (and (>= (mark t) beg)
+                                (< (mark t) end)))
+                      (- (point) (mark t))))
+          (rewind (- end (point))))
+      (goto-char (if (< n 0) beg end))
+      (forward-line n)
+      (insert (delete-and-extract-region beg end))
+      (backward-char rewind)
+      (if offset (set-mark (- (point) offset))))
+    (if keep
+        (setq mark-active t
+              deactivate-mark nil))))
+
+(defun ak/move-lines-up (n)
+  "move the line(s) spanned by the active region up by N lines."
+  (interactive "*p")
+  (move-lines (- (or n 1))))
+
+(defun ak/move-lines-down (n)
+  "move the line(s) spanned by the active region down by N lines."
+  (interactive "*p")
+  (move-lines (or n 1)))
+
+
+(defhydra hydra-move-lines
+  (:color amaranth
+          :timeout 5)
+  "Move selected lines up/down"
+  ("[" (ak/move-lines-up 1) "Move up")
+  ("]" (ak/move-lines-down 1) "Move down")
+  ("q" nil "Quit" :color blue))
+
+(defhydra hydra-launcher (:color blue)
+  "Launch"
+  ("h" man "man")
+  ("n" (browse-url "http://www.nytimes.com/") "nytimes")
+  ("w" (browse-url "http://www.emacswiki.org/") "emacswiki")
+  ("g" (browse-url "http://www.github.com/") "github")
+  ("c" (browse-url "https://chat.openai.com/") "ChatGPT")
+  ("x" (browse-url "https://xkcd.com/") "xkcd browser")
+  ("s" shell "shell")
+  ("X" xkcd "xkcd - emacs")
+  ("q" nil "cancel"))
+
+
+(defhydra hydra-jump-cursor
+  (:color amaranth)
+  "jump cursor"
+  ("]" (forward-sexp) "Forward sexp")
+  ("[" (backward-sexp) "Backward sexp")
+  ;; ("w" (forward-to-word 1) "Forward word")
+  ("w" (forward-word-strictly 1) "Forward word")
+  ;; ("b" (backward-to-word 1) "Backward word")
+  ("b" (backward-word-strictly 1) "Backward word")
+  ("e" (forward-sentence) "Forward sentence")
+  ("a" (backward-sentence) "Backward sentence")
+  ("}" (forward-paragraph) "Forward para")
+  ("{" (backward-paragraph) "Backward para")
+  ("q" nil "Quit" :color blue))
+
+(global-set-key (kbd "C-c r") 'hydra-launcher/body)
+
+(define-key ak-map "m" 'hydra-move-lines/body)
+
+(define-key ak-map "." 'hydra-jump-cursor/body)
+
+
 (defun ak/reload-xkcd (arg)
   "Load a random xkcd cartoon on the dashboard.
 With PREFIX - load the latest xkcd cartoon"
@@ -42,6 +222,63 @@ With PREFIX - load the latest xkcd cartoon"
 (define-key ak-map "X" 'ak/reload-xkcd)
 
 ;;* Experimental features
+
+
+;; Graveyard
+
+;; ** Line numbers 
+
+;; (use-package linum-relative
+;;   :diminish
+;;   :straight t
+;;   :config
+;;   (setq linum-relative-current-symbol "")
+;;   (add-hook 'prog-mode-hook 'linum-relative-mode)) ;;don't want it global
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Zapping to char
+;; A nifty little package that kills all text between your cursor and
+;; a selected character.  ;; If you wish to include the selected
+;; character in the killed region, change =zzz-up-to-char= to
+;; =zzz-to-char=. ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;   (use-package zzz-to-char
+;;     :straight t
+;;     :bind ("M-z" . zzz-up-to-char))
+
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; * Editing with sudo      
+;; ;; Pretty self-explanatory. 
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;  (use-package sudo-edit
+;;    :straight t
+;;    :bind
+;;      ("s-e" . sudo-edit))
+
+
+
+;;;;;;;;;;;;;;;;;;
+;; Centaur Tabs ;;
+;;;;;;;;;;;;;;;;;;
+
+;; (use-package centaur-tabs
+;;   :straight t
+;;   :demand
+;;   :init
+;;   (setq centaur-tabs-enable-key-bindings t)
+;;   :config
+;;   (centaur-tabs-mode t)
+;;   (setq centaur-tabs-set-modified-marker t
+;;         centaur-tabs-height 24
+;;         centaur-tab-style "slant"
+;;         centaur-tabs-set-icons t
+;;         centaur-tabs-gray-out-icons 'buffer
+;;         uniquify-separator "/"
+;;         uniquify-buffer-name-style 'forward
+;;         centaur-tabs-show-count t ))
+;;   ;; :bind
+;;   ;; ("C-<prior>" . centaur-tabs-backward)
+;;   ;; ("C-<next>" . centaur-tabs-forward))
 
 ;;;;;;;;;;;;
 ;; ** EKG ;;
@@ -304,5 +541,104 @@ With PREFIX - load the latest xkcd cartoon"
   ;;   :bind ("M-y" . popup-kill-ring))
 
 
+;; Function to check for internet being up
+;; (defun internet-up-p (&optional host)
+;;   (= 0 (call-process "ping" nil nil nil "-c" "1" "-W" "1"
+;;                      (if host host "www.google.com"))))
+
+;; (message (if (internet-up-p) "Up" "Down"))
+
+;; (use-package spaceline
+;;   :straight t
+;;   :config
+;;   (require 'spaceline-config)
+;;   (setq spaceline-buffer-encoding-abbrev-p nil
+;;         ;; spaceline-line-column-p nil
+;;         ;; spaceline-line-p nil
+;;         powerline-default-separator (quote utf-8))
+;;   (spaceline-spacemacs-theme))
+
+;; ;;Spaceline is the mode line of choice. looks nice and you can set
+;; ;;nice separators. Using the =all-the-icons= package gives you more
+;; ;;eye-candy.
+;; (use-package spaceline-all-the-icons
+;;   :straight t
+;;   :after spaceline
+;;   :config
+;;   (setq spaceline-all-the-icons-separator-type 'none)
+;;   (spaceline-all-the-icons-theme))
+;;   ;; (spaceline-all-the-icons--setup-neotree))
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; ** company mode ;;
+;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (use-package company
+;;   :straight t
+;;   :config
+;;   (setq company-idle-delay 0
+;;         company-minimum-prefix-length 1))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Org capture stuff                                ;;
+;; This stuff is kind of moot now that I have org-roam ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (global-set-key (kbd "C-c c") 'org-capture)
+
+;; (setq org-capture-templates
+;;       '(("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
+;;          "* %?\nEntered on %U\n  %i\n  %a")
+;;         ("t" "Todo" entry (file+headline "~/Dropbox/org-files/todo.org" "Tasks")
+;;          "* TODO %?\n  %i\n  %a")
+;;         ("n" "Note" entry (file+headline "~/Dropbox/org-files/notes.org" "Notes")
+;;          "* Note %?\n%T")
+;;         ("l" "Links" entry (file+headline "~/Dropbox/org-files/Links.org" "Links")
+;;          "* %? %^L %^g \n%T" :prepend t)
+;;         ))
+;; (setq org-capture-templates
+;;       '(("j" "Journal" entry (file+datetree (format "%s/%s" ak/my-org-file-location "journal.org"))
+;;          "* %?\nEntered on %U\n  %i\n  %a")
+;;         ("t" "Todo" entry (file+headline (concat ak/my-org-file-location "todo.org") "Tasks")
+;;          "* TODO %?\n  %i\n  %a")
+;;         ("n" "Note" entry (file+headline (concat ak/my-org-file-location "notes.org") "Notes")
+;;          "* Note %?\n%T")
+;;         ("l" "Links" entry (file+headline (concat ak/my-org-file-location "Links.org") "Links")
+;;          "* %? %^L %^g \n%T" :prepend t)
+;;         ))
+;;        org-roam-node-display-template "${title:55} ${tags:*}")
+
+;; *** Freemind
+
+;; (use-package ox-freemind
+;;   :ensure t)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Exporting options
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; *** latex
+
+;; (when ak/my-framework-p
+;;   (setenv "PATH" (concat (getenv "PATH") ":/usr/bin"))
+;;  (when (file-directory-p "/usr/share/emacs/site-lisp/tex-utils")
+;;    (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
+;;    (require 'xdvi-search))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Org Bullets                ;;
+;; Makes it all look a bit nicer ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; (use-package org-bullets
+;;   :ensure t
+;;   :config
+;;     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
+;; ;; ** Syntax highlighting for documents exported to HTML ;; ;;
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
+;;   (use-package htmlize                                      ;;
+;;     :straight t)                                            ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'non-core)

@@ -2,12 +2,6 @@
 ;; * Org Common settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(defvar ak/my-org-file-location nil)
-
-(cond (ak/my-framework-p
-       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files")))
-      (ak/my-mac-p
-       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files"))))
                           
 (setq org-ellipsis "⤵"
       org-src-fontify-natively t
@@ -40,73 +34,25 @@
             (visual-line-mode 1)))
 
 
-;;;;;;;;;;;;;;;;;
-;; ** PDF tool ;;
-;;;;;;;;;;;;;;;;;
 
-(when (file-directory-p "/usr/share/emacs/site-lisp/tex-utils")
-  (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
-  (require 'xdvi-search))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
-;; ;; ** Syntax highlighting for documents exported to HTML ;; ;;
-;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ;;
-;;   (use-package htmlize                                      ;;
-;;     :straight t)                                            ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;
 ;; ** Keybindings ;;
 ;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c '") 'org-edit-src-code)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Org Bullets                ;;
-;; Makes it all look a bit nicer ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (use-package org-bullets
-;;   :ensure t
-;;   :config
-;;     (add-hook 'org-mode-hook (lambda () (org-bullets-mode))))
 (use-package org-superstar
-  :straight t
   :config
   (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Exporting options                                                                 ;;
-;; One of the best things about org is the ability to export your file to many formats. ;;
-;; Here is how we add more of them!                                                     ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; *** latex
-
-;; (when ak/my-framework-p
-;;   (setenv "PATH" (concat (getenv "PATH") ":/usr/bin"))
-;;  (when (file-directory-p "/usr/share/emacs/site-lisp/tex-utils")
-;;    (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
-;;    (require 'xdvi-search))
-
-
-;; *** ODT export option
-
-(require 'ox-odt)
-
-;; *** Twitter Bootstrap
-
-(use-package ox-twbs
-  :straight t)
-
 
 ;; *** Reveal.js export
 
 (use-package ox-reveal
   ;; https://github.com/yjwen/org-reveal
-  :straight t
   :config
   (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
   ;;(setq org-reveal-hlevel 2)
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; ;;    Change variable org-reveal-hlevel’s value to set HLevel globally.                                                              ;;
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+  ;; ;;    Change variable org-reveal-hlevel’s value to set HLevel globally.                                                             
   ;; ;; Setting Org files local HLevel to option REVEAL_HLEVEL. #+REVEAL_HLEVEL: 2                                                        ;;
   ;; ;; org-reveal-title-slide nil)                                                                                                       ;;
   ;; ;;   To avoid a title slide, please set variable org-reveal-title-slide to nil, or add reveal_title_slide:nil to #+OPTIONS: line.    ;;
@@ -130,10 +76,6 @@
   )
 
 
-;; *** Freemind
-
-;; (use-package ox-freemind
-;;   :ensure t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Org Babel languages ;;
@@ -208,52 +150,17 @@
    (mermaid . t)
 
    (verb . t)
+   (js . t)
    ))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; # #+begin_src go :imports '("fmt" "time")                                ;;
-;; #   fmt.Println("Current Time:", time.Now())                             ;;
-;; # #+end_src                                                              ;;
-;;                                                                          ;;
-;; # #+RESULTS:                                                             ;;
-;; # : Current Time: 2022-04-06 23:42:34.362804765 -0400 EDT m=+0.000053449 ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Org capture stuff                                ;;
-;; This stuff is kind of moot now that I have org-roam ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; (global-set-key (kbd "C-c c") 'org-capture)
-
-;; (setq org-capture-templates
-;;       '(("j" "Journal" entry (file+datetree "~/Dropbox/org-files/journal.org")
-;;          "* %?\nEntered on %U\n  %i\n  %a")
-;;         ("t" "Todo" entry (file+headline "~/Dropbox/org-files/todo.org" "Tasks")
-;;          "* TODO %?\n  %i\n  %a")
-;;         ("n" "Note" entry (file+headline "~/Dropbox/org-files/notes.org" "Notes")
-;;          "* Note %?\n%T")
-;;         ("l" "Links" entry (file+headline "~/Dropbox/org-files/Links.org" "Links")
-;;          "* %? %^L %^g \n%T" :prepend t)
-;;         ))
-;; (setq org-capture-templates
-;;       '(("j" "Journal" entry (file+datetree (format "%s/%s" ak/my-org-file-location "journal.org"))
-;;          "* %?\nEntered on %U\n  %i\n  %a")
-;;         ("t" "Todo" entry (file+headline (concat ak/my-org-file-location "todo.org") "Tasks")
-;;          "* TODO %?\n  %i\n  %a")
-;;         ("n" "Note" entry (file+headline (concat ak/my-org-file-location "notes.org") "Notes")
-;;          "* Note %?\n%T")
-;;         ("l" "Links" entry (file+headline (concat ak/my-org-file-location "Links.org") "Links")
-;;          "* %? %^L %^g \n%T" :prepend t)
-;;         ))
-;;        org-roam-node-display-template "${title:55} ${tags:*}")
 
 ;;;;;;;;;;;;;;;;;
 ;; ** Org Roam ;;
 ;;;;;;;;;;;;;;;;;
 
 (use-package org-roam
-  :straight t
+  ;; :straight t
   :init
   (setq org-roam-v2-ack t)
   ;; org-roam-database-connector 'sqlite-module)
@@ -298,35 +205,5 @@
   :config
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
-
-
-;;;;;;;;;;;;;;;;;;;;
-;; ** Org present ;;
-;;;;;;;;;;;;;;;;;;;;
-
-(use-package org-present
-  :straight t)
-
-;;;;;;;;;;;;;;;;;;;
-;; ** Org modern ;;
-;;;;;;;;;;;;;;;;;;;
-
-;; (use-package org-modern
-;;   :straight t)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Custom function to mark a field in an org table ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun ak/org-table-mark-field ()
-  "Mark the current table field."
-  (interactive)
-  ;; Do not try to jump to the beginning of field if the point is already there
-  (when (not (looking-back "|\\s-?" nil))
-    (org-table-beginning-of-field 1))
-  (set-mark-command nil)
-  (org-table-end-of-field 1))
-
-(define-key ak-map "-" 'ak/org-table-mark-field)
-
 
 (provide 'init-org-settings)

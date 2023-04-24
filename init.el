@@ -52,13 +52,14 @@
       (eval-print-last-sexp)))
   (load bootstrap-file nil 'nomessage))
 
-(straight-use-package 'use-package)
-(straight-use-package 'org)
+;; (straight-use-package 'use-package)
+;; (straight-use-package 'org)
 
 
 
 (defvar ak/my-framework-p nil)
 (defvar ak/my-mac-p nil)
+(defvar ak/my-package-list nil)
 
 (cond ((string=  (system-name) "arun-framework")
        (setq ak/my-framework-p t))
@@ -72,24 +73,121 @@
 ;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
 
 
+(setq ak/my-package-list
+      '(use-package
+         org
+;;Custom options are defined in init-system-utils
+        avy
+        crux
+        marginalia
+        orderless
+        consult
+        embark
+        embark-consult
+        all-the-icons-dired
+        dired-du
+        dired-open
+        dired-sidebar
+        async
+        dashboard
+        which-key
+        auto-package-update
+        corfu
+        switch-window
+        savehist
+        ;;;;;;;;;;
+        ;;;custom options defined in init-editing-functions
+        hungry-delete
+        mark-multiple 
+        expand-region
+;;Custom options for below are set in the init-looks library
+        modus-themes 
+        fontaine
+        all-the-icons-completion
+        beacon
+        rainbow-mode
+        rainbow-delimiters
+        diminish
+        ;; lambda-line - as it's not a melpa package, had to get it from the github repository below
+        ;;;;;;;;;;;;;;;;;;;
+        ;;custom options for below are in init-org-settings
+        org-superstar
+        ox-reveal
+        org-roam
+        ;;;;;;;;;;;
+        ;;custom options for below are set in the init-programming library
+        exec-path-from-shell
+        yasnippet
+        flycheck
+        lsp-mode
+        lsp-ui
+        lsp-jedi
+        go-mode
+        flycheck-clang-analyzer
+        irony
+        slime
+        json-mode
+        jq-mode
+        json-reformat
+        jq-format
+        verb
+        rustic
+        ob-mermaid
+        projectile
+        magit
+        ;;;;;;;;;;;
+        ;; No custom options defined for the below
+        org-present
+        ox-twbs
+        dired-single
+        hydra
+        mermaid-mode
+        sqlformat
+        restclient
+        ob-restclient
+        request
+        plz
+        ob-go
+        yasnippet-snippets
+        all-the-icons
+        xkcd))
+
+;; Install packages above
+(dolist (package ak/my-package-list)
+  (straight-use-package package))
+
+
+;;custom options for vertico are defined in init-system-utils
+(straight-use-package
+ '(vertico :files (:defaults "extensions/*")))
+
+(straight-use-package
+ '(ox-odt :type git :host github :repo "kjambunathan/org-mode-ox-odt"
+          :files ("lisp/ox-odt.el"
+                           "lisp/odt.el"
+                           "etc"
+                           "docs"
+                           "contrib/odt/LibreOffice")))
+
+
+(straight-use-package
+ '(lambda-line :type git :host github :repo "lambda-emacs/lambda-line"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; New approach to try out - loading custom settings from custom-conf directory
 
-;;(require 'bind-key)
-
 (require 'init-basic)
 
-(require 'custom-keymaps)
+;; (require 'custom-keymaps)
 
 (require 'init-looks)
 
-(require 'switch-window-custom)
+;; (require 'switch-window-custom)
 
 (require 'init-editing-functions)
 
-(require 'crux-custom)
+;; (require 'crux-custom)
 
-(require 'avy-custom)
+;; (require 'avy-custom)
 
 (require 'init-programming)
 
