@@ -93,6 +93,34 @@
   (define-key ak-map "d" 'hydra-jump-to-directory/body)
   (define-key ak-map "c" 'hydra-jump-to-config/body))
 
+(when ak/my-win-framework-p
+  (defhydra hydra-jump-to-directory
+    (:color amaranth
+            :timeout 5)
+    "Jump to directory"
+    ("h" (find-file "c:/") "Root")
+    ("d" (find-file "c:/Users/Arun/Documents/") "Documents")
+    ("p" (find-file "c:/Users/Arun/Desktop/") "Desktop")
+    ("v" (find-file "c:/Users/Arun/Dropbox/") "Dropbox")
+    ("a" (find-file "c:/Users/Arun/Dropbox/Dropbox/articles/") "Articles")
+    ("o" (find-file "c:/Users/Arun/Dropbox/org-files/") "Org Folder")
+    ("e" (find-file "~/.emacs.d/") "Emacs")
+    ("c" (find-file "~/.emacs.d/custom-conf/") "Emacs custom config")
+    ("x" (find-file "~/.emacs.d/xkcd/") "xkcd folder")
+    ("q" nil "Quit" :color blue))
+  ;; (defhydra hydra-jump-to-config
+  ;;   (:color amaranth
+  ;;           :timeout 5)
+  ;;   "Open Config files"
+  ;;   ("b" (find-file "~/.bashrc") ".bashrc")
+  ;;   ("p" (find-file "~/.bash_profile") ".bash_profile")
+  ;;   ("e" (find-file "~/.emacs.d/init.el") "emacs init")
+  ;;   ("i" (find-file "~/.i3/config") "i3 config")
+  ;;   ("q" nil "Quit" :color blue))
+
+  (define-key ak-map "d" 'hydra-jump-to-directory/body))
+  ;; (define-key ak-map "c" 'hydra-jump-to-config/body))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom function to mark a field in an org table ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
