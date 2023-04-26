@@ -180,6 +180,8 @@
   (:color amaranth)
   "jump cursor"
   ("]" (forward-sexp) "Forward sexp")
+  ("<" (beginning-of-buffer) "Beginning of buffer")
+  (">" (end-of-buffer) "End of buffer")
   ("[" (backward-sexp) "Backward sexp")
   ;; ("w" (forward-to-word 1) "Forward word")
   ("w" (forward-word-strictly 1) "Forward word")

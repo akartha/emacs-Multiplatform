@@ -92,7 +92,7 @@
         hungry-delete
         mark-multiple 
         expand-region
-        jinx
+        jinx ;;added Mon 24 Apr 2023 06:15:40 PM EDT
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Custom options for below are set in the init-looks.el library ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

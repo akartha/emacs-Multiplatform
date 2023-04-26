@@ -8,7 +8,6 @@
 
 
 (use-package switch-window
-  ;; :straight t
   :config
   (setq switch-window-input-style 'minibuffer
         switch-window-increase 4
@@ -205,8 +204,6 @@
            (consult-grep buffer)
            (notmuch-result reverse)
            (minor-mode reverse)
-           (reftex-label (:not unobtrusive))
-           (citar-reference reverse)
            (xref-location reverse)
            (history reverse)
            (url reverse)
@@ -220,7 +217,7 @@
            (tab-bookmark-open reverse)
            (dired-goto-file unobtrusive)
            (load-theme my/vertico-grid-mode reverse)
-           (my/toggle-theme my/vertico-grid-mode reverse)
+           ;; (my/toggle-theme my/vertico-grid-mode reverse)
            (org-refile reverse)
            (org-agenda-refile reverse)
            (org-capture-refile reverse)
