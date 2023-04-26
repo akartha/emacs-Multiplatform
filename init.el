@@ -48,11 +48,14 @@
 
 
 (defvar ak/my-framework-p nil)
+(defvar ak/my-win-framework-p nil)
 (defvar ak/my-mac-p nil)
 (defvar ak/my-package-list nil)
 
 (cond ((string=  (system-name) "arun-framework")
        (setq ak/my-framework-p t))
+      ((string=  (system-name) "FRAMEWORKWIN")
+       (setq ak/my-win-framework-p t))
       ((string= (system-name) "Arun-MBP14.local")
        (setq ak/my-mac-p t)))
 
@@ -62,6 +65,12 @@
 
 ;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; need this for windows, as otherwise gpg doesnt understand
+;; the path that gets generated
+
+(when ak/my-win-framework-p
+  (setq package-gnupghome-dir "~/.emacs.d/elpa/gnupg"))
 
 (setq ak/my-package-list
       '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
