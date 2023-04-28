@@ -7,16 +7,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package switch-window
-  :config
-  (setq switch-window-input-style 'minibuffer
-        switch-window-increase 4
-        switch-window-threshold 2
-        switch-window-shortcut-style 'qwerty
-        switch-window-qwerty-shortcuts
-        '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
-  :bind
-  ([remap other-window] . switch-window))
+;; (use-package switch-window
+;;   :config
+;;   (setq switch-window-input-style 'minibuffer
+;;         switch-window-increase 4
+;;         switch-window-threshold 2
+;;         switch-window-shortcut-style 'qwerty
+;;         switch-window-qwerty-shortcuts
+;;         '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+;;   :bind
+;;   ([remap other-window] . switch-window))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** avy
@@ -621,15 +621,44 @@
   (setq tab-always-indent 'complete))
 
 
+;;;;;;;;;;;;;;;;
+;; ACE Window ;;
+;;;;;;;;;;;;;;;;
+
+(use-package ace-window
+  :bind
+  ("C-x o" . ace-window)
+  ("M-o" . other-window)
+  :config
+  (setq aw-dispatch-always t
+        aw-scope 'global
+        aw-background nil
+        aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-dispatch-alist
+        '((?k aw-delete-window "Delete Window")
+          (?m aw-swap-window "Swap Windows")
+          (?M aw-move-window "Move Window")
+          (?c aw-copy-window "Copy Window")
+          (?j aw-switch-buffer-in-window "Select Buffer")
+          (?\t aw-flip-window)
+          (?b aw-switch-buffer-other-window "Switch Buffer Other Window")
+          (?c aw-split-window-fair "Split Fair Window")
+          (?s aw-split-window-vert "Split Vert Window")
+          (?v aw-split-window-horz "Split Horz Window")
+          (?o delete-other-windows "Delete Other Windows")
+          (?? aw-show-dispatch-help)))
+  (defun my/other-window-prev (&optional arg all-frames)
+    (interactive "p")
+    (other-window (if arg (- arg) -1) all-frames)))
+
+
 (use-package auto-package-update
-  ;; :straight t
   :config
   (setq auto-package-update-delete-old-versions t
         auto-package-update-interval 5
         auto-package-update-prompt-before-update t
         auto-package-update-hide-results t)
   (auto-package-update-maybe))
-
 
 
 (provide 'init-system-utils)

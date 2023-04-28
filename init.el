@@ -92,9 +92,10 @@
         which-key
         auto-package-update
         corfu
-        switch-window
+        ;; switch-window ;; commented on Thu 27 Apr 2023 02:03:43 PM EDT
         savehist
         popper ;;added Mon 24 Apr 2023 02:47:04 PM EDT
+        ace-window ;;added Thu 27 Apr 2023 11:40:37 AM EDT
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; custom options defined in init-editing-functions.el ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -195,6 +196,12 @@
 (require 'non-core)
 
 (require 'init-system-utils)
+
+
+(require 'epa-file)
+(epa-file-enable)
+
+(load (expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg"))
 
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
