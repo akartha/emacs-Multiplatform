@@ -96,6 +96,8 @@
         savehist
         popper ;;added Mon 24 Apr 2023 02:47:04 PM EDT
         ace-window ;;added Thu 27 Apr 2023 11:40:37 AM EDT
+        kind-icon ;; added on Sun 30 Apr 2023 12:21:21 PM EDT
+        cape ;; added on Sun 30 Apr 2023 06:01:38 PM EDT
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; custom options defined in init-editing-functions.el ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -142,6 +144,7 @@
         ob-mermaid
         projectile
         magit
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; No custom options defined for the below ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -200,8 +203,6 @@
 
 (require 'epa-file)
 (epa-file-enable)
-
-(load (expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg"))
 
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))

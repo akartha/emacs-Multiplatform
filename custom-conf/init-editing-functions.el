@@ -66,6 +66,23 @@
 
 (define-key ak-map "w" 'ak/copy-whole-word)
 
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ** Improved copy sexp
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun ak/copy-whole-sexp (n)
+  "Copy current sexp, plus additional n words if prefix argument supplied"
+  (interactive "*p")
+  (save-excursion
+    (forward-char 1)
+    (backward-sexp)
+    (kill-sexp (or n 1))
+    (yank))
+  (message (format "Copied %d sexp(s)" (or n 1))))
+
+(define-key ak-map "s" 'ak/copy-whole-sexp)
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Copy a line                                                    ;;
 ;;  Regardless of where your cursor is, this quickly copies a line.  ;;
@@ -84,6 +101,13 @@
 
 (define-key ak-map "l" 'ak/copy-whole-line)
 
+;; (defun ak/copy-lines (n)
+;;   "Copies a lines without regard for cursor position."
+;;   (interactive "*p")
+;;   (save-excursion
+;;     (pos-bol)
+;;     (kill-line (or n 1))))
+    
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Kill a line 
