@@ -199,4 +199,8 @@
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
 
+;; (setenv "GPG_AGENT_INFO" nil)
+
+(setq epa-pinentry-mode 'loopback)
+
 (put 'narrow-to-region 'disabled nil)
