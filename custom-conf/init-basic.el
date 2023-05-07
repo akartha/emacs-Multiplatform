@@ -133,6 +133,12 @@ Does not work with mac- so I have a package for that"
 (global-set-key (kbd "`") 'ak-map)
 (global-set-key (kbd "` `") 'self-insert-command)
 
+(setq epg-pinentry-mode 'loopback) ;;Allows gpg password entry through emacs, rather than external program.
+;; added on Fri 28 Apr 2023 12:11:38 PM EDT
+
+(define-key ak-map "$" '(lambda()
+        (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg"))))
+
 ;;;;;;;;;;;;;;;;;
 ;; ** PDF tool ;;
 ;;;;;;;;;;;;;;;;;
@@ -141,5 +147,7 @@ Does not work with mac- so I have a package for that"
     (file-directory-p "/usr/share/emacs/site-lisp/tex-utils"))
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
   (require 'xdvi-search))
+
+(add-hook 'text-mode-hook 'abbrev-mode)
 
 (provide 'init-basic)

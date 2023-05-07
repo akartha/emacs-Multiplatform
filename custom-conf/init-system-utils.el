@@ -7,16 +7,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-(use-package switch-window
-  :config
-  (setq switch-window-input-style 'minibuffer
-        switch-window-increase 4
-        switch-window-threshold 2
-        switch-window-shortcut-style 'qwerty
-        switch-window-qwerty-shortcuts
-        '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
-  :bind
-  ([remap other-window] . switch-window))
+;; (use-package switch-window
+;;   :config
+;;   (setq switch-window-input-style 'minibuffer
+;;         switch-window-increase 4
+;;         switch-window-threshold 2
+;;         switch-window-shortcut-style 'qwerty
+;;         switch-window-qwerty-shortcuts
+;;         '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+;;   :bind
+;;   ([remap other-window] . switch-window))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** avy
@@ -562,7 +562,7 @@
   (which-key-mode))
 
 ;;;;;;;;;;;
-;; COFRU ;;
+;; CORFU ;;
 ;;;;;;;;;;;
 (use-package corfu
   ;; Optional customizations
@@ -588,6 +588,51 @@
   :init
   (global-corfu-mode))
 
+(use-package kind-icon
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+
+
+;;;;;;;;;;
+;; CAPE ;;
+;;;;;;;;;;
+(use-package cape
+  ;; Bind dedicated completion commands
+  ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :bind (("M-p p" . completion-at-point) ;; capf
+         ("M-p t" . complete-tag)        ;; etags
+         ("M-p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("M-p h" . cape-history)
+         ("M-p f" . cape-file)
+         ("M-p k" . cape-keyword)
+         ("M-p s" . cape-symbol)
+         ("M-p a" . cape-abbrev)
+         ("M-p l" . cape-line)
+         ("M-p w" . cape-dict)
+         ("M-p \\" . cape-tex)
+         ("M-p _" . cape-tex)
+         ("M-p ^" . cape-tex)
+         ("M-p &" . cape-sgml)
+         ("M-p r" . cape-rfc1345))
+  :init
+  ;; Add `completion-at-point-functions', used by `completion-at-point'.
+  ;; NOTE: The order matters!
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  (add-to-list 'completion-at-point-functions #'cape-history)
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)
+  ;;(add-to-list 'completion-at-point-functions #'cape-tex)
+  (add-to-list 'completion-at-point-functions #'cape-sgml)
+  (add-to-list 'completion-at-point-functions #'cape-rfc1345)
+  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-symbol)
+  ;;(add-to-list 'completion-at-point-functions #'cape-line)
+)
 ;;;;;;;;;;;;
 ;; Popper ;;
 ;;;;;;;;;;;;
@@ -598,8 +643,15 @@
   :init
   (setq popper-reference-buffers
         '("\\*Messages\\*"
-          "Output\\*$"
+          "[Oo]utput\\*$"
           "\\*Async Shell Command\\*"
+          "^\\*Backtrace\\*"
+          "\\*Completions\\*"
+          "^\\*ielm\\*"
+          "^Calc:"
+          ("\\*Async Shell Command\\*" . hide)
+          ("^\\*Warnings\\*$" . hide)
+          ("^\\*Compile-Log\\*$" . hide)
           help-mode
           compilation-mode))
   (popper-mode +1)
@@ -621,15 +673,44 @@
   (setq tab-always-indent 'complete))
 
 
+;;;;;;;;;;;;;;;;
+;; ACE Window ;;
+;;;;;;;;;;;;;;;;
+
+(use-package ace-window
+  :bind
+  ("C-x o" . ace-window)
+  ("M-o" . other-window)
+  :config
+  (setq aw-dispatch-always t
+        aw-scope 'global
+        aw-background nil
+        aw-keys '(?a ?s ?d ?f ?g ?h ?j ?k ?l))
+  (setq aw-dispatch-alist
+        '((?k aw-delete-window "Delete Window")
+          (?m aw-swap-window "Swap Windows")
+          (?M aw-move-window "Move Window")
+          (?c aw-copy-window "Copy Window")
+          (?j aw-switch-buffer-in-window "Select Buffer")
+          (?\t aw-flip-window)
+          (?b aw-switch-buffer-other-window "Switch Buffer Other Window")
+          (?c aw-split-window-fair "Split Fair Window")
+          (?s aw-split-window-vert "Split Vert Window")
+          (?v aw-split-window-horz "Split Horz Window")
+          (?o delete-other-windows "Delete Other Windows")
+          (?? aw-show-dispatch-help)))
+  (defun my/other-window-prev (&optional arg all-frames)
+    (interactive "p")
+    (other-window (if arg (- arg) -1) all-frames)))
+
+
 (use-package auto-package-update
-  ;; :straight t
   :config
   (setq auto-package-update-delete-old-versions t
         auto-package-update-interval 5
         auto-package-update-prompt-before-update t
         auto-package-update-hide-results t)
   (auto-package-update-maybe))
-
 
 
 (provide 'init-system-utils)
