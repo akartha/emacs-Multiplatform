@@ -72,6 +72,9 @@
 (when ak/my-win-framework-p
   (setq package-gnupghome-dir "~/.emacs.d/elpa/gnupg"))
 
+;; (when ak/my-framework-p
+;;   (server-start)) ;;added Tue 09 May 2023 11:55:19 PM EDT
+
 (setq ak/my-package-list
       '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Custom options for below are defined in init-system-utils.el ;;
@@ -98,6 +101,7 @@
         ace-window ;;added Thu 27 Apr 2023 11:40:37 AM EDT
         kind-icon ;; added on Sun 30 Apr 2023 12:21:21 PM EDT
         cape ;; added on Sun 30 Apr 2023 06:01:38 PM EDT
+        nerd-icons-dired ;;added Fri 12 May 2023 01:36:19 PM EDT
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; custom options defined in init-editing-functions.el ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -105,6 +109,8 @@
         mark-multiple 
         expand-region
         jinx ;;added Mon 24 Apr 2023 06:15:40 PM EDT
+        gptel ;;added on Tue 09 May 2023 12:06:00 PM EDT
+
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; Custom options for below are set in the init-looks.el library ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
