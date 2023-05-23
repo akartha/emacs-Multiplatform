@@ -102,6 +102,7 @@
         kind-icon ;; added on Sun 30 Apr 2023 12:21:21 PM EDT
         cape ;; added on Sun 30 Apr 2023 06:01:38 PM EDT
         nerd-icons-dired ;;added Fri 12 May 2023 01:36:19 PM EDT
+        nov              ;;added Sun 21 May 2023 12:16:39 PM EDT
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; custom options defined in init-editing-functions.el ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -150,7 +151,6 @@
         ob-mermaid
         projectile
         magit
-
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; No custom options defined for the below ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

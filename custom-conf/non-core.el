@@ -8,10 +8,10 @@
                          (switch-to-buffer "*scratch*")))
 
 ;; Switch to scratch buffer
-(define-key ak-map "Z" (lambda ()
-                         "Create new scratch buffer to scratch"
-                         (interactive)
-                         (switch-to-buffer "*scratch*")))
+;; (define-key ak-map "Z" (lambda ()
+;;                          "Create new scratch buffer to scratch"
+;;                          (interactive)
+;;                          (switch-to-buffer "*scratch*")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; *** Following window splits
@@ -68,18 +68,25 @@
   (defhydra hydra-jump-to-directory
     (:color amaranth
             :timeout 5)
-    "Jump to directory"
-    ("h" (find-file "~/") "Home")
-    ("d" (find-file "~/Documents") "Documents")
-    ("v" (find-file "~/Dropbox") "Dropbox")
-    ("a" (find-file "~/Dropbox/articles/") "Articles")
-    ("e" (find-file "~/.emacs.d/") "Emacs")
-    ("c" (find-file "~/.emacs.d/custom-conf/") "Emacs custom config")
-    ("s" (find-file "~/scripts/") "Scripts")
-    ("p" (find-file "~/projects/") "Projects")
-    ("o" (find-file "~/Dropbox/org-files/") "Org Folder")
-    ("x" (find-file "~/.emacs.d/xkcd/") "xkcd folder")
-    ("q" nil "Quit" :color blue))
+"
+^System^          ^Projects^            ^Personal^        
+^^^^^^^^--------------------------------------------------
+_h_: ~            _c_: emacs custom     _v_: Dropbox      
+_d_: Documents    _s_: Scripts          _o_: orgs     
+_e_: emacs        _p_: projects         _a_: Articles         
+^ ^               ^ ^                   _x_: xkcd          _q_: quit 
+"
+    ("h" (find-file "~/"))
+    ("d" (find-file "~/Documents"))
+    ("v" (find-file "~/Dropbox"))
+    ("a" (find-file "~/Dropbox/articles/"))
+    ("e" (find-file "~/.emacs.d/") )
+    ("c" (find-file "~/.emacs.d/custom-conf/") )
+    ("s" (find-file "~/scripts/") )
+    ("p" (find-file "~/projects/") )
+    ("o" (find-file "~/Dropbox/org-files/") )
+    ("x" (find-file "~/.emacs.d/xkcd/") )
+    ("q" nil :color blue))
   (defhydra hydra-jump-to-config
     (:color amaranth
             :timeout 5)
@@ -97,29 +104,48 @@
   (defhydra hydra-jump-to-directory
     (:color amaranth
             :timeout 5)
-    "Jump to directory"
-    ("h" (find-file "c:/") "Root")
-    ("d" (find-file "c:/Users/Arun/Documents/") "Documents")
-    ("p" (find-file "c:/Users/Arun/Desktop/") "Desktop")
-    ("v" (find-file "c:/Users/Arun/Dropbox/") "Dropbox")
-    ("a" (find-file "c:/Users/Arun/Dropbox/Dropbox/articles/") "Articles")
-    ("o" (find-file "c:/Users/Arun/Dropbox/org-files/") "Org Folder")
-    ("e" (find-file "~/.emacs.d/") "Emacs")
-    ("c" (find-file "~/.emacs.d/custom-conf/") "Emacs custom config")
-    ("x" (find-file "~/.emacs.d/xkcd/") "xkcd folder")
-    ("q" nil "Quit" :color blue))
-  ;; (defhydra hydra-jump-to-config
-  ;;   (:color amaranth
-  ;;           :timeout 5)
-  ;;   "Open Config files"
-  ;;   ("b" (find-file "~/.bashrc") ".bashrc")
-  ;;   ("p" (find-file "~/.bash_profile") ".bash_profile")
-  ;;   ("e" (find-file "~/.emacs.d/init.el") "emacs init")
-  ;;   ("i" (find-file "~/.i3/config") "i3 config")
-  ;;   ("q" nil "Quit" :color blue))
-
+    "
+^System^          ^Projects^            ^Personal^        
+^^^^^^^^--------------------------------------------------
+_h_: c:\          _c_: emacs custom     _v_: Dropbox      
+_d_: Documents    ^ ^                   _o_: orgs     
+_e_: emacs        ^ ^                   _a_: Articles         
+_p_: Desktop      ^ ^                   _x_: xkcd          _q_: quit
+"
+    ("h" (find-file "c:/") )
+    ("d" (find-file "c:/Users/Arun/Documents/") )
+    ("p" (find-file "c:/Users/Arun/Desktop/") )
+    ("v" (find-file "c:/Users/Arun/Dropbox/") )
+    ("a" (find-file "c:/Users/Arun/Dropbox/Dropbox/articles/") )
+    ("o" (find-file "c:/Users/Arun/Dropbox/org-files/")  )
+    ("e" (find-file "~/.emacs.d/") )
+    ("c" (find-file "~/.emacs.d/custom-conf/") )
+    ("x" (find-file "~/.emacs.d/xkcd/") )
+    ("q" nil :color blue))
+  
   (define-key ak-map "d" 'hydra-jump-to-directory/body))
-  ;; (define-key ak-map "c" 'hydra-jump-to-config/body))
+  
+  (defhydra hydra-resize-window
+    (:color amaranth
+            :timeout 5)
+    "
+^Sideways^             ^Vertically^         ^Absolute^              ^Command and quit
+^^^^^^^^--------------------------------------------------------------------------------
+_[_: Shrink            _,_: Shrink          _-_: Shrink to fit      _o_: Other window
+_]_: Enlarge           _._: Enlarge         _=_: balance            _s_: Ace-window
+^ ^                    ^ ^                  ^ ^                     _q_: quit 
+"
+    ("[" (shrink-window-horizontally 2))
+    ("]" (enlarge-window-horizontally 2))
+    ("," (shrink-window 2))
+    ("." (enlarge-window 2))
+    ("-" (shrink-window-if-larger-than-buffer) :color blue)
+    ("=" (balance-windows) :color blue)
+    ("o" (other-window 1) :color blue)
+    ("s" (ace-window 1) :color blue)
+    ("q" nil :color blue))
+  
+  (define-key ak-map "]" 'hydra-resize-window/body)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom function to mark a field in an org table ;;
@@ -273,7 +299,13 @@ With PREFIX - load the latest xkcd cartoon"
                                 (car (last (split-string url "/" t))))))))))
 
 ;;* Experimental features
-
+(defun ak/lookup-word(arg)
+  "Lookup current word in the dictionaries. With
+PREFIX, specify word to search"
+  (interactive "P")
+  (if arg
+    (dictionary-search nil)
+      (dictionary-lookup-definition)))
 
 ;; Graveyard
 

@@ -152,5 +152,17 @@ Does not work with mac- so I have a package for that"
 
 (setq gptel-default-mode 'org-mode) ;;added on Tue 09 May 2023 12:34:28 PM EDT
 
+(setq delete-by-moving-to-trash t)
+
+;; Below, with tweaks, is from https://www.masteringemacs.org/article/maximizing-emacs-startup
+(defun ak/maximize-frame ()
+  "Maximizes the active frame in Windows"
+  (interactive)
+  ;; Send a `WM_SYSCOMMAND' message to the active frame with the
+  ;; `SC_MAXIMIZE' parameter.
+  (if ak/generic-windows-p
+      (w32-send-sys-command 61488)))
+
+(add-hook 'window-setup-hook 'ak/maximize-frame t)
 
 (provide 'init-basic)
