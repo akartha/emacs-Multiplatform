@@ -123,11 +123,11 @@ Does not work with mac- so I have a package for that"
 (defvar ak/my-org-file-location nil)
 
 (cond (ak/my-framework-p
-       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files")))
+       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
       (ak/my-win-framework-p
        (setq ak/my-org-file-location (expand-file-name "c:/Users/Arun/Dropbox/org-files/")))
       (ak/my-mac-p
-       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files"))))
+       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files/"))))
 
 (define-prefix-command 'ak-map)
 (global-set-key (kbd "`") 'ak-map)

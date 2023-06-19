@@ -1,4 +1,4 @@
-;; -*- lexical-binding: t; -*-
+;;; -*- lexical-binding: t; -*-
 
 (require 'projectile)
 
@@ -531,7 +531,10 @@
            (dired-dwim-target t))
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump)
-         ("C-x 4 C-j" . dired-jump-other-window)))
+         ("C-x 4 C-j" . dired-jump-other-window))
+  :config
+  ;;disabling this as I was seeing delays when autorevert mode is on
+  (setq dired-free-space nil)) 
 
 
 ;; (use-package all-the-icons-dired
@@ -543,13 +546,14 @@
 
 (use-package dired-open
   :config
-  (setq dired-open-extensions '(("png" . "feh")
-                                ("m4a" . "mpv")
-                                ("mkv" . "vlc")
-                                ("mp4" . "vlc")
-                                ("mp3" . "mpv")
-                                ("avi" . "vlc")
-                                ("opus" . "mpv"))))
+  (when ak/my-framework-p
+    (setq dired-open-extensions '(("png" . "feh")
+                                  ("m4a" . "mpv")
+                                  ("mkv" . "vlc")
+                                  ("mp4" . "vlc")
+                                  ("mp3" . "mpv")
+                                  ("avi" . "vlc")
+                                  ("opus" . "mpv")))))
 
 (use-package dired-sidebar
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
@@ -564,7 +568,7 @@
   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
 
   (setq dired-sidebar-subtree-line-prefix "__")
-  (setq dired-sidebar-theme 'vscode)
+  (setq dired-sidebar-theme 'nerd)
   (setq dired-sidebar-use-term-integration t)
   (setq dired-sidebar-use-custom-font t))
 

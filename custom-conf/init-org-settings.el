@@ -15,7 +15,7 @@
       org-log-done 'time
       org-log-into-drawer t
 
-      org-agenda-files ak/my-org-file-location
+      ;; org-agenda-files ak/my-org-file-location
 
       org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
@@ -23,7 +23,9 @@
 
       org-src-window-setup 'current-window)
 
-
+(custom-set-variables
+ '(org-directory ak/my-org-file-location)
+ '(org-agenda-files (list (concat org-directory "/agenda"))))
 
 (add-hook 'org-mode-hook 'org-indent-mode)
 (add-hook 'org-mode-hook 'yas-minor-mode)
