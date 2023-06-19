@@ -87,7 +87,7 @@
         embark
         embark-consult
         all-the-icons-dired
-        dired-du
+        ;; dired-du
         dired-open
         dired-sidebar
         async
@@ -167,7 +167,12 @@
         ob-go
         yasnippet-snippets
         all-the-icons
-        xkcd))
+        xkcd
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        ;; non-core / experimental  ;;
+        ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        emms
+        emms-state))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)
@@ -194,7 +199,8 @@
 
 (require 'init-basic)
 
-(require 'init-looks)
+(when (window-system)
+  (require 'init-looks))
 
 (require 'init-editing-functions)
 
