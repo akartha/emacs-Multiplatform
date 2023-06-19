@@ -1,3 +1,4 @@
+;;; -*- lexical-binding: t; -*-
 (require 'xkcd)
 
 
@@ -306,6 +307,58 @@ PREFIX, specify word to search"
   (if arg
     (dictionary-search nil)
       (dictionary-lookup-definition)))
+
+;; (require 'emms-setup)
+;; (emms-all)
+;; (setq emms-player-list '(emms-player-mpv)
+;;       emms-info-functions '(emms-info-native))
+
+(define-prefix-command 'ak-emms-map)
+(global-set-key (kbd "` p") 'ak-emms-map)
+
+(use-package emms-setup
+  :when ak/my-framework-p
+  :init
+  (add-hook 'emms-player-started-hook 'emms-show)
+  (setq emms-show-format "Playing: %s")
+  :config
+  (emms-all)
+  (setq emms-player-list '(emms-player-mpv)
+        emms-info-functions '(emms-info-native))
+
+  (defun fg-emms-track-description (track)
+    "Return a somewhat nice track description."
+    (let ((artist (emms-track-get track 'info-artist))
+          (year (emms-track-get track 'info-year))
+          (album (emms-track-get track 'info-album))
+          (tracknumber (emms-track-get track 'info-tracknumber))
+          (title (emms-track-get track 'info-title)))
+      (cond
+       ((or artist title)
+        (concat (if (> (length artist) 0) artist "Unknown artist") " - "
+                (if (> (length year) 0) year "XXXX") " - "
+                (if (> (length album) 0) album "Unknown album") " - "
+                (if (> (length tracknumber) 0)
+                    (format "%02d" (string-to-number tracknumber))
+                  "XX") " - "
+                (if (> (length title) 0) title "Unknown title")))
+       (t (emms-track-simple-description track)))))
+
+  (setq emms-track-description-function 'fg-emms-track-description)
+  :bind
+  (:map ak-emms-map
+  ("p" . emms-pause)
+  ("s" . emms-stop)
+  ("b" . emms-browser)
+  ("=" . emms-bookmarks-add)
+  ("{" . emms-bookmarks-prev)
+  ("}" . emms-bookmarks-next)
+  ("<" . (lambda () (interactive) (emms-seek -30)))
+  (">" . (lambda () (interactive) (emms-seek 30)))
+  ("[" . emms-seek-backward)
+  ("]" . emms-seek-forward)))
+
+(eval-after-load 'emms '(emms-state-mode))
 
 ;; Graveyard
 
