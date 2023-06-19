@@ -23,8 +23,10 @@
       kill-ring-max 100
 ;;;    Indenting
       indent-line-function 'insert-tab
-      ;; Sentence end need not be "  " (double space)
-      sentence-end-double-space nil)
+      electric-indent-mode nil ;;annoying when it tabs on text files. Maybe I should only enable for prog-mode
+      sentence-end-double-space nil)  ;; Sentence end need not be double spaced
+
+(add-hook 'after-change-major-mode-hook (lambda() (electric-indent-mode -1)))
 
 ;; More performant rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling.
@@ -139,6 +141,9 @@ Does not work with mac- so I have a package for that"
 (define-key ak-map "$" '(lambda() (interactive)
         (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg"))))
 
+(define-key ak-map "0" 'repeat)
+
+
 ;;;;;;;;;;;;;;;;;
 ;; ** PDF tool ;;
 ;;;;;;;;;;;;;;;;;
@@ -164,5 +169,9 @@ Does not work with mac- so I have a package for that"
       (w32-send-sys-command 61488)))
 
 (add-hook 'window-setup-hook 'ak/maximize-frame t)
+
+;; added on Sat 10 Jun 2023 11:48:49 AM EDT from prots search video
+(setq isearch-lazy-count t)
+(setq lazy-count-prefix-format "(%s/%s) ")
 
 (provide 'init-basic)
