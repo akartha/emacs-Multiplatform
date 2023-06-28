@@ -637,8 +637,8 @@
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-exclude-modes'.
   :init
-  (global-corfu-mode))
-
+  ;; (global-corfu-mode))
+)
 (use-package kind-icon
   :after corfu
   :custom
@@ -671,7 +671,7 @@
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
-  (add-to-list 'completion-at-point-functions #'cape-dict)
+  ;; (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
 
   (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
@@ -682,7 +682,7 @@
   ;;(add-to-list 'completion-at-point-functions #'cape-tex) 
   ;; (add-to-list 'completion-at-point-functions #'cape-sgml)
   ;; (add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;;(add-to-list 'completion-at-point-functions #'cape-abbrev)
+  (add-to-list 'completion-at-point-functions #'cape-abbrev)
   (add-to-list 'completion-at-point-functions #'cape-symbol)
   ;;(add-to-list 'completion-at-point-functions #'cape-line)
 )
@@ -766,13 +766,13 @@
   ;; (setq nov-text-width 100)
   )
 
-(use-package auto-package-update
-  :config
-  (setq auto-package-update-delete-old-versions t
-        auto-package-update-interval 5
-        auto-package-update-prompt-before-update t
-        auto-package-update-hide-results t)
-  (auto-package-update-maybe))
+;; (use-package auto-package-update
+;;   :config
+;;   (setq auto-package-update-delete-old-versions t
+;;         auto-package-update-interval 5
+;;         auto-package-update-prompt-before-update t
+;;         auto-package-update-hide-results t)
+;;   (auto-package-update-maybe))
 
 
 (provide 'init-system-utils)

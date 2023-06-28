@@ -93,7 +93,7 @@
         async
         dashboard
         which-key
-        auto-package-update
+        ;; auto-package-update
         corfu
         ;; switch-window ;; commented on Thu 27 Apr 2023 02:03:43 PM EDT
         savehist
@@ -172,7 +172,8 @@
         ;; non-core / experimental  ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         emms
-        emms-state))
+        emms-state
+        key-chord))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)

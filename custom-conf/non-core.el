@@ -360,6 +360,15 @@ PREFIX, specify word to search"
 
 (eval-after-load 'emms '(emms-state-mode))
 
+
+(require 'key-chord)
+(key-chord-mode t)
+
+(key-chord-define-global "  " 'execute-extended-command)
+(key-chord-define-global "aa" 'move-beginning-of-line)
+(key-chord-define-global "''" 'move-end-of-line)
+
+
 ;; Graveyard
 
 ;; ** Line numbers 
