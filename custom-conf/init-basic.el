@@ -13,7 +13,7 @@
       make-backup-files nil
       auto-save-default t
       global-auto-revert-non-file-buffers t ;; Revert Dired and other buffers
-      history-length 50
+      history-length 200
       ;;Show the current line and column for your cursor.
       line-number-mode t
       column-number-mode t

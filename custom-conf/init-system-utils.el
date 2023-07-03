@@ -144,8 +144,13 @@
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
 (use-package savehist
-  :init
-  (savehist-mode))
+  ;; :init
+  ;; (savehist-mode 1)
+  :config
+  (add-to-list 'savehist-additional-variables 'register-alist)
+  (add-to-list 'savehist-additional-variables '(search-ring . 100 ))
+  (add-to-list 'savehist-additional-variables 'regexp-search-ring)
+  (add-to-list 'savehist-additional-variables '(kill-ring . 100))) ;;dont want to go insane with the number of clipboard items saved.
 
 ;; A few more useful bits...
 (use-package emacs
@@ -187,8 +192,8 @@
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 (use-package vertico-multiform
-  :commands vertico-multiform-mode
-  :after vertico-flat
+  :commands vertico-multiform-mode vertico-multiform-quick
+  :after vertico-flat vertico-quick
   :bind (:map vertico-map
               ("M-q" . vertico-multiform-flat)
               ("C-q" . vertico-multiform-quick)
@@ -629,17 +634,47 @@
   (corfu-scroll-margin 5)        ;; Use scroll margin
 
   ;; Enable Corfu only for certain modes.
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode))
+  :hook ((prog-mode . corfu-mode)
+         (shell-mode . corfu-mode)
+         (eshell-mode . corfu-mode))
 
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
   ;; See also `corfu-exclude-modes'.
-  :init
+  ;; :config 
   ;; (global-corfu-mode))
-)
-(use-package kind-icon
+  :bind
+  ;; Another key binding can be used, such as S-SPC.
+  (:map corfu-map 
+        ("M-SPC" . corfu-insert-separator)
+        ("<escape>" . corfu-quit)))
+
+	
+
+;; (use-package corfu-doc
+;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
+;;   ;; :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
+;;   :after corfu
+;;   :hook (corfu-mode . corfu-doc-mode)
+;;   :bind 
+;;   (:map corfu-map
+;;             ;; This is a manual toggle for the documentation popup.
+;;             ;; (:remap corfu-show-documentation . corfu-doc-toggle) ; Remap the default doc command
+;;             ;; Scroll in the documentation window
+;;             ("M-n" . corfu-doc-scroll-up)
+;;             ("M-p" . corfu-doc-scroll-down))
+;;   :custom
+;;   (corfu-doc-delay 0.5)
+;;   (corfu-doc-max-width 70)
+;;   (corfu-doc-max-height 20)
+
+;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+;;   (corfu-echo-documentation nil))
+
+
+(use-package kind-icon 
   :after corfu
   :custom
   (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
@@ -651,7 +686,7 @@
 ;; CAPE ;;
 ;;;;;;;;;;
 (use-package cape
-  ;; Bind dedicated completion commands
+  ;; Bind rededicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
   :bind (("M-p p" . completion-at-point) ;; capf
          ("M-p t" . complete-tag)        ;; etags
@@ -659,7 +694,7 @@
          ("M-p h" . cape-history)
          ("M-p f" . cape-file)
          ("M-p k" . cape-keyword)
-         ("M-p s" . cape-symbol)
+         ("M-p s" . cape-symbol) 
          ("M-p a" . cape-abbrev)
          ("M-p l" . cape-line)
          ("M-p w" . cape-dict)
