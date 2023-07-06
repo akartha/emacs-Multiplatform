@@ -9,6 +9,12 @@
                          (switch-to-buffer "*scratch*")))
 
 ;; Switch to scratch buffer
+(define-key ak-map "2" (lambda ()
+                         "Switch to scratch"
+                         (interactive)
+                         (switch-to-buffer(get-buffer-create "*scratch-text*"))))
+
+;; Switch to scratch buffer
 ;; (define-key ak-map "Z" (lambda ()
 ;;                          "Create new scratch buffer to scratch"
 ;;                          (interactive)

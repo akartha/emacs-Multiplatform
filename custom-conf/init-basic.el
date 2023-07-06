@@ -143,6 +143,16 @@ Does not work with mac- so I have a package for that"
 
 (define-key ak-map "0" 'repeat)
 
+(use-package savehist
+  :defer
+  ;; :init
+  ;; (savehist-mode 1)
+  :config
+  (add-to-list 'savehist-additional-variables 'register-alist)
+  (add-to-list 'savehist-additional-variables '(search-ring . 100 ))
+  (add-to-list 'savehist-additional-variables 'regexp-search-ring)
+  (add-to-list 'savehist-additional-variables '(kill-ring . 100))) ;;dont want to go insane with the number of clipboard items saved.
+
 
 ;;;;;;;;;;;;;;;;;
 ;; ** PDF tool ;;

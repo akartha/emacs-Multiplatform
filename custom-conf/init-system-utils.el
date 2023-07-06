@@ -143,14 +143,6 @@
               ("C-l"     . embark-export)))
 
 ;; Persist history over Emacs restarts. Vertico sorts by history position.
-(use-package savehist
-  ;; :init
-  ;; (savehist-mode 1)
-  :config
-  (add-to-list 'savehist-additional-variables 'register-alist)
-  (add-to-list 'savehist-additional-variables '(search-ring . 100 ))
-  (add-to-list 'savehist-additional-variables 'regexp-search-ring)
-  (add-to-list 'savehist-additional-variables '(kill-ring . 100))) ;;dont want to go insane with the number of clipboard items saved.
 
 ;; A few more useful bits...
 (use-package emacs
@@ -192,17 +184,16 @@
   :hook (rfn-eshadow-update-overlay . vertico-directory-tidy))
 
 (use-package vertico-multiform
-  :commands vertico-multiform-mode vertico-multiform-quick
-  :after vertico-flat vertico-quick
+  :commands vertico-multiform-mode 
+  :after vertico-flat 
   :bind (:map vertico-map
               ("M-q" . vertico-multiform-flat)
-              ("C-q" . vertico-multiform-quick)
               ("C-l" . my/vertico-multiform-unobtrusive)
               ("C-M-l" . embark-export))
   :init (vertico-multiform-mode 1)
   :config
   (setq vertico-multiform-categories
-         '((file reverse my/vertico-grid-mode)
+         '((file my/vertico-grid-mode reverse)
            (project-file my/vertico-grid-mode reverse)
            (imenu buffer)
            (consult-location buffer)
@@ -270,12 +261,12 @@
     (cond
      (my/vertico-grid-mode
       (setq my/vertico-count-orig vertico-count)
-      (setq vertico-count 4)
+      (setq vertico-count 5)
       (vertico-grid-mode 1))
      (t (vertico-grid-mode 0)
         (setq vertico-count my/vertico-count-orig))))
-  (setq vertico-grid-separator "    ")
-  (setq vertico-grid-lookahead 50))
+  (setq vertico-grid-separator "    "))
+  ;; (setq vertico-grid-lookahead 100))
 
 (use-package vertico-quick
   :after vertico
@@ -293,14 +284,9 @@
 (use-package vertico-repeat
   :after vertico
   :hook (minibuffer-setup . vertico-repeat-save)
-  :bind (("C-x ." . vertico-repeat)
-         ("H-."   . vertico-repeat))
+  :bind (("C-x ." . vertico-repeat))
   :config
-  (use-package savehist
-    :defer
-    :config
-    (add-to-list 'savehist-additional-variables
-                 'vertico-repeat-history)))
+    (add-to-list 'savehist-additional-variables 'vertico-repeat-history))
 
 (use-package vertico-reverse
   ;; :disabled
