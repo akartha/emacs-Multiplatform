@@ -516,10 +516,13 @@
 ;;;;;;;;;;;
 
 (use-package dired
-  :custom ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
-           (dired-recursive-copies 'always)
-           (dired-recursive-deletes 'always)
-           (dired-dwim-target t))
+  :init (if ak/my-mac-p 
+            (setq insert-directory-program "gls" 
+                  dired-use-ls-dired t))
+  :custom  ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
+            (dired-recursive-copies 'always)
+            (dired-recursive-deletes 'always)
+            (dired-dwim-target t))
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump)
          ("C-x 4 C-j" . dired-jump-other-window))
