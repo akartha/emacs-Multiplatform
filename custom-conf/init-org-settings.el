@@ -262,7 +262,7 @@ same directory as the org-buffer and insert a link to this file."
       ((filename (read-from-minibuffer "image file name: "))
        (directory "_media")
        (linux-shell-clip-command "xclip -selection clipboard -t image/png -o > %s/%s/%s.png")
-       (windows-shell-clip-command "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('%s',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+       (windows-shell-clip-command "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('%s.png',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
 
     (when ak/my-framework-p
       (make-directory directory t)
