@@ -262,19 +262,24 @@ same directory as the org-buffer and insert a link to this file."
       ((filename (read-from-minibuffer "image file name: "))
        (directory "_media")
        (linux-shell-clip-command "xclip -selection clipboard -t image/png -o > %s/%s/%s.png")
+       (mac-shell-clip-command "pngpaste %s.png")
        (windows-shell-clip-command "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('%s.png',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
 
-    (when ak/my-framework-p
-      (make-directory directory t)
-      (shell-command (format linux-shell-clip-command default-directory directory filename )))
+    (cond (ak/my-framework-p
+           (make-directory directory t)
+           (shell-command (format linux-shell-clip-command default-directory directory filename )))
 
-    (when ak/generic-windows-p
-      (make-directory directory t)
-      (shell-command (format windows-shell-clip-command (concat directory "/" filename))))
+          (ak/generic-windows-p
+           (make-directory directory t)
+           (shell-command (format windows-shell-clip-command (concat directory "/" filename))))
+
+          (ak/my-mac-p
+           (make-directory directory t)
+           (shell-command (format mac-shell-clip-command (concat directory "/" filename)))))
+
 
     ;; Insert formatted link at point
-    (save-excursion (insert(format
-                            "#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
+    (save-excursion (insert(format "#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
                             directory filename)))
 
     ;; Message success to the minibuffer
