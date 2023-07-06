@@ -259,7 +259,8 @@ same directory as the org-buffer and insert a link to this file."
   (interactive)
   (let
       ;; Read Filename from Minibuffer
-      ((filename (read-from-minibuffer "image file name: "))
+      ((filename (read-from-minibuffer "Image file name: "))
+       (caption (read-from-minibuffer "Image Caption: "))
        (directory "_media")
        (linux-shell-clip-command "xclip -selection clipboard -t image/png -o > %s/%s/%s.png")
        (mac-shell-clip-command "pngpaste %s.png")
@@ -279,8 +280,14 @@ same directory as the org-buffer and insert a link to this file."
 
 
     ;; Insert formatted link at point
+<<<<<<< HEAD
     (save-excursion (insert(format "#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
                             directory filename)))
+=======
+    (save-excursion (insert(format
+                            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
+                            caption caption directory filename)))
+>>>>>>> 13531b1 (Extend screencapture snippet to get captions)
 
     ;; Message success to the minibuffer
     (message "saved to %s as %s.png" directory filename)))
