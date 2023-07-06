@@ -280,14 +280,8 @@ same directory as the org-buffer and insert a link to this file."
 
 
     ;; Insert formatted link at point
-<<<<<<< HEAD
-    (save-excursion (insert(format "#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
-                            directory filename)))
-=======
     (save-excursion (insert(format
-                            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
-                            caption caption directory filename)))
->>>>>>> 13531b1 (Extend screencapture snippet to get captions)
+                            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]" caption caption directory filename)))
 
     ;; Message success to the minibuffer
     (message "saved to %s as %s.png" directory filename)))
