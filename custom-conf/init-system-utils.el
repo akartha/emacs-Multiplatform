@@ -2,105 +2,6 @@
 
 (require 'projectile)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; *** Switch-window
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; (use-package switch-window
-;;   :config
-;;   (setq switch-window-input-style 'minibuffer
-;;         switch-window-increase 4
-;;         switch-window-threshold 2
-;;         switch-window-shortcut-style 'qwerty
-;;         switch-window-qwerty-shortcuts
-;;         '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
-;;   :bind
-;;   ([remap other-window] . switch-window))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** avy
-;; ;; https://github.com/abo-abo/avy
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-(define-prefix-command 'avy-custom-keymap)
-(global-set-key (kbd "` y") 'avy-custom-keymap)
-
-
-(use-package avy
-  ;; :straight t
-  :bind
-  (:map avy-custom-keymap
-        ("l" . avy-goto-line)
-        ;;    ("L" . avy-move-line)
-        ("m" . avy-move-region)
-        ;;        ("p" . avy-goto-line-above)
-        ;;      ("n" . avy-goto-line-below)
-        ("c" . avy-goto-char-timer)
-        ("w" . avy-goto-word-0)
-        ("t" . avy-transpose-lines-in-region)
-        ;;  ("k" . avy-kill-ring-save-whole-line)
-        ;;  ("K" . avy-kill-whole-line)
-        ("r" . avy-kill-ring-save-region)
-        ("R" . avy-kill-region)
-        ("s" . avy-goto-symbol-1)
-        ("h" . avy-org-goto-heading-timer)))
-
-
-(defun ak/avy-org-table-1-char ()
-  "Avy navigation of cells in org-mode tables based on any char in the cell.
-    `SPC` can be used to jump to any cell. "
-  (interactive)
-  ;; set some variables to limit candidates to the current table
-  (let ((table-begin (save-excursion (goto-char (org-table-begin)) (forward-line -1) (point)))
-        (table-end (save-excursion (goto-char (org-table-end)) (forward-line) (point))))
-    ;; jump to the desired cell and re-align
-    ;; (goto-char
-    (avy-with avy-goto-word-0
-      (avy-jump (concat "|\\{1\\}[^-\n|]+" (char-to-string (read-char "char: " t)))
-                :window-flip nil
-                :beg table-begin
-                :end table-end )))
-(org-table-end-of-field 1 ))
-    
-(define-key ak-map "%" 'ak/avy-org-table-1-char)
-
-;;;;;;;;;;;;;;;;;;;;;;
-;; ** CRUX 
-;;;;;;;;;;;;;;;;;;;;;
-
-(define-prefix-command 'ak-crux-map)
-(global-set-key (kbd "` x") 'ak-crux-map)
-
-(use-package crux
-  :bind
-  ("C-k" . crux-smart-kill-line)
-  (:map ak-crux-map
-        ;;     ("U" . crux-view-url)
-        ;;("a" . crux-ispell-word-then-abbrev)
-        ("." . crux-find-shell-init-file)
-        ("1" . crux-find-user-init-file)
-        ("a" . crux-move-beginning-of-line)
-        ("o" . crux-smart-open-line)
-        ("O" . crux-smart-open-line-above)
-        ("d" . crux-duplicate-current-line-or-region)
-        ("j" . crux-top-join-line)
-        ("k" . crux-kill-line-backwards)
-        ("C" . crux-cleanup-buffer-or-region)
-        ("r" . crux-recentf-find-file)
-        ("D" . crux-recentf-find-directory)
-        ("U" . crux-upcase-region)
-        ("L" . crux-downcase-region)
-        ("i" . crux-insert-date)
-        ("c" . crux-capitalize-region)
-        ("w" . crux-other-window-or-switch-buffer)
-        ("s" . crux-sudo-edit)
-        ("<f2>" . crux-rename-buffer-and-file)
-        ("<delete>" . crux-delete-file-and-buffer)
-        (";" . crux-duplicate-and-comment-current-line-or-region)
-        ("<f3>" . crux-kill-buffer-truename)
-        ("<tab>" . crux-indent-defun)))
 
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
@@ -109,11 +10,10 @@
 (use-package vertico
   :init
   (vertico-mode 1)
-
   ;; Different scroll margin
-  ;; (setq vertico-scroll-margin 0)
+  (setq vertico-scroll-margin 1)
   ;; Show more candidates
-  (setq vertico-count 15)
+  (setq vertico-count 10)
   ;; Grow and shrink the Vertico minibuffer
   (setq vertico-resize t)
   ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
@@ -125,7 +25,7 @@
   :bind (:map vertico-map
               ("M-RET"   . nil)
               ("M-s"     . nil)
-              ("M-i"     . vertico-insert)
+              ("<tab>"     . vertico-insert)
               ("C-M-n"   . vertico-next-group)
               ("C-M-p"   . vertico-previous-group)
               ("C-j"     . (lambda () (interactive)
@@ -134,15 +34,9 @@
 	        	               (exit-minibuffer))))
               ("C->"     . embark-become)
               (">"       . embark-become)
-              ("C-<tab>"   . embark-act-with-completing-read)
-              ("C-o"     . embark-minimal-act)
-              ("C-M-o"   . embark-minimal-act-noexit)
               ("C-*"     . embark-act-all)
               ("M-s o"   . embark-export)
-              ("C-c C-o" . embark-export)
               ("C-l"     . embark-export)))
-
-;; Persist history over Emacs restarts. Vertico sorts by history position.
 
 ;; A few more useful bits...
 (use-package emacs
@@ -163,11 +57,6 @@
         '(read-only t cursor-intangible t face minibuffer-prompt))
   (add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
 
-  ;; Emacs 28: Hide commands in M-x which do not work in the current mode.
-  ;; Vertico commands are hidden in normal buffers.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
-
   ;; Enable recursive minibuffers
   (setq enable-recursive-minibuffers t))
 
@@ -187,40 +76,41 @@
   :commands vertico-multiform-mode 
   :after vertico-flat 
   :bind (:map vertico-map
-              ("M-q" . vertico-multiform-flat)
-              ("C-l" . my/vertico-multiform-unobtrusive)
+              ("M-F" . vertico-multiform-flat)
+              ("M-U" . vertico-multiform-unobtrusive)
+              ("M-R" . vertico-multiform-reverse)
+              ("M-G" . vertico-multiform-grid)
               ("C-M-l" . embark-export))
   :init (vertico-multiform-mode 1)
   :config
   (setq vertico-multiform-categories
-         '((file my/vertico-grid-mode reverse)
-           (project-file my/vertico-grid-mode reverse)
+         '((file reverse indexed)
+           (project-file grid)
            (imenu buffer)
-           (consult-location buffer)
-           (consult-grep buffer)
-           (notmuch-result reverse)
+           (consult-location buffer indexed)
+           (consult-grep buffer indexed)
+           (consult-ripgrep buffer indexed)
            (minor-mode reverse)
            (xref-location reverse)
            (history reverse)
            (url reverse)
            (consult-info buffer)
-           (kill-ring reverse)
+           (kill-ring reverse indexed)
            (consult-compile-error reverse)
-           (buffer flat (vertico-cycle . t))
-           (t flat)))
+           (buffer reverse indexed)
+           (org-roam-node reverse indexed)
+           (t grid indexed)))
    (setq vertico-multiform-commands
-         '((jinx-correct reverse)
+         '((jinx-correct reverse indexed)
            (tab-bookmark-open reverse)
-           (dired-goto-file unobtrusive)
-           (load-theme my/vertico-grid-mode reverse)
-           ;; (my/toggle-theme my/vertico-grid-mode reverse)
+           (dired-goto-file grid indexed)
+           (load-theme grid reverse)
            (org-refile reverse)
            (org-agenda-refile reverse)
            (org-capture-refile reverse)
-           ;; (affe-find reverse)
-           (execute-extended-command reverse)
-           (dired-goto-file flat)
-           (consult-project-buffer flat)
+           (execute-extended-command reverse indexed)
+           (dired-goto-file grid)
+           (consult-project-buffer grid)
            (consult-dir-maybe reverse)
            (consult-dir reverse)
            (consult-flymake reverse)
@@ -228,7 +118,6 @@
            (consult-completion-in-region reverse)
            (consult-recoll reverse)
            (consult-line buffer)
-           ;; (citar-insert-citation reverse)
            (completion-at-point reverse)
            (org-roam-node-find reverse)
            (embark-completing-read-prompter reverse)
@@ -236,16 +125,9 @@
            (embark-prefix-help-command reverse)
            (embark-bindings reverse)
            (consult-org-heading reverse)
-           ;; (consult-dff unobtrusive)
            (embark-find-definition reverse)
            (xref-find-definitions reverse)
-           (my/eshell-previous-matching-input reverse)
-           (tmm-menubar reverse)))
-  
-   (defun my/vertico-multiform-unobtrusive ()
-     "Toggle between vertico-unobtrusive and vertico-reverse."
-     (interactive)
-     (vertico-multiform-vertical 'vertico-reverse-mode)))
+           (tmm-menubar reverse))))
 
 (use-package vertico-unobtrusive
   :after vertico-flat)
@@ -254,19 +136,8 @@
   :after vertico
   ;; :bind (:map vertico-map ("M-q" . vertico-grid-mode))
   :config
-  (defvar my/vertico-count-orig vertico-count)
-  (define-minor-mode my/vertico-grid-mode
-    "Vertico-grid display with modified row count."
-    :global t :group 'vertico
-    (cond
-     (my/vertico-grid-mode
-      (setq my/vertico-count-orig vertico-count)
-      (setq vertico-count 5)
-      (vertico-grid-mode 1))
-     (t (vertico-grid-mode 0)
-        (setq vertico-count my/vertico-count-orig))))
-  (setq vertico-grid-separator "    "))
-  ;; (setq vertico-grid-lookahead 100))
+  (setq vertico-grid-separator "    ")
+  (setq vertico-grid-lookahead 50))
 
 (use-package vertico-quick
   :after vertico
@@ -381,7 +252,6 @@
   ;; Configure other variables and modes in the :config section,
   ;; after lazily loading the package.
   :config
-
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
@@ -395,30 +265,14 @@
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-file-register
    consult--source-recent-file consult--source-project-recent-file
-   ;; :preview-key (kbd "M-.")
    :preview-key '(:debounce 0.4 any))
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
   (setq consult-narrow-key "<") ;; (kbd "C-+")
 
-  ;; Optionally make narrowing help available in the minibuffer.
-  ;; You may want to use `embark-prefix-help-command' or which-key instead.
-  ;; (define-key consult-narrow-map (vconcat consult-narrow-key "?") #'consult-narrow-help)
-
-  ;; By default `consult-project-function' uses `project-root' from project.el.
-  ;; Optionally configure a different project root function.
-  ;; There are multiple reasonable alternatives to chose from.
-  ;;;; 1. project.el (the default)
-  ;; (setq consult-project-function #'consult--default-project--function)
-  ;;;; 2. projectile.el (projectile-project-root)
   (autoload 'projectile-project-root "projectile")
-  (setq consult-project-function (lambda (_) (projectile-project-root)))
-  ;;;; 3. vc.el (vc-root-dir)
-  ;; (setq consult-project-function (lambda (_) (vc-root-dir)))
-  ;;;; 4. locate-dominating-file
-  ;; (setq consult-project-function (lambda (_) (locate-dominating-file "." ".git")))
-  )
+  (setq consult-project-function (lambda (_) (projectile-project-root))))
 
 
 ;;;;;;;;;;;;;;;
@@ -528,11 +382,7 @@
          ("C-x 4 C-j" . dired-jump-other-window))
   :config
   ;;disabling this as I was seeing delays when autorevert mode is on
-  (setq dired-free-space nil)) 
-
-
-;; (use-package all-the-icons-dired
-;;   :hook (dired-mode . all-the-icons-dired-mode))
+  (setq dired-free-space nil))
 
 (use-package nerd-icons-dired
   :hook
@@ -568,8 +418,6 @@
 
 
 ;; Async
-;; Lets us use asynchronous processes wherever possible, pretty useful.
-
 (use-package async
   :init (dired-async-mode 1))
 
@@ -611,21 +459,20 @@
 ;;;;;;;;;;;
 (use-package corfu
   ;; Optional customizations
+  :after eglot 
   :custom
-  ;; (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
+  (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
   (corfu-separator ?\s)          ;; Orderless field separator
-  ;; (corfu-quit-at-boundary nil)   ;; Never quit at completion boundary
-  (corfu-quit-no-match 'separator)      ;; Never quit, even if there is no match
-  ;; (corfu-preview-current nil)    ;; Disable current candidate preview
-  ;; (corfu-preselect 'prompt)      ;; Preselect the prompt
-  ;; (corfu-on-exact-match nil)     ;; Configure handling of exact matches
+  (corfu-quit-no-match 'separator) 
   (corfu-scroll-margin 5)        ;; Use scroll margin
 
   ;; Enable Corfu only for certain modes.
   :hook ((prog-mode . corfu-mode)
+         (org-mode . corfu-mode)
          (shell-mode . corfu-mode)
-         (eshell-mode . corfu-mode))
+         (eshell-mode . corfu-mode)
+         (eglot . corfu-mode))
 
   ;; Recommended: Enable Corfu globally.
   ;; This is recommended since Dabbrev can be used globally (M-/).
@@ -637,31 +484,6 @@
   (:map corfu-map 
         ("M-SPC" . corfu-insert-separator)
         ("<escape>" . corfu-quit)))
-
-	
-
-;; (use-package corfu-doc
-;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
-;;   ;; :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
-;;   :after corfu
-;;   :hook (corfu-mode . corfu-doc-mode)
-;;   :bind 
-;;   (:map corfu-map
-;;             ;; This is a manual toggle for the documentation popup.
-;;             ;; (:remap corfu-show-documentation . corfu-doc-toggle) ; Remap the default doc command
-;;             ;; Scroll in the documentation window
-;;             ("M-n" . corfu-doc-scroll-up)
-;;             ("M-p" . corfu-doc-scroll-down))
-;;   :custom
-;;   (corfu-doc-delay 0.5)
-;;   (corfu-doc-max-width 70)
-;;   (corfu-doc-max-height 20)
-
-;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
-;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
-;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
-;;   (corfu-echo-documentation nil))
-
 
 (use-package kind-icon 
   :after corfu
@@ -740,12 +562,6 @@
   ;; TAB cycle if there are only few candidates
   (setq completion-cycle-threshold 3)
 
-  ;; Emacs 28: Hide commands in M-x which do not apply to the current mode.
-  ;; Corfu commands are hidden, since they are not supposed to be used via M-x.
-  ;; (setq read-extended-command-predicate
-  ;;       #'command-completion-default-include-p)
-
-  ;; Enable indentation+completion using the TAB key.
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete))
 
@@ -790,13 +606,6 @@
   ;; (setq nov-text-width 100)
   )
 
-;; (use-package auto-package-update
-;;   :config
-;;   (setq auto-package-update-delete-old-versions t
-;;         auto-package-update-interval 5
-;;         auto-package-update-prompt-before-update t
-;;         auto-package-update-hide-results t)
-;;   (auto-package-update-maybe))
 
 
 (provide 'init-system-utils)

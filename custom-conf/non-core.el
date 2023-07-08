@@ -792,4 +792,172 @@ PREFIX, specify word to search"
 ;;     :straight t)                                            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (use-package auto-package-update
+;;   :config
+;;   (setq auto-package-update-delete-old-versions t
+;;         auto-package-update-interval 5
+;;         auto-package-update-prompt-before-update t
+;;         auto-package-update-hide-results t)
+;;   (auto-package-update-maybe))
+
+
+;; (use-package corfu-doc
+;;   ;; NOTE 2022-02-05: At the time of writing, `corfu-doc' is not yet on melpa
+;;   ;; :straight (corfu-doc :type git :host github :repo "galeo/corfu-doc")
+;;   :after corfu
+;;   :hook (corfu-mode . corfu-doc-mode)
+;;   :bind 
+;;   (:map corfu-map
+;;             ;; This is a manual toggle for the documentation popup.
+;;             ;; (:remap corfu-show-documentation . corfu-doc-toggle) ; Remap the default doc command
+;;             ;; Scroll in the documentation window
+;;             ("M-n" . corfu-doc-scroll-up)
+;;             ("M-p" . corfu-doc-scroll-down))
+;;   :custom
+;;   (corfu-doc-delay 0.5)
+;;   (corfu-doc-max-width 70)
+;;   (corfu-doc-max-height 20)
+
+;;   ;; NOTE 2022-02-05: I've also set this in the `corfu' use-package to be
+;;   ;; extra-safe that this is set when corfu-doc is loaded. I do not want
+;;   ;; documentation shown in both the echo area and in the `corfu-doc' popup.
+;;   (corfu-echo-documentation nil))
+
+;; (use-package all-the-icons-dired
+;;   :hook (dired-mode . all-the-icons-dired-mode))
+
+  ;; (defvar my/vertico-count-orig vertico-count)
+  ;; (define-minor-mode my/vertico-grid-mode
+  ;;   "Vertico-grid display with modified row count."
+  ;;   :global t :group 'vertico
+  ;;   (cond
+  ;;    (my/vertico-grid-mode
+  ;;     (setq my/vertico-count-orig vertico-count)
+  ;;     (setq vertico-count 5)
+  ;;     (vertico-grid-mode 1))
+  ;;    (t (vertico-grid-mode 0)
+  ;;       (setq vertico-count my/vertico-count-orig))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** Switch-window
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;; (use-package switch-window
+;;   :config
+;;   (setq switch-window-input-style 'minibuffer
+;;         switch-window-increase 4
+;;         switch-window-threshold 2
+;;         switch-window-shortcut-style 'qwerty
+;;         switch-window-qwerty-shortcuts
+;;         '("a" "s" "d" "f" "j" "k" "l" "i" "o"))
+;;   :bind
+;;   ([remap other-window] . switch-window))
+
+
+
+;;;;;;;;;;;;;;;;;;;;;
+;; ;; ** yasnippet ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+;; (use-package yasnippet
+;;   :commands yas-minor-mode
+;;   :hook (go-mode . yas-minor-mode)
+;;   :config
+;;   (yas-reload-all))
+
+;; ** Specific languages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; ;; *** lspmode settings                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; (use-package lsp-mode
+;;   :init
+;;   ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
+;;   (setq lsp-keymap-prefix "C-c l")
+;;   :commands lsp lsp-deferred
+;;   :hook (
+;;          (go-mode . lsp-deferred)
+;;          (python-mode . lsp-deferred)
+;;          (rustic-mode . lsp-deferred)
+;;          (lsp-mode . lsp-enable-which-key-integration))
+;;   )
+
+;; Optional - provides fancier overlays
+
+;; (use-package lsp-ui
+;;   :hook (lsp-mode . lsp-ui-mode)
+;;   ;;  :config (setq lsp-ui-doc-enable t)
+;;   :commands lsp-ui-mode
+;;   )
+
+;; optionally if you want to use debugger
+;; (use-package dap-mode)
+;; (use-package dap-LANGUAGE) to load the dap adapter for your language
+
+;; (setq lsp-ui-doc-enable t
+;;       lsp-ui-peek-enable t
+;;       lsp-ui-sideline-enable t
+;;       lsp-ui-imenu-enable t
+;;       lsp-ui-flycheck-enable t)
+
+
+;;;;;;;;;;;;;;;;;;;
+;; ;; *** Golang ;;
+;;;;;;;;;;;;;;;;;;;
+
+;; (use-package go-mode
+;;   ;; :after lsp-mode
+;;   :config
+;;   ;; (with-eval-after-load "lsp-mode"
+;;     (add-to-list 'lsp-enabled-clients 'gopls))
+
+;; ( setq lsp-gopls-staticcheck t
+ ;;      lsp-eldoc-render-all t
+ ;;      lsp-gopls-complete-unimported t)
+
+;; set up before-save hooks to ensure buffer formatting and aa/delete imports
+;; Make sure there are no other gofmt/goimports hooks enabled
+
+;; (defun lsp-go-install-save-hooks ()
+;;   (add-hook 'before-save-hook #'lsp-format-buffer t t)
+;;   (add-hook 'before-save-hook #'lsp-organize-imports t t))
+
+;; (add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
+;; (add-hook 'go-mode-hook 'yas-minor-mode)
+
+;;;;;;;;;;;;;;;;;;
+;; ;;  c/c++ ;;
+;;;;;;;;;;;;;;;;;;
+
+;; (add-hook 'c++-mode-hook 'yas-minor-mode)
+;; (add-hook 'c-mode-hook 'yas-minor-mode)
+
+;; (use-package flycheck-clang-analyzer
+;;   :config
+;;   (with-eval-after-load 'flycheck
+;;     (require 'flycheck-clang-analyzer)
+;;     (flycheck-clang-analyzer-setup)))
+
+;; (use-package irony
+;;   :diminish
+;;   :config
+;;   (add-hook 'c++-mode-hook 'irony-mode)
+;;   (add-hook 'c-mode-hook 'irony-mode)
+;;   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
+
+;;;;;;;;;;;;;;;;;;;
+;; ;; *** python ;;
+;;;;;;;;;;;;;;;;;;;
+
+;; (use-package lsp-jedi
+;;   :config
+;;   (with-eval-after-load "lsp-mode"
+;;     (add-to-list 'lsp-disabled-clients 'pyls)
+;;     (add-to-list 'lsp-enabled-clients 'jedi)))
+
+;; ;; (add-hook 'python-mode-hook 'yas-minor-mode)
+;; (add-hook 'python-mode-hook 'flycheck-mode)
+
+
 (provide 'non-core)

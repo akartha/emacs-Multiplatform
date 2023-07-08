@@ -28,7 +28,7 @@
  '(org-agenda-files (list (concat org-directory "/agenda"))))
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-(add-hook 'org-mode-hook 'yas-minor-mode)
+;; (add-hook 'org-mode-hook 'yas-minor-mode)
 (add-hook 'org-mode-hook 'abbrev-mode)
 ;;(add-hook 'org-mode-hook #'org-modern-mode)
 

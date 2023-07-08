@@ -214,7 +214,7 @@
   (diminish 'subword-mode)
   (diminish 'page-break-lines-mode)
   (diminish 'auto-revert-mode)
-  (diminish 'yas-minor-mode)
+  ;; (diminish 'yas-minor-mode)
   (diminish 'org-indent-mode))
 
 

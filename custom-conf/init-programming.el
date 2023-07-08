@@ -8,15 +8,66 @@
   :config
   (exec-path-from-shell-initialize))
 
-;;;;;;;;;;;;;;;;;;;;;
-;; ;; ** yasnippet ;;
-;;;;;;;;;;;;;;;;;;;;;
+(require 'project)
 
-(use-package yasnippet
-  :commands yas-minor-mode
-  :hook (go-mode . yas-minor-mode)
+(defun project-find-go-module (dir)
+  (when-let ((root (locate-dominating-file dir "go.mod")))
+    (cons 'go-module root)))
+
+(cl-defmethod project-root ((project (head go-module)))
+  (cdr project))
+
+(add-hook 'project-find-functions #'project-find-go-module)
+
+
+;;;;;;;;;;;
+;; ELDOC ;;
+;;;;;;;;;;;
+
+(use-package eldoc
+  :hook (after-init . global-eldoc-mode))
+
+
+;;;;;;;;;;;;;;;;;;
+;; EGLOT config ;;
+;;;;;;;;;;;;;;;;;;
+
+(use-package eglot
   :config
-  (yas-reload-all))
+  (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
+  (setq-default eglot-workspace-configuration
+                '((:pylsp . 
+                                (:configurationSources ["flake8"] :plugins
+                                                       (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t) :yapf: (:enabled t))))))
+                       ;; ((:gopls .
+                       ;;          ((staticcheck . t)
+                       ;;           (usePlaceholders .t)
+                       ;;           (hoverKind . "FullDocumentation")
+                       ;;           (matcher . "Fuzzy"))))))
+  :hook
+  ((python-mode . eglot-ensure)
+   (go-mode . eglot-ensure)
+   (rust-mode . eglot-ensure)))
+
+(defun eglot-format-buffer-on-save ()
+  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+(add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+
+;;;;;;;;;;;;;
+;; GO-MODE ;;
+;;;;;;;;;;;;;
+(defun ak/eglot-organize-imports ()
+  (call-interactively 'eglot-code-action-organize-imports))
+
+(use-package go-mode
+    :hook (go-mode . (lambda ()
+                       ;; Using depth -10 will put this before eglot's
+                       ;; willSave notification so that the notification
+                       ;; reports the actual contents that will be
+                       ;; saved.
+                       (add-hook 'before-save-hook 'eglot-format-buffer -10 t)
+                       (add-hook 'before-save-hook 'ak/eglot-organize-imports nil t))))
+
 
 
 ;;;;;;;;;;;;;;;;;;;;
@@ -26,106 +77,12 @@
 (use-package flycheck
   :diminish)
 
-
-;; ** Specific languages
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ;; *** lspmode settings                         ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package lsp-mode
-  :init
-  ;; set prefix for lsp-command-keymap (few alternatives - "C-l", "C-c l")
-  (setq lsp-keymap-prefix "C-c l")
-  :commands lsp lsp-deferred
-  :hook (
-         (go-mode . lsp-deferred)
-         (python-mode . lsp-deferred)
-         (rustic-mode . lsp-deferred)
-         (lsp-mode . lsp-enable-which-key-integration))
-  )
-
-;; Optional - provides fancier overlays
-
-(use-package lsp-ui
-  :hook (lsp-mode . lsp-ui-mode)
-  ;;  :config (setq lsp-ui-doc-enable t)
-  :commands lsp-ui-mode
-  )
-
-;; optionally if you want to use debugger
-;; (use-package dap-mode)
-;; (use-package dap-LANGUAGE) to load the dap adapter for your language
-
-(setq lsp-ui-doc-enable t
-      lsp-ui-peek-enable t
-      lsp-ui-sideline-enable t
-      lsp-ui-imenu-enable t
-      lsp-ui-flycheck-enable t)
-
-;;;;;;;;;;;;;;;;;;;
-;; ;; *** Golang ;;
-;;;;;;;;;;;;;;;;;;;
-
-(use-package go-mode
-  :after lsp-mode
-  :config
-  ;; (with-eval-after-load "lsp-mode"
-    (add-to-list 'lsp-enabled-clients 'gopls))
-
-(setq lsp-gopls-staticcheck t
-      lsp-eldoc-render-all t
-      lsp-gopls-complete-unimported t)
-
-;; set up before-save hooks to ensure buffer formatting and aa/delete imports
-;; Make sure there are no other gofmt/goimports hooks enabled
-
-(defun lsp-go-install-save-hooks ()
-  (add-hook 'before-save-hook #'lsp-format-buffer t t)
-  (add-hook 'before-save-hook #'lsp-organize-imports t t))
-
-(add-hook 'go-mode-hook #'lsp-go-install-save-hooks)
-(add-hook 'go-mode-hook 'yas-minor-mode)
-
-;;;;;;;;;;;;;;;;;;
-;; ;;  c/c++ ;;
-;;;;;;;;;;;;;;;;;;
-
-(add-hook 'c++-mode-hook 'yas-minor-mode)
-(add-hook 'c-mode-hook 'yas-minor-mode)
-
-(use-package flycheck-clang-analyzer
-  :config
-  (with-eval-after-load 'flycheck
-    (require 'flycheck-clang-analyzer)
-    (flycheck-clang-analyzer-setup)))
-
-(use-package irony
-  :diminish
-  :config
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options))
-
-
-;;;;;;;;;;;;;;;;;;;
-;; ;; *** python ;;
-;;;;;;;;;;;;;;;;;;;
-
-(use-package lsp-jedi
-  :config
-  (with-eval-after-load "lsp-mode"
-    (add-to-list 'lsp-disabled-clients 'pyls)
-    (add-to-list 'lsp-enabled-clients 'jedi)))
-
-(add-hook 'python-mode-hook 'yas-minor-mode)
-(add-hook 'python-mode-hook 'flycheck-mode)
-
 ;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;;  emacs-lisp ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
-(add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
+;; (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
 
 (use-package slime
   :if ak/my-framework-p
@@ -138,7 +95,7 @@
 ;; *** bash
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook 'shell-mode-hook 'yas-minor-mode)
+;; (add-hook 'shell-mode-hook 'yas-minor-mode)
 (add-hook 'shell-mode-hook 'flycheck-mode)
 
 ;;;;;;;;;;;;;;;;;
@@ -184,22 +141,22 @@
 ;;;;;;;;;;;;;;;;;
 
 (use-package rustic
-  :bind (:map rustic-mode-map
-              ("M-j" . lsp-ui-imenu)
-              ("M-?" . lsp-find-references)
-              ("C-c C-c l" . flycheck-list-errors)
-              ("C-c C-c a" . lsp-execute-code-action)
-              ("C-c C-c r" . lsp-rename)
-              ("C-c C-c q" . lsp-workspace-restart)
-              ("C-c C-c Q" . lsp-workspace-shutdown)
-              ("C-c C-c s" . lsp-rust-analyzer-status))
+  ;; :bind (:map rustic-mode-map
+  ;;             ("M-j" . lsp-ui-imenu)
+  ;;             ("M-?" . lsp-find-references)
+  ;;             ("C-c C-c l" . flycheck-list-errors)
+  ;;             ("C-c C-c a" . lsp-execute-code-action)
+  ;;             ("C-c C-c r" . lsp-rename)
+  ;;             ("C-c C-c q" . lsp-workspace-restart)
+  ;;             ("C-c C-c Q" . lsp-workspace-shutdown)
+  ;;             ("C-c C-c s" . lsp-rust-analyzer-status))
   :config
   ;; uncomment for less flashiness
   ;; (setq lsp-eldoc-hook nil)
   ;; (setq lsp-enable-symbol-highlighting nil)
   ;; (setq lsp-signature-auto-activate nil)
-  (with-eval-after-load "lsp-mode"
-    (add-to-list 'lsp-enabled-clients 'rust-analyzer))
+  ;; (with-eval-after-load "lsp-mode"
+  ;;   (add-to-list 'lsp-enabled-clients 'rust-analyzer))
   ;; comment to disable rustfmt on save
   (setq rustic-format-on-save t)
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))

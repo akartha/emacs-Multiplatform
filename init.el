@@ -43,7 +43,7 @@
         use-package-enable-imenu-support t)
   (require 'use-package))
 
-(straight-use-package 'org)
+;; (straight-use-package 'org)
 
 
 
@@ -133,11 +133,11 @@
         ;; custom options for below are set in the init-programming.el library ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         exec-path-from-shell
-        yasnippet
+        ;; yasnippet
         flycheck
-        lsp-mode
-        lsp-ui
-        lsp-jedi
+        ;; lsp-mode
+        ;; lsp-ui
+        ;; lsp-jedi
         go-mode
         flycheck-clang-analyzer
         irony
@@ -165,7 +165,7 @@
         request
         plz
         ob-go
-        yasnippet-snippets
+        ;; yasnippet-snippets
         all-the-icons
         xkcd
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -205,8 +205,6 @@
 
 (require 'init-editing-functions)
 
-(require 'init-programming)
-
 (require 'init-org-settings)
 
 (require 'non-core)
@@ -216,6 +214,8 @@
 
 (require 'epa-file)
 (epa-file-enable)
+
+(require 'init-programming)
 
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
