@@ -173,7 +173,8 @@
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         emms
         emms-state
-        key-chord))
+        key-chord
+        org-web-tools))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)

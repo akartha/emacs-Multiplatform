@@ -119,7 +119,7 @@
            (consult-recoll reverse)
            (consult-line buffer)
            (completion-at-point reverse)
-           (org-roam-node-find reverse)
+           (org-roam-node-find (vertico-sort-function . vertico-sort-history-alpha) reverse)
            (embark-completing-read-prompter reverse)
            (embark-act-with-completing-read reverse)
            (embark-prefix-help-command reverse)
