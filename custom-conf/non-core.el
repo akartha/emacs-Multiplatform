@@ -260,29 +260,29 @@ _]_: Enlarge           _._: Enlarge         _=_: balance            _s_: Ace-win
 
 (define-key ak-map "." 'hydra-jump-cursor/body)
 
-
-(defun ak/reload-xkcd (arg)
-  "Load a random xkcd cartoon on the dashboard.
+(when window-system
+  (defun ak/reload-xkcd (arg)
+    "Load a random xkcd cartoon on the dashboard.
 With PREFIX - load the latest xkcd cartoon"
-  (interactive "P")
-  (let ((rand-id-xkcd nil)
-        (rand-id-xkcd-url nil))
+    (interactive "P")
+    (let ((rand-id-xkcd nil)
+          (rand-id-xkcd-url nil))
 
-    (with-temp-buffer
-      (if arg
-          (setq rand-id-xkcd (string-to-number(xkcd)))
-        (setq rand-id-xkcd (string-to-number( xkcd-rand))))
-      (setq rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
-      (xkcd-kill-buffer))
-    
-    (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
-      (if (file-exists-p last-xkcd-png)
-          (setq dashboard-startup-banner last-xkcd-png
-                dashboard-banner-logo-title rand-id-xkcd-url
-                dashboard-init-info xkcd-alt))))
-  (revert-buffer))
+      (with-temp-buffer
+        (if arg
+            (setq rand-id-xkcd (string-to-number(xkcd)))
+          (setq rand-id-xkcd (string-to-number( xkcd-rand))))
+        (setq rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
+        (xkcd-kill-buffer))
+      
+      (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
+        (if (file-exists-p last-xkcd-png)
+            (setq dashboard-startup-banner last-xkcd-png
+                  dashboard-banner-logo-title rand-id-xkcd-url
+                  dashboard-init-info xkcd-alt))))
+    (revert-buffer))
 
-(define-key ak-map "X" 'ak/reload-xkcd)
+  (define-key ak-map "X" 'ak/reload-xkcd))
 
 (require 'url)
 

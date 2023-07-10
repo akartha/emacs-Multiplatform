@@ -52,7 +52,7 @@
 (savehist-mode 1)
 (tool-bar-mode -1)
 (menu-bar-mode -1)
-(scroll-bar-mode -1)
+(if window-system (scroll-bar-mode -1))
 (global-auto-revert-mode 1)
 (recentf-mode 1)
 (save-place-mode t)     ;; Remember cursor position even after quitting file
