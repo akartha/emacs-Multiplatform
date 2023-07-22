@@ -3,11 +3,6 @@
 ;; ;; * Programming                                                       
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(use-package exec-path-from-shell
-  :if ak/my-mac-p
-  :config
-  (exec-path-from-shell-initialize))
-
 (require 'project)
 
 (defun project-find-go-module (dir)

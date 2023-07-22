@@ -120,6 +120,11 @@ Does not work with mac- so I have a package for that"
         ak/generic-mac-p)
         (set-exec-path-from-shell-PATH))
 
+(use-package exec-path-from-shell
+  :if ak/my-mac-p
+  :config
+  (exec-path-from-shell-initialize))
+
 (add-to-list 'recentf-exclude "~/\.emacs\.d/xkcd/*")
 
 (defvar ak/my-org-file-location nil)
