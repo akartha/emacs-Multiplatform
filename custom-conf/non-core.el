@@ -3,10 +3,12 @@
 
 
 ;; Switch to scratch buffer
-(define-key ak-map "z" (lambda ()
-                         "Switch to scratch"
-                         (interactive)
-                         (switch-to-buffer "*scratch*")))
+(if (> emacs-major-version 28)
+    (keymap-set ak-map "z" 'scratch-buffer)
+  (define-key ak-map "z" (lambda ()
+                           "Switch to scratch"
+                           (interactive)
+                           (switch-to-buffer "*scratch*"))))
 
 ;; Switch to scratch buffer
 (define-key ak-map "2" (lambda ()
