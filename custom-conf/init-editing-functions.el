@@ -227,4 +227,37 @@
               (hook '(text-mode-hook org-mode-hook))
             (add-hook hook #'jinx-mode)))
 
+
+(defun ak/replace-garbage ()
+"Replace non-rendering MS and other garbage characters with latin1 equivalents."
+(interactive)
+(save-excursion             ;save the current point
+(replace-string "\221" "`" nil (point-min) (point-max))
+(replace-string "\222" "'" nil (point-min) (point-max))
+(replace-string "\226" "-" nil (point-min) (point-max))
+(replace-string "\227" "--" nil (point-min) (point-max))
+(replace-string "\223" "(" nil (point-min) (point-max))
+(replace-string "\224" ")" nil (point-min) (point-max))
+(replace-string "\205" "..." nil (point-min) (point-max))
+(replace-string "\225" "-" nil (point-min) (point-max))
+(replace-string "\344" "" nil (point-min) (point-max))
+(replace-string "\374" "" nil (point-min) (point-max))
+(replace-string "\337" "" nil (point-min) (point-max))
+(replace-string "\366" "" nil (point-min) (point-max))
+(replace-string "\247" "***" nil (point-min) (point-max))
+(replace-string "\267" "****" nil (point-min) (point-max))
+(replace-string "\351" "é" nil (point-min) (point-max))
+(replace-string "\347" "ç" nil (point-min) (point-max))
+(replace-string "\352" "ê" nil (point-min) (point-max))
+(replace-string "\342" "â" nil (point-min) (point-max))
+(replace-string "\307" "Ç" nil (point-min) (point-max))
+(replace-string "\340" "à" nil (point-min) (point-max))
+(replace-string "\340" "à" nil (point-min) (point-max))
+(replace-string "\364" "ô" nil (point-min) (point-max))
+(replace-string "\353" "ë" nil (point-min) (point-max))
+(replace-string "\243" "£" nil (point-min) (point-max))
+));end replace-garbage-characters
+;bind-key replace-garbage-characters
+(bind-key  "\C-cr"  'ak/replace-garbage)
+
 (provide 'init-editing-functions)

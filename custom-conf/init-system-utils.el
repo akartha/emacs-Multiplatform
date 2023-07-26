@@ -431,7 +431,8 @@
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((bookmarks  . 10)
                           (recents  . 20)
-                          (projects  . 10)))
+                          (projects  . 10)
+                          (registers . 5)))
   (setq dashboard-set-heading-icons t
         dashboard-center-content t
         dashboard-set-file-icons t

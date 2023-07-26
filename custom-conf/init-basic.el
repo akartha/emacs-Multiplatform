@@ -175,6 +175,9 @@ Does not work with mac- so I have a package for that"
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
   (require 'xdvi-search))
 
+;; See https://github.com/vedang/pdf-tools for more info
+(pdf-loader-install)
+
 (add-hook 'text-mode-hook 'abbrev-mode)
 
 (setq gptel-default-mode 'org-mode) ;;added on Tue 09 May 2023 12:34:28 PM EDT

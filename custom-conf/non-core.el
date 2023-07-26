@@ -376,6 +376,16 @@ PREFIX, specify word to search"
 (key-chord-define-global "aa" 'move-beginning-of-line)
 (key-chord-define-global "''" 'move-end-of-line)
 
+;; https://flandrew.srht.site/listful/sw-emacs-xht.html
+(use-package xht
+  :commands (global-xht-fontify-mode
+             global-xht-do-mode
+             xht-fontify-mode
+             xht-do-mode
+             xht-see-readme)
+  :config
+  (global-xht-fontify-mode)
+  (global-xht-do-mode))
 
 ;; Graveyard
 

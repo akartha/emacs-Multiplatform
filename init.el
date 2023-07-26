@@ -20,6 +20,22 @@
 			 ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar ak/my-framework-p nil)
+(defvar ak/my-win-framework-p nil)
+(defvar ak/my-mac-p nil)
+(defvar ak/my-package-list nil)
+
+(cond ((string=  (system-name) "arun-framework")
+       (setq ak/my-framework-p t))
+      ((string=  (system-name) "FRAMEWORKWIN")
+       (setq ak/my-win-framework-p t))
+      ((string= (system-name) "Arun-MBP14.local")
+       (setq ak/my-mac-p t)))
+
+(defvar ak/generic-windows-p (equal system-type 'windows-nt))
+(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
+(defvar ak/generic-mac-p (equal system-type 'darwin))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar bootstrap-version)
 (let ((bootstrap-file (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
@@ -42,26 +58,6 @@
         ;; use-package-expand-minimally t
         use-package-enable-imenu-support t)
   (require 'use-package))
-
-;; (straight-use-package 'org)
-
-
-
-(defvar ak/my-framework-p nil)
-(defvar ak/my-win-framework-p nil)
-(defvar ak/my-mac-p nil)
-(defvar ak/my-package-list nil)
-
-(cond ((string=  (system-name) "arun-framework")
-       (setq ak/my-framework-p t))
-      ((string=  (system-name) "FRAMEWORKWIN")
-       (setq ak/my-win-framework-p t))
-      ((string= (system-name) "Arun-MBP14.local")
-       (setq ak/my-mac-p t)))
-
-(defvar ak/generic-windows-p (equal system-type 'windows-nt))
-(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
-(defvar ak/generic-mac-p (equal system-type 'darwin))
 
 ;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -193,9 +189,11 @@
                            "docs"
                            "contrib/odt/LibreOffice")))
 
-
 (straight-use-package
  '(lambda-line :type git :host github :repo "lambda-emacs/lambda-line"))
+
+(straight-use-package
+ '(xht :type git :host sourcehut :repo "flandrew/xht"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -211,7 +209,6 @@
 (require 'non-core)
 
 (require 'init-system-utils)
-
 
 (require 'epa-file)
 (epa-file-enable)
