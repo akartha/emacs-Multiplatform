@@ -214,7 +214,7 @@
          ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
          ("M-s L" . consult-line-multi)
-         ("M-s m" . consult-multi-occur)
+         ;; ("M-s m" . consult-multi-occur)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
          ;; Isearch integration
@@ -255,17 +255,18 @@
   ;; Optionally configure preview. The default value
   ;; is 'any, such that any key triggers the preview.
   ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key (list :debounce 0.5 'any))
   ;; (setq consult-preview-key (kbd "M-."))
   ;; (setq consult-preview-key (list (kbd "<S-down>") (kbd "<S-up>")))
   ;; For some commands and buffer sources it is useful to configure the
   ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
-   consult-theme :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
-   consult-bookmark consult-recent-file consult-xref
+   consult-theme consult-imenu consult-imenu-multi :preview-key '(:debounce 0.2 any)
+   consult-buffer consult-recent-file consult-mark consult-global-mark :preview-key '(:debounce 0.4 any)
+   consult-ripgrep consult-git-grep consult-grep consult-bookmark consult-xref
    consult--source-bookmark consult--source-file-register
    consult--source-recent-file consult--source-project-recent-file
-   :preview-key '(:debounce 0.4 any))
+   :preview-key '(:debounce 0.5 any))
 
   ;; Optionally configure the narrowing key.
   ;; Both < and C-+ work reasonably well.
