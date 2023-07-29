@@ -438,7 +438,10 @@
         dashboard-center-content t
         dashboard-set-file-icons t
         dashboard-set-navigator nil)
-  (if (or ak/my-framework-p ak/my-mac-p) (setq dashboard-footer-messages (list (shell-command-to-string "fortune"))))
+  (if (executable-find "fortune")
+      ;; (or ak/my-framework-p ak/my-mac-p) 
+      (setq dashboard-footer-messages (list (shell-command-to-string "fortune"))))
+
   (add-hook 'dashboard-mode-hook (lambda ()
                                    (visual-line-mode 1)))
   :bind (:map ak-map
