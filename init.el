@@ -170,7 +170,8 @@
         emms
         emms-state
         key-chord
-        org-web-tools))
+        org-web-tools
+        htmlize))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)
