@@ -26,7 +26,7 @@
            :default-family "Iosevka Comfy Fixed"
            :default-height 110)
           (regular
-           :default-height 130)
+           :default-height 125)
           (medium
            :default-height 140)
           (large
