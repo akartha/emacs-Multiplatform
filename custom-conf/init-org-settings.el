@@ -181,6 +181,10 @@
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags:")
       :unnarrowed t)
 
+     ("w" "web" plain "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: web")
+      :unnarrowed t)
+
       ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Book")
        :unnarrowed t)
@@ -207,6 +211,8 @@
          ("C-c n o" . org-id-get-create)
          :map org-mode-map
          ("C-M-i" . completion-at-point)
+         :map ak-map
+         ("<f1>" . org-roam-node-find)
          :map org-roam-dailies-map
          ("Y" . org-roam-dailies-capture-yesterday)
          ("T" . org-roam-dailies-capture-tomorrow))

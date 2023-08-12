@@ -387,6 +387,20 @@ PREFIX, specify word to search"
   (global-xht-fontify-mode)
   (global-xht-do-mode))
 
+(use-package org-web-tools
+  :bind (:map ak-map
+              ("<f4>" . ak/get-url-title)
+              ("<f6>" . org-web-tools-insert-web-page-as-entry)
+              ("<f5>" . org-web-tools-read-url-as-org)
+              ("<f7>" . org-web-tools-insert-link-for-url))
+  :config 
+  (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
+    (interactive)
+    (let* ((html (org-web-tools--get-url url))
+           (title (org-web-tools--html-title html)))
+      (if title (insert title) (insert url)))))
+
+
 ;; Graveyard
 
 ;; ** Line numbers 
