@@ -146,7 +146,7 @@
 
 (use-package lambda-line
   :custom
-  (lambda-line-icon-time t) ;; requires ClockFace font (see below)
+  ;; (lambda-line-icon-time t) ;; requires ClockFace font (see below)
   ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
   (lambda-line-position 'bottom) ;; Set position of status-line 
   (lambda-line-abbrev t) ;; abbreviate major modes
@@ -165,7 +165,7 @@
   :config
   ;; activate lambda-line 
   (lambda-line-mode)
-  (lambda-line-clockface-update-fontset "ClockFaceRectSolid")
+  ;; (lambda-line-clockface-update-fontset "ClockFaceRectSolid")
   ;; set divider line in footer
   (when (eq lambda-line-position 'top)
     (setq-default mode-line-format (list "%_"))

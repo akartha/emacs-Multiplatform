@@ -85,11 +85,11 @@
 (prefer-coding-system 'utf-8)
 
 (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
+
+(add-hook 'prog-mode-hook 'subword-mode)
+
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-
-;; Turn on show-paren-mode. Highlights matching parentheses
-;; (show-paren-mode 1)
 
 (setq zoneinfo-style-world-list
    '(("America/New_York" "New York")
@@ -198,5 +198,8 @@ Does not work with mac- so I have a package for that"
 ;; added on Sat 10 Jun 2023 11:48:49 AM EDT from prots search video
 (setq isearch-lazy-count t)
 (setq lazy-count-prefix-format "(%s/%s) ")
+
+(when (> emacs-major-version 28)
+  (pixel-scroll-precision-mode t))
 
 (provide 'init-basic)
