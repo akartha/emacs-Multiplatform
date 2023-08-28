@@ -387,6 +387,13 @@ PREFIX, specify word to search"
   (global-xht-fontify-mode)
   (global-xht-do-mode))
 
+;;From https://www.reddit.com/r/orgmode/comments/13xs6bo/converting_a_web_page_to_org_mode_to_include_in/
+;; converts selected text in clipboard to html, and then uses pandoc to convert it to org mode 
+(defun ak/insert-org-from-html-clipboard ()
+  (interactive)
+  (let* ((command "xclip -select clipboard -target text/html -o | pandoc -f html -t org --wrap=none"))
+         (shell-command command 1)))
+
 (use-package org-web-tools
   :bind (:map ak-map
               ("<f4>" . ak/get-url-title)
@@ -394,6 +401,7 @@ PREFIX, specify word to search"
               ("<f5>" . org-web-tools-read-url-as-org)
               ("<f7>" . org-web-tools-insert-link-for-url))
   :config 
+  (setq org-web-tools-pandoc-sleep-time 0.7)
   (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
     (interactive)
     (let* ((html (org-web-tools--get-url url))
