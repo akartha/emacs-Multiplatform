@@ -391,13 +391,16 @@ PREFIX, specify word to search"
 ;; converts selected text in clipboard to html, and then uses pandoc to convert it to org mode 
 (defun ak/insert-org-from-html-clipboard ()
   (interactive)
+  (if (not (executable-find "pandoc")) 
+      (error "pandoc executable not found"))
   (let* 
       ((pandoc-command "pandoc -f html -t org --wrap=none")
        (linux-clip-as-html-command "xclip -select clipboard -target text/html -o")
+       (mac-clip-as-html-command "osascript -e 'the clipboard as \"HTML\"' | perl -ne 'print chr foreach unpack(\"C*\",pack(\"H*\",substr($_,11,-3)))'")
        (windows-clip-as-html-command "powershell -command Get-Clipboard -Format Text -TextFormatType Html"))
-    
     (cond 
      (ak/generic-windows-p (shell-command (concat windows-clip-as-html-command " | " pandoc-command) 1))
+     (ak/generic-mac-p (shell-command (concat mac-clip-as-html-command " | " pandoc-command) 1))
      (t (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
 
 (use-package org-web-tools
