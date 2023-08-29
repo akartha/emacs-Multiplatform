@@ -170,7 +170,7 @@
         emms
         emms-state
         key-chord
-        org-web-tools
+        ;; org-web-tools
         htmlize))
 
 ;; Install packages above
@@ -196,6 +196,8 @@
 (straight-use-package
  '(xht :type git :host sourcehut :repo "flandrew/xht"))
 
+(add-to-list 'load-path (expand-file-name "custom-packages/org-web-tools" user-emacs-directory))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'init-basic)
@@ -215,6 +217,7 @@
 (epa-file-enable)
 
 (require 'init-programming)
+
 
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
