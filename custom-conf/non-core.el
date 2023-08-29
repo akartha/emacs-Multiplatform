@@ -403,6 +403,8 @@ PREFIX, specify word to search"
      (ak/generic-mac-p (shell-command (concat mac-clip-as-html-command " | " pandoc-command) 1))
      (t (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
 
+(define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
+
 (use-package org-web-tools
   :bind (:map ak-map
               ("<f4>" . ak/get-url-title)
