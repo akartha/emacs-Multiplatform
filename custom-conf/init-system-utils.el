@@ -464,31 +464,38 @@
 ;;;;;;;;;;;
 (use-package corfu
   ;; Optional customizations
-  :after eglot 
+  ;; :after eglot 
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
   (corfu-auto t)                 ;; Enable auto completion
   (corfu-separator ?\s)          ;; Orderless field separator
   (corfu-quit-no-match 'separator) 
   (corfu-scroll-margin 5)        ;; Use scroll margin
-
-  ;; Enable Corfu only for certain modes.
-  :hook ((prog-mode . corfu-mode)
-         (org-mode . corfu-mode)
-         (shell-mode . corfu-mode)
-         (eshell-mode . corfu-mode)
-         (eglot . corfu-mode))
-
-  ;; Recommended: Enable Corfu globally.
-  ;; This is recommended since Dabbrev can be used globally (M-/).
-  ;; See also `corfu-exclude-modes'.
-  ;; :config 
-  ;; (global-corfu-mode))
+  (corfu-auto-delay 0.4)      ;; delay for a bit so that the popup menu isnt constantly flashing
+  (corfu-min-width 70)        ;; have a comfortable display 
+  (corfu-max-width corfu-min-width) ;; have that comfortable display be constant size
+  (corfu-count 14)       
+  ;; :hook ((prog-mode . corfu-mode)
+  ;;        (org-mode . corfu-mode)
+  ;;        (text-mode . corfu-mode)
+  ;;        (shell-mode . corfu-mode)
+  ;;        (eshell-mode . corfu-mode)
+  ;;        (eglot . corfu-mode))
+  :init 
+  (global-corfu-mode)
   :bind
   ;; Another key binding can be used, such as S-SPC.
   (:map corfu-map 
+        ("M-n" . corfu-next)
+        ("M-p" . corfu-previous)
         ("M-SPC" . corfu-insert-separator)
+        ("M-d" . corfu-show-documentation)
+        ("M-l" . corfu-show-location)
+        ("<return>" . corfu-insert)
         ("<escape>" . corfu-quit)))
+
+
+
 
 (use-package kind-icon 
   :after corfu
@@ -507,6 +514,7 @@
   :bind (("M-p p" . completion-at-point) ;; capf
          ("M-p t" . complete-tag)        ;; etags
          ("M-p d" . cape-dabbrev)        ;; or dabbrev-completion
+         ("M-p e" . cape-elisp-block)
          ("M-p h" . cape-history)
          ("M-p f" . cape-file)
          ("M-p k" . cape-keyword)
@@ -515,28 +523,26 @@
          ("M-p l" . cape-line)
          ("M-p w" . cape-dict)
          ("M-p \\" . cape-tex)
-         ("M-p _" . cape-tex)
-         ("M-p ^" . cape-tex)
          ("M-p &" . cape-sgml)
          ("M-p r" . cape-rfc1345))
   :init
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
   ;; (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
-
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
+  (add-to-list 'completion-at-point-functions #'cape-dabbrev) ;;Complete word from current buffers
+  (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-keyword)) ;;;; `cape-keyword': Complete programming language keyword  
+  ;; (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
+  ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
 
   ;; (add-to-list 'completion-at-point-functions #'cape-history) ;;;; `cape-history': Complete from Eshell, Comint or minibuffer history
-  (add-to-list 'completion-at-point-functions #'cape-dabbrev) ;;Complete word from current buffers
-  (add-to-list 'completion-at-point-functions #'cape-keyword) ;;;; `cape-keyword': Complete programming language keyword
   ;;(add-to-list 'completion-at-point-functions #'cape-tex) 
   ;; (add-to-list 'completion-at-point-functions #'cape-sgml)
   ;; (add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  (add-to-list 'completion-at-point-functions #'cape-symbol)
-  ;;(add-to-list 'completion-at-point-functions #'cape-line)
-)
+  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
+  ;; (add-to-list 'completion-at-point-functions #'cape-symbol))
+;;(add-to-list 'completion-at-point-functions #'cape-line)
+
 ;;;;;;;;;;;;
 ;; Popper ;;
 ;;;;;;;;;;;;
