@@ -1005,4 +1005,46 @@ PREFIX, specify word to search"
 ;; (add-hook 'python-mode-hook 'flycheck-mode)
 
 
+;; (defun ak/my-windows-org-screenshot ()
+;;     "Take a screenshot into a time stamped unique-named file in the
+;; same directory as the org-buffer and insert a link to this file."
+;;     (interactive)
+;;     (setq filename
+;;           (concat
+;;            (make-temp-name
+;;             (concat (buffer-file-name)
+;;                     "_"
+;;                     (format-time-string "%Y%m%d_%H%M%S_")) ) ".png"))
+;;     (shell-command (concat "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('" filename "',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+;;     (insert (concat "[[file:" filename "]]"))
+;;     (org-display-inline-images))
+
+;;   (defun ak/my-windows-sniptool ()
+;;     (shell-command "snippingtool /clip")
+;;     (ak/my-windows-org-screenshot))
+
+
+;;   ;; (global-set-key "\C-cs" 'ak/my-windows-sniptool))
+
+;; (defun ak/my-linux-take-screenshot ()
+;;     (interactive)
+;;     (let
+;;         ;; Read Filename from Minibuffer
+;;         ((filename (read-from-minibuffer "image file name: "))
+;;         (directory "_media"))
+
+;;         ;; Use maim to screenshot
+;;         (shell-command (format "maim --select %s/%s/%s.png" default-directory directory filename ))
+
+;;         ;; Insert formatted link at point
+;;         (save-excursion (insert(format
+;;         "#+attr_html: :width 400px \n #+attr_latex: :width 0.4\\textwidth \n [[file:%s/%s.png]]"
+;;         directory filename)))
+
+;;         ;; Message success to the minibuffer
+;;         (message "saved to %s as %s.png" directory filename)
+;;     )
+;; )
+
+
 (provide 'non-core)

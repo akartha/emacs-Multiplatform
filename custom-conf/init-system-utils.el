@@ -529,9 +529,9 @@
   ;; Add `completion-at-point-functions', used by `completion-at-point'.
   ;; NOTE: The order matters!
   ;; (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-keyword) ;;;; `cape-keyword': Complete programming language keyword  
   (add-to-list 'completion-at-point-functions #'cape-dabbrev) ;;Complete word from current buffers
-  (add-to-list 'completion-at-point-functions #'cape-dict)
-  (add-to-list 'completion-at-point-functions #'cape-keyword)) ;;;; `cape-keyword': Complete programming language keyword  
+  (add-to-list 'completion-at-point-functions #'cape-dict))
   ;; (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
   ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
 
