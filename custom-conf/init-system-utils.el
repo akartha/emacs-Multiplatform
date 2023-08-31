@@ -430,10 +430,10 @@
   :custom (visual-line-mode t)
   :config
   (dashboard-setup-startup-hook)
-  (setq dashboard-items '((bookmarks  . 10)
-                          (recents  . 20)
-                          (projects  . 10)
-                          (registers . 5)))
+  (setq dashboard-items '((recents  . 20)
+                          (bookmarks  . 10)
+                          (registers . 5)
+                          (projects  . 10)))
   (setq dashboard-set-heading-icons t
         dashboard-center-content t
         dashboard-set-file-icons t
