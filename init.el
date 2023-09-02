@@ -196,7 +196,7 @@
 (straight-use-package
  '(xht :type git :host sourcehut :repo "flandrew/xht"))
 
-(add-to-list 'load-path (expand-file-name "custom-packages/org-web-tools" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "org-web-tools" user-emacs-directory))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
