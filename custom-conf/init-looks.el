@@ -43,9 +43,9 @@
            :bold-weight extrabold)
           (reading
            :default-family "Iosevka Comfy Motion Duo" 
-           :default-weight regular
+           :default-weight semilight
            :default-height 185
-           :line-spacing 10)              ;this is in pixels
+           :line-spacing 15)              ;this is in pixels
           (t
            ;; I keep all properties for didactic purposes, but most can be
            ;; omitted.  See the fontaine manual for the technicalities:

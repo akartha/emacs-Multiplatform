@@ -182,7 +182,7 @@
       :unnarrowed t)
 
      ("w" "web" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category:web article#+filetags: web")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category:web article\n#+filetags: web")
       :unnarrowed t)
 
      ("f" "fiction" plain "%?"
