@@ -292,6 +292,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;;Below is from https://stackoverflow.com/questions/4448055/download-a-file-with-emacs-lisp
 (defun ak/download-file (&optional url download-dir download-name)
   (interactive)
+  (message "Downloading...%s" url)
   (let ((url (or url
                  (read-string "Enter download URL: "))))
     (let ((download-buffer (url-retrieve-synchronously url)))

@@ -158,6 +158,8 @@
    (js . t)
    
    (passthrough . t)
+   (shell . t)
+   ;; (bash . t)
    ))
 
 
