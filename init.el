@@ -171,7 +171,8 @@
         emms-state
         key-chord
         ;; org-web-tools
-        htmlize))
+        htmlize
+        plantuml-mode))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)

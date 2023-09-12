@@ -159,9 +159,10 @@
    
    (passthrough . t)
    (shell . t)
-   ;; (bash . t)
+   (plantuml . t)
    ))
 
+(setq org-plantuml-jar-path "~/plantuml.jar")
 
 
 ;;;;;;;;;;;;;;;;;
