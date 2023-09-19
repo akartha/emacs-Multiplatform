@@ -420,6 +420,32 @@ PREFIX, specify word to search"
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url)))))
 
+(defun ak/dired-id3vtag ()
+  "For an audiobook directory in the format '~/downloads/author- title/', this code
+will update the id3 tags associated with the audio files in it. 
+TODO - No error checking implemented yet"
+  (interactive)
+  (let* ((directory dired-directory)
+         (files (directory-files dired-directory t directory-files-no-dot-files-regexp))
+         (directory-name (s-chop-suffix "/" (s-chop-prefix "~/downloads/" directory)))
+         (author-title (split-string directory-name " - " ))
+         (author (string-trim (nth  0 author-title) "\s+"))
+         (title (string-trim (nth 1 author-title) "\s+" ))
+         (number-of-files (length files))
+         (command-string (format "id3tag -2 --artist=\"%s\" --album=\"%s\" --genre=\"audiobook\" --total=%d --track=" author title number-of-files))
+         (command-string-track))
+
+    (dolist (file files)
+      (if (f-file? file)
+          (progn (setq command-string-track (format "%s%s \"%s\"" command-string (f-base file) file))
+                 (shell-command command-string-track)
+                 ;; (message command-string-track)
+                 )))))
+
+
+
+         
+
 
 ;; Graveyard
 
