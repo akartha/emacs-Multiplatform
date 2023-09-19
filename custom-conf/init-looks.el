@@ -17,7 +17,7 @@
 ;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
 ;; Iosevka Comfy Motion     == monospaced, supports ligatures, fancier glyphs
 ;; Iosevka Comfy Motion Duo == as above, but quasi-proportional
-(when (or ak/my-framework-p ak/my-win-framework-p)
+(when (or ak/my-framework-p ak/my-win-framework-p ak/my-pi-p)
   (setq fontaine-presets
         '((tiny
            :default-family "Iosevka Comfy Wide Fixed"
