@@ -23,6 +23,7 @@
 (defvar ak/my-framework-p nil)
 (defvar ak/my-win-framework-p nil)
 (defvar ak/my-mac-p nil)
+(defvar ak/my-pi-p nil)
 (defvar ak/my-package-list nil)
 
 (cond ((string=  (system-name) "arun-framework")
@@ -30,7 +31,9 @@
       ((string=  (system-name) "FRAMEWORKWIN")
        (setq ak/my-win-framework-p t))
       ((string= (system-name) "Arun-MBP14.local")
-       (setq ak/my-mac-p t)))
+       (setq ak/my-mac-p t))
+      ((string= (system-name) "usbpi")
+       (setq ak/my-pi-p t)))
 
 (defvar ak/generic-windows-p (equal system-type 'windows-nt))
 (defvar ak/generic-linux-p (equal system-type 'gnu/linux))

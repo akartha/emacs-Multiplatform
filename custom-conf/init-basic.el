@@ -134,7 +134,9 @@ Does not work with mac- so I have a package for that"
       (ak/my-win-framework-p
        (setq ak/my-org-file-location (expand-file-name "c:/Users/Arun/Dropbox/org-files/")))
       (ak/my-mac-p
-       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files/"))))
+       (setq ak/my-org-file-location (expand-file-name "/Volumes/Expansion/akartha/Dropbox/org-files/")))
+      (ak/my-pi-p
+       (setq ak/my-org-file-location (expand-file-name "~/Documents/org-docs/"))))
 
 (define-prefix-command 'ak-map)
 (global-set-key (kbd "`") 'ak-map)
