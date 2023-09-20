@@ -234,10 +234,14 @@
   (let*
       ;; Read Filename from Minibuffer
       ((default-file-or-caption-name (concat (buffer-name) "_" (format-time-string "%Y%m%d_%H%M%S")))
-       (filename (or (not (string= "" (read-from-minibuffer "Image file name: ")))
-                     default-file-or-caption-name))
-       (caption (or (not (string= "" (read-from-minibuffer "Image Caption: ")))
-                    default-file-or-caption-name))
+       (user-filename (read-from-minibuffer "Image file name: "))
+       (user-caption (read-from-minibuffer "Image Caption: "))
+       (filename (if (string= "" user-filename)
+                     default-file-or-caption-name
+                   user-filename))
+       (caption (if (string= "" user-caption)
+                    default-file-or-caption-name
+                  user-caption))
        (directory "_media")
        (linux-shell-clip-command "xclip -selection clipboard -t image/png -o > %s/%s/%s.png")
        (mac-shell-clip-command "pngpaste %s.png")
@@ -245,13 +249,13 @@
 
     (cond (ak/my-framework-p
            (make-directory directory t)
-           (shell-command (format linux-shell-clip-command default-directory directory filename )))
+           (shell-command (format linux-shell-clip-command default-directory directory (shell-quote-argument filename) )))
           (ak/generic-windows-p
            (make-directory directory t)
-           (shell-command (format windows-shell-clip-command (concat directory "/" filename))))
+           (shell-command (format windows-shell-clip-command (concat directory "/" (shell-quote-argument filename)))))
           (ak/my-mac-p
            (make-directory directory t)
-           (shell-command (format mac-shell-clip-command (concat directory "/" filename)))))
+           (shell-command (format mac-shell-clip-command (concat directory "/" (shell-quote-argument filename))))))
     ;; Insert formatted link at point
     (save-excursion (insert(format
                             "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]" caption caption directory filename)))
