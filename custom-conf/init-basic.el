@@ -145,7 +145,7 @@ Does not work with mac- so I have a package for that"
 (setq epg-pinentry-mode 'loopback) ;;Allows gpg password entry through emacs, rather than external program.
 ;; added on Fri 28 Apr 2023 12:11:38 PM EDT
 
-(define-key ak-map "$" '(lambda() (interactive)
+(define-key ak-map "$" (lambda() (interactive)
         (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg"))))
 
 (define-key ak-map "0" 'repeat)

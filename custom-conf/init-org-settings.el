@@ -230,35 +230,48 @@
   (org-roam-db-autosync-mode))
 
 (defun ak/my-insert-clipboard-png ()
-  (interactive)
-  (let*
-      ;; Read Filename from Minibuffer
-      ((default-file-or-caption-name (concat (buffer-name) "_" (format-time-string "%Y%m%d_%H%M%S")))
-       (user-filename (read-from-minibuffer "Image file name: "))
-       (user-caption (read-from-minibuffer "Image Caption: "))
-       (filename (if (string= "" user-filename)
-                     default-file-or-caption-name
-                   user-filename))
-       (caption (if (string= "" user-caption)
-                    default-file-or-caption-name
-                  user-caption))
-       (directory "_media")
-       (linux-shell-clip-command "xclip -selection clipboard -t image/png -o > %s/%s/%s.png")
-       (mac-shell-clip-command "pngpaste %s.png")
-       (windows-shell-clip-command "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('%s.png',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'clipboard content saved as file'} else {Write-Output 'clipboard does not contain image data'}\""))
+  "Paste image data in clipboard and save it to the (existing or new) '_media' directory
+in the current working directory. 
 
-    (cond (ak/my-framework-p
-           (make-directory directory t)
-           (shell-command (format linux-shell-clip-command default-directory directory (shell-quote-argument filename) )))
+Works on Windows (using built-in powershell command), Mac (using pngpaste - install with brew) and Linux (requires xclip)
+Image is saved as png and function inserts an org buffer block with image details."
+  (interactive)
+  (let* ((directory 
+          "_media") ;;creates this directory in the current document's folder
+         (default-file-or-caption-name 
+          (concat (buffer-name) "_" (format-time-string "%Y%m%d_%H%M%S"))) ;;image defaults to this file/caption if none provided
+         (user-filename 
+          (read-from-minibuffer "Image File Name: "))
+         (user-caption 
+          (read-from-minibuffer "Image Caption: "))
+         (filename 
+          (if (string= "" user-filename)
+              default-file-or-caption-name
+            user-filename))
+         (caption 
+          (if (string= "" user-caption)
+              default-file-or-caption-name
+            user-caption))
+         (linux-shell-clip-command 
+          "xclip -selection clipboard -t image/png -o > %s.png")
+         (mac-shell-clip-command 
+          "pngpaste %s.png")
+         (windows-shell-clip-command 
+          "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('%s.png',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'Clipboard Content Saved As File'} else {Write-Output 'Clipboard Does Not Contain Image Data'}\""))
+
+    (make-directory (concat default-directory directory) t)
+
+    (cond ((or ak/my-framework-p ak/my-pi-p)
+           (shell-command (shell-quote-argument (format linux-shell-clip-command (concat default-directory  directory "/" filename )))))
           (ak/generic-windows-p
-           (make-directory directory t)
-           (shell-command (format windows-shell-clip-command (concat directory "/" (shell-quote-argument filename)))))
+           (shell-command (shell-quote-argument (format windows-shell-clip-command (concat default-directory  directory "/"  filename)))))
           (ak/my-mac-p
-           (make-directory directory t)
-           (shell-command (format mac-shell-clip-command (concat directory "/" (shell-quote-argument filename))))))
+           (shell-command (shell-quote-argument (format mac-shell-clip-command (concat default-directory  directory "/"  filename)))))
     ;; Insert formatted link at point
-    (save-excursion (insert(format
-                            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 400px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]" caption caption directory filename)))
+    (save-excursion 
+      (insert(format 
+              "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 750px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s/%s.png]]"
+              caption caption directory filename)))
     ;; Message success to the minibuffer
     (message "saved to %s as %s.png" directory filename))
   (org-display-inline-images))
