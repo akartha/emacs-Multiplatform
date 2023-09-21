@@ -85,9 +85,9 @@
         ("<delete>" . crux-delete-file-and-buffer)
         (";" . crux-duplicate-and-comment-current-line-or-region)
         ("<f3>" . crux-kill-buffer-truename)
-        ("<tab>" . crux-indent-defun))
-  (:map dired-mode-map
-        ("<f6>" . crux-open-with)))
+        ("<tab>" . crux-indent-defun)))
+  ;; (:map dired-mode-map
+  ;;       ("<f6>" . crux-open-with)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -261,6 +261,6 @@
 (replace-string "\243" "£" nil (point-min) (point-max))
 ));end replace-garbage-characters
 ;bind-key replace-garbage-characters
-(bind-key  "\C-cr"  'ak/replace-garbage)
+(define-key  ak-map "R"  'ak/replace-garbage)
 
 (provide 'init-editing-functions)

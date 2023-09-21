@@ -380,7 +380,9 @@
             (dired-dwim-target t))
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump)
-         ("C-x 4 C-j" . dired-jump-other-window))
+         ("C-x 4 C-j" . dired-jump-other-window)
+         (:map dired-mode-map
+               ("<f6>" . crux-open-with)))
   :config
   ;;disabling this as I was seeing delays when autorevert mode is on
   (setq dired-free-space nil))

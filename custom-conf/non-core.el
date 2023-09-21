@@ -306,7 +306,8 @@ With PREFIX - load the latest xkcd cartoon"
         (write-file (concat (or download-dir
                                 "~/downloads/")
                             (or download-name
-                                (car (last (split-string url "/" t))))))))))
+                                (car (last (split-string url "/" t))))))
+        (kill-buffer download-buffer)))))
 
 ;;* Experimental features
 (defun ak/lookup-word(arg)
