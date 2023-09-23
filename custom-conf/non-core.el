@@ -411,7 +411,11 @@ PREFIX, specify word to search"
      (t 
       (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
 
-(define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
+;; (define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
+(define-key ak-map (kbd "<f2>") (lambda () 
+                                  (interactive)
+                                  (ak/insert-org-from-html-clipboard)
+                                  (org-web-tools--clean-pandoc-output)))
 
 (use-package org-web-tools
   :bind (:map ak-map
