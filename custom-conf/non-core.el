@@ -333,7 +333,7 @@ TODO - No error checking implemented yet"
 (org-crypt-use-before-save-magic)
 (setq org-tags-exclude-from-inheritance '("crypt"))
 
-(setq org-crypt-key "")
+(setq org-crypt-key "DA289147FB279C3D")
 ;; GPG key to use for encryption.
 ;; nil means  use symmetric encryption unconditionally.
 ;; "" means use symmetric encryption unless heading sets CRYPTKEY property.
