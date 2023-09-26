@@ -215,6 +215,8 @@
 
 (require 'non-core)
 
+(require 'init-hydra)
+
 (require 'init-system-utils)
 
 (require 'epa-file)
