@@ -240,7 +240,9 @@ Pandoc output."
           ;; current property drawer is malformed, which shouldn't happen in Pandoc output, it
           ;; should work.
           (re-search-forward org-property-drawer-re)
-          (setf (buffer-substring (match-beginning 0) (match-end 0)) ""))))))
+          ;; (setf (buffer-substring (match-beginning 0) (match-end 0)) "")))))) 
+          ;; buffer-substring is obsolete, so replaced with filter-buffer-substring by me 
+          (setf (filter-buffer-substring (match-beginning 0) (match-end 0)) ""))))))
 
 ;;;; Commands
 

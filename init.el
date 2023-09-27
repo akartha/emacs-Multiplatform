@@ -213,6 +213,9 @@
 
 (require 'init-org-settings)
 
+;;added on Wed 27 Sep 2023 09:25:03 AM EDT because it wasnt being automatically loaded
+(require 'org-web-tools) 
+
 (require 'non-core)
 
 (require 'init-hydra)
