@@ -86,20 +86,30 @@
 
 (when window-system (add-hook 'prog-mode-hook 'hl-line-mode))
 
+
 (add-hook 'prog-mode-hook 'subword-mode)
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-
-(setq zoneinfo-style-world-list
-   '(("America/New_York" "New York")
-     ("America/Chicago" "Chicago")
+(setq-default zoneinfo-style-world-list
+   '(("Zulu" "Zulu")
+     ("America/New_York" "New York/D.C.")
+     ("America/Chicago" "Chicago/Minneapolis/Dallas")
+     ("America/Denver" "Denver/Utah/El Paso")
+     ("America/Phoenix" "Phoenix")
+     ("America/Los_Angeles" "Los Angeles/Seattle")
      ("Asia/Calcutta" "Bangalore")
-     ("America/Denver" "Denver")
-     ("America/Los_Angeles" "Seattle")
+     ("Atlantic/Reykjavik" "Reykjavik")
      ("Europe/London" "London")
-     ("Europe/Paris" "Paris")
-     ("Asia/Tokyo" "Tokyo")))
+     ("Europe/Paris" "Paris/Berlin/Vatican/Zurich")
+     ("Europe/Moscow" "Moscow/Kiev")
+     ("Asia/Tehran" "Tehran")
+     ("Asia/Shanghai" "Beijing/Shanghai")
+     ("Asia/Singapore" "Singapore")
+     ("Asia/Seoul" "Seoul")
+     ("Asia/Tokyo" "Tokyo")
+     ("Australia/Sydney" "Sydney/Melbourne")
+     ("Pacific/Auckland" "Auckland")))
 
 
 ;;below is from https://www.emacswiki.org/emacs/ExecPath
@@ -140,15 +150,15 @@ Does not work with mac- so I have a package for that"
 
 (define-prefix-command 'ak-map)
 (global-set-key (kbd "`") 'ak-map)
-(global-set-key (kbd "` `") 'self-insert-command)
+(global-set-key (kbd "` `") '("Literal \"`\"" . self-insert-command))
 
 (setq epg-pinentry-mode 'loopback) ;;Allows gpg password entry through emacs, rather than external program.
 ;; added on Fri 28 Apr 2023 12:11:38 PM EDT
 
-(define-key ak-map "$" (lambda() (interactive)
-        (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg"))))
+(define-key ak-map "$" '("Secrets" . (lambda() (interactive)
+                                       (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg")))))
 
-(define-key ak-map "0" 'repeat)
+(define-key ak-map "0" '("Repeat last command" . repeat))
 
 (use-package savehist
   :defer
@@ -203,5 +213,9 @@ Does not work with mac- so I have a package for that"
 
 (when (> emacs-major-version 28)
   (pixel-scroll-precision-mode t))
+
+;; *** Kill buffers without asking for confirmation
+
+(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
 
 (provide 'init-basic)

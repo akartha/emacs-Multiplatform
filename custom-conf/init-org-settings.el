@@ -15,8 +15,6 @@
       org-log-done 'time
       org-log-into-drawer t
 
-      ;; org-agenda-files ak/my-org-file-location
-
       org-todo-keywords
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
         (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)"  "|" "COMPLETED(c)" "CANC(k@)"))
@@ -274,6 +272,6 @@ Image is saved as png and function inserts an org buffer block with image detail
     (message "saved to %s as %s.png" directory filename))
   (org-display-inline-images))
 
-(define-key ak-map "v" 'ak/my-insert-clipboard-png)
+(define-key ak-map "v" '("Save clipboard image as org" ak/my-insert-clipboard-png))
 
 (provide 'init-org-settings)

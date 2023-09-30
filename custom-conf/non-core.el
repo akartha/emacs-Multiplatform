@@ -1,202 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
-(require 'xkcd)
 
 
-;; Switch to scratch buffer
-(if (> emacs-major-version 28)
-    (keymap-set ak-map "z" 'scratch-buffer)
-  (define-key ak-map "z" (lambda ()
-                           "Switch to scratch"
-                           (interactive)
-                           (switch-to-buffer "*scratch*"))))
-
-;; Switch to scratch buffer
-(define-key ak-map "2" (lambda ()
-                         "Switch to scratch"
-                         (interactive)
-                         (switch-to-buffer(get-buffer-create "*scratch-text*"))))
-
-;; Switch to scratch buffer
-;; (define-key ak-map "Z" (lambda ()
-;;                          "Create new scratch buffer to scratch"
-;;                          (interactive)
-;;                          (switch-to-buffer "*scratch*")))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; *** Following window splits
-;; Also opens the previous buffer in the
-;; newly opened window ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun split-and-follow-horizontally (prefix)
-  (interactive "P")
-  (split-window-below)
-  (balance-windows)
-  (other-window 1 nil)
-  (if  prefix 
-      (switch-to-next-buffer)
-    (switch-to-prev-buffer)))
-
-(global-set-key (kbd "C-x 2") 'split-and-follow-horizontally)
-
-(defun split-and-follow-vertically (prefix)
-  (interactive "P")
-  (split-window-right)
-  (balance-windows)
-  (other-window 1)
-  (if prefix
-      (switch-to-next-buffer)
-    (switch-to-prev-buffer)))
-
-(global-set-key (kbd "C-x 3") 'split-and-follow-vertically)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Buffers
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; Doing =C-x k= should kill the current buffer at all times
-
-(defun kill-current-buffer ()
-  "Kills the current buffer."
-  (interactive)
-  (kill-buffer (current-buffer)))
-(global-set-key (kbd "C-x k") 'kill-current-buffer)
-
-;; *** Kill buffers without asking for confirmation
-
-(setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
-
-;; *** close-all-buffers
-
-(defun close-all-buffers ()
-  "Kill all buffers without regard for their origin."
-  (interactive)
-  (mapc 'kill-buffer (buffer-list)))
-(global-set-key (kbd "C-M-s-k") 'close-all-buffers)
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Custom function to mark a field in an org table ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun ak/org-table-mark-field ()
-  "Mark the current table field."
-  (interactive)
-  ;; Do not try to jump to the beginning of field if the point is already there
-  (when (not (looking-back "|\\s-?" nil))
-    (org-table-beginning-of-field 1))
-  (set-mark-command nil)
-  (org-table-end-of-field 1))
-
-(define-key ak-map "-" 'ak/org-table-mark-field)
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Move lines up/down                                                                                                      ;;
-
-;; Copied from this
-;; [[https://stackoverflow.com/questions/2423834/move-line-region-up-and-down-in-emacs][stackoverflow
-;; post]] ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;; move the line(s) spanned by the active region up/down (line transposing)
-(defun move-lines (n)
-  (let ((beg) (end) (keep))
-    (if mark-active
-        (save-excursion
-          (setq keep t)
-          (setq beg (region-beginning)
-                end (region-end))
-          (goto-char beg)
-          (setq beg (line-beginning-position))
-          (goto-char end)
-          (setq end (line-beginning-position 2)))
-      (setq beg (line-beginning-position)
-            end (line-beginning-position 2)))
-    (let ((offset (if (and (mark t)
-                           (and (>= (mark t) beg)
-                                (< (mark t) end)))
-                      (- (point) (mark t))))
-          (rewind (- end (point))))
-      (goto-char (if (< n 0) beg end))
-      (forward-line n)
-      (insert (delete-and-extract-region beg end))
-      (backward-char rewind)
-      (if offset (set-mark (- (point) offset))))
-    (if keep
-        (setq mark-active t
-              deactivate-mark nil))))
-
-(defun ak/move-lines-up (n)
-  "move the line(s) spanned by the active region up by N lines."
-  (interactive "*p")
-  (move-lines (- (or n 1))))
-
-(defun ak/move-lines-down (n)
-  "move the line(s) spanned by the active region down by N lines."
-  (interactive "*p")
-  (move-lines (or n 1)))
-
-
-
-(when window-system
-  (defun ak/reload-xkcd (arg)
-    "Load a random xkcd cartoon on the dashboard.
-With PREFIX - load the latest xkcd cartoon"
-    (interactive "P")
-    (let ((rand-id-xkcd nil)
-          (rand-id-xkcd-url nil))
-
-      (with-temp-buffer
-        (if arg
-            (setq rand-id-xkcd (string-to-number(xkcd)))
-          (setq rand-id-xkcd (string-to-number( xkcd-rand))))
-        (setq rand-id-xkcd-url (concat "http://xkcd.com/" (number-to-string rand-id-xkcd)))
-        (xkcd-kill-buffer))
-      
-      (let ((last-xkcd-png (concat xkcd-cache-dir (number-to-string rand-id-xkcd) ".png")))
-        (if (file-exists-p last-xkcd-png)
-            (setq dashboard-startup-banner last-xkcd-png
-                  dashboard-banner-logo-title rand-id-xkcd-url
-                  dashboard-init-info xkcd-alt))))
-    (revert-buffer))
-
-  (define-key ak-map "X" 'ak/reload-xkcd))
-
-(require 'url)
-
-
-;;Below is from https://stackoverflow.com/questions/4448055/download-a-file-with-emacs-lisp
-(defun ak/download-file (&optional url download-dir download-name)
-  (interactive)
-  (message "Downloading...%s" url)
-  (let ((url (or url
-                 (read-string "Enter download URL: "))))
-    (let ((download-buffer (url-retrieve-synchronously url)))
-      (save-excursion
-        (set-buffer download-buffer)
-        ;; we may have to trim the http response
-        (goto-char (point-min))
-        (re-search-forward "^$" nil 'move)
-        (forward-char)
-        (delete-region (point-min) (point))
-        (write-file (concat (or download-dir
-                                "~/downloads/")
-                            (or download-name
-                                (car (last (split-string url "/" t))))))
-        (kill-buffer download-buffer)))))
-
-;;* Experimental features
-(defun ak/lookup-word(arg)
-  "Lookup current word in the dictionaries. With
-PREFIX, specify word to search"
-  (interactive "P")
-  (if arg
-    (dictionary-search nil)
-      (dictionary-lookup-definition)))
-
-;; (require 'emms-setup)
-;; (emms-all)
-;; (setq emms-player-list '(emms-player-mpv)
-;;       emms-info-functions '(emms-info-native))
 
 (define-prefix-command 'ak-emms-map)
 (global-set-key (kbd "` p") 'ak-emms-map)
@@ -264,39 +68,12 @@ PREFIX, specify word to search"
   (global-xht-fontify-mode)
   (global-xht-do-mode))
 
-;;From https://www.reddit.com/r/orgmode/comments/13xs6bo/converting_a_web_page_to_org_mode_to_include_in/
-;; converts selected text in clipboard to html, and then uses pandoc to convert it to org mode 
-(defun ak/insert-org-from-html-clipboard ()
-  (interactive)
-  (if (not (executable-find "pandoc")) 
-      (error "pandoc executable not found"))
-  (let* ((pandoc-command 
-          "pandoc -f html -t org --wrap=none")
-       (linux-clip-as-html-command 
-        "xclip -select clipboard -target text/html -o")
-       (mac-clip-as-html-command 
-        "osascript -e 'the clipboard as \"HTML\"' | perl -ne 'print chr foreach unpack(\"C*\",pack(\"H*\",substr($_,11,-3)))'")
-       (windows-clip-as-html-command 
-        "powershell -command Get-Clipboard -Format Text -TextFormatType Html"))
-    (cond 
-     (ak/generic-windows-p 
-      (shell-command (concat windows-clip-as-html-command " | " pandoc-command) 1))
-     (ak/generic-mac-p 
-      (shell-command (concat mac-clip-as-html-command " | " pandoc-command) 1))
-     (t 
-      (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
-
-;; (define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
-(define-key ak-map (kbd "<f2>") (lambda () 
-                                  (interactive)
-                                  (ak/insert-org-from-html-clipboard)
-                                  (org-web-tools--clean-pandoc-output)))
 
 (use-package org-web-tools
   :bind (:map ak-map
-              ("<f4>" . ak/get-url-title)
-              ("<f6>" . org-web-tools-insert-web-page-as-entry)
-              ("<f5>" . org-web-tools-read-url-as-org)
+              ("<f2>" . ak/get-url-title)
+              ("<f3>" . org-web-tools-insert-web-page-as-entry)
+              ("<f6>" . org-web-tools-read-url-as-org)
               ("<f7>" . org-web-tools-insert-link-for-url))
   :config 
   (setq org-web-tools-pandoc-sleep-time 0.7)
@@ -347,8 +124,17 @@ TODO - No error checking implemented yet"
 ;;
 ;; # -*- buffer-auto-save-file-name: nil; -*-
 
-         
+(use-package nov
+  :config
+  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
+  ;; (defun my-nov-font-setup ()
+  ;; (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
+  ;;                                          :height 1.5))
+  ;; (add-hook 'nov-mode-hook 'my-nov-font-setup)
+  ;; (setq nov-text-width 100)
+  )
 
+(provide 'non-core)
 
 ;; Graveyard
 
@@ -977,4 +763,4 @@ TODO - No error checking implemented yet"
 ;; )
 
 
-(provide 'non-core)
+

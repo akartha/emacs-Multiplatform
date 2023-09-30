@@ -499,7 +499,6 @@
 
 
 
-
 (use-package kind-icon 
   :after corfu
   :custom
@@ -610,15 +609,6 @@
     (interactive "p")
     (other-window (if arg (- arg) -1) all-frames)))
 
-(use-package nov
-  :config
-  (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
-  ;; (defun my-nov-font-setup ()
-  ;; (face-remap-add-relative 'variable-pitch :family "Liberation Serif"
-  ;;                                          :height 1.5))
-  ;; (add-hook 'nov-mode-hook 'my-nov-font-setup)
-  ;; (setq nov-text-width 100)
-  )
 
 
 

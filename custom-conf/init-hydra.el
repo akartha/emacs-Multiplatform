@@ -33,8 +33,8 @@ _e_: emacs        _p_: projects         _a_: Articles
     ("i" (find-file "~/.i3/config") "i3 config")
     ("q" nil "Quit" :color blue))
 
-  (define-key ak-map "d" 'hydra-jump-to-directory/body)
-  (define-key ak-map "c" 'hydra-jump-to-config/body))
+  (define-key ak-map "d" '("Folders (hydra)" . hydra-jump-to-directory/body))
+  (define-key ak-map "c" '("Config files (hydra)" . hydra-jump-to-config/body)))
 
 (when ak/my-win-framework-p
   (defhydra hydra-jump-to-directory
@@ -59,29 +59,29 @@ _p_: Desktop      ^ ^                   _x_: xkcd          _q_: quit
     ("x" (find-file "~/.emacs.d/xkcd/") )
     ("q" nil :color blue))
   
-  (define-key ak-map "d" 'hydra-jump-to-directory/body))
+  (define-key ak-map "d" '("Folders (hydra)" . hydra-jump-to-directory/body)))
   
-  (defhydra hydra-resize-window
-    (:color amaranth
-            :timeout 5)
-    "
+(defhydra hydra-resize-window
+  (:color amaranth
+          :timeout 5)
+  "
 ^Sideways^             ^Vertically^         ^Absolute^              ^Command and quit
 ^^^^^^^^--------------------------------------------------------------------------------
 _[_: Shrink            _,_: Shrink          _-_: Shrink to fit      _o_: Other window
 _]_: Enlarge           _._: Enlarge         _=_: balance            _s_: Ace-window
 ^ ^                    ^ ^                  ^ ^                     _q_: quit 
 "
-    ("[" (shrink-window-horizontally 2))
-    ("]" (enlarge-window-horizontally 2))
-    ("," (shrink-window 2))
-    ("." (enlarge-window 2))
-    ("-" (shrink-window-if-larger-than-buffer) :color blue)
-    ("=" (balance-windows) :color blue)
-    ("o" (other-window 1) :color blue)
-    ("s" (ace-window 1) :color blue)
-    ("q" nil :color blue))
-  
-  (define-key ak-map "]" 'hydra-resize-window/body)
+  ("[" (shrink-window-horizontally 2))
+  ("]" (enlarge-window-horizontally 2))
+  ("," (shrink-window 2))
+  ("." (enlarge-window 2))
+  ("-" (shrink-window-if-larger-than-buffer) :color blue)
+  ("=" (balance-windows) :color blue)
+  ("o" (other-window 1) :color blue)
+  ("s" (ace-window 1) :color blue)
+  ("q" nil :color blue))
+
+(define-key ak-map "]" '("Resize (hydra)" . hydra-resize-window/body))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -123,10 +123,10 @@ _]_: Enlarge           _._: Enlarge         _=_: balance            _s_: Ace-win
   ("{" (backward-paragraph) "Backward para")
   ("q" nil "Quit" :color blue))
 
-(global-set-key (kbd "C-c r") 'hydra-launcher/body)
+(global-set-key (kbd "C-c r") '("Launcher (hydra)" . hydra-launcher/body))
 
-(define-key ak-map "m" 'hydra-move-lines/body)
+(define-key ak-map "m" '("Move lines (hydra)" . hydra-move-lines/body))
 
-(define-key ak-map "." 'hydra-jump-cursor/body)
+(define-key ak-map "." '("Jump to (hydra)" . hydra-jump-cursor/body))
 
 (provide 'init-hydra)

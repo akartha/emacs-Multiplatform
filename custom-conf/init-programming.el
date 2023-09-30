@@ -98,7 +98,7 @@
 ;;;;;;;;;;;;;;;;;
 
 (define-prefix-command 'ak-json-manipulation-map)
-(global-set-key (kbd "` j") 'ak-json-manipulation-map)
+(global-set-key (kbd "` j") '("JSON mode commands" . ak-json-manipulation-map))
 
 (use-package json-mode
   :mode (("\\.json\\'" . json-mode)
