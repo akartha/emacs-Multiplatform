@@ -272,6 +272,6 @@ Image is saved as png and function inserts an org buffer block with image detail
     (message "saved to %s as %s.png" directory filename))
   (org-display-inline-images))
 
-(define-key ak-map "v" '("Save clipboard image as org" ak/my-insert-clipboard-png))
+(define-key ak-map "v" '("Save clipboard image as org" . ak/my-insert-clipboard-png))
 
 (provide 'init-org-settings)
