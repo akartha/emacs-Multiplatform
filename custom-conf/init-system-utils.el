@@ -433,7 +433,7 @@
   :config
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((recents  . 5)
-                          (agenda . 5)
+                          (agenda . 10)
                           (bookmarks  . 5)
                           (registers . 5)
                           (projects  . 10)))

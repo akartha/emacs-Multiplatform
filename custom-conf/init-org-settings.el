@@ -3,6 +3,21 @@
 ;; * Org Common settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+
+(defvar ak/my-org-file-location nil)
+
+(cond (ak/my-framework-p
+       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
+      (ak/my-win-framework-p
+       (setq ak/my-org-file-location (expand-file-name "c:/Users/Arun/Dropbox/org-files/")))
+      (ak/my-mac-p
+       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
+      (ak/my-pi-p
+       (setq ak/my-org-file-location (expand-file-name "~/Documents/org-docs/"))))
+
+(define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
+(define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
                           
 (setq org-ellipsis "⤵"
       org-src-fontify-natively t
@@ -21,19 +36,87 @@
 
       org-src-window-setup 'current-window)
 
-(custom-set-variables
- '(org-directory ak/my-org-file-location)
- '(org-agenda-files (list (concat org-directory "/agenda"))))
+
+(setq org-directory ak/my-org-file-location
+      org-agenda-files (mapcar #'(lambda(s) (expand-file-name s ak/my-org-file-location)) 
+                               (list "agenda/Trips.org"
+                                     "agenda/Tasks.org"
+                                     "agenda/Schedule.org")))
+
+(add-to-list 'recentf-exclude org-agenda-files)
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-;; (add-hook 'org-mode-hook 'yas-minor-mode)
 (add-hook 'org-mode-hook 'abbrev-mode)
-;;(add-hook 'org-mode-hook #'org-modern-mode)
+
 
 (add-hook 'org-mode-hook
           (lambda ()
             (visual-line-mode 1)))
 
+(setq org-priority-faces '((?A . (:foreground "red" :background "yellow" :weight bold))
+                           (?B . (:foreground "cyan" :background "black"))
+                           (?C . (:foreground "green" :background "gray"))))
+
+;; (add-to-list 'org-agenda-custom-commands
+(setq org-agenda-custom-commands
+             '(("w" "Custom agenda view - prioritized"
+                ((tags-todo "PRIORITY={A}"
+                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             (org-agenda-overriding-header "High Priority - incomplete:")))
+                 (tags-todo "PRIORITY={B}"
+                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'notdeadline))
+                             ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'deadline 'notscheduled ))
+                             (org-agenda-overriding-header "Medium Priority - incomplete:")))
+                 (tags-todo "PRIORITY={C}"
+                            ((org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             (org-agenda-overriding-header "Low Priority - incomplete:")))
+                 ;; (alltodo "")
+                 (agenda "" ((org-agenda-span 1)
+                             (org-deadline-warning-days 0)
+                             (org-agenda-block-separator nil)
+                             (org-scheduled-past-days 0)
+                             (org-agenda-day-face-function (lambda (date) 'org-agenda-date))
+                             (org-agenda-format-date "%A %-e %B %Y")
+                             (org-agenda-overriding-header "\nToday's agenda\n")))
+                 (agenda "" ((org-agenda-start-on-weekday nil)
+                             (org-agenda-start-day "+1d")
+                             (org-agenda-span 3)
+                             (org-deadline-warning-days 0)
+                             (org-agenda-block-separator nil)
+                             (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             (org-agenda-overriding-header "\nNext three days\n")))
+                 (agenda "" ((org-agenda-time-grid nil)
+                             (org-agenda-start-on-weekday nil)
+                             ;; We don't want to replicate the previous section's
+                             ;; three days, so we start counting from the day after.
+                             (org-agenda-start-day "+4d")
+                             (org-agenda-span 14)
+                             (org-agenda-show-all-dates nil)
+                             (org-deadline-warning-days 0)
+                             (org-agenda-block-separator nil)
+                             ;; (org-agenda-entry-types '(:deadline))
+                             (org-agenda-skip-function '(org-agenda-skip-entry-if 'todo 'done))
+                             (org-agenda-overriding-header "\nUpcoming activities (+14d)\n")))
+                         ))))
+
+(add-to-list 'org-agenda-custom-commands
+             '("p" "All Tasks (grouped by Priority)"
+                ((tags-todo "PRIORITY={A}"
+                           ((org-agenda-overriding-header "HIGH")))
+                            ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'notdeadline 'notscheduled 'todo '("WAITING" "DONE")))))
+                (tags-todo "PRIORITY={B}"
+                           ((org-agenda-overriding-header "MEDIUM")))
+                            ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'notdeadline 'notscheduled 'todo '("WAITING" "DONE")))))
+                ;; (tags-todo "PRIORITY=\"\""
+                ;;            ((org-agenda-overriding-header "NONE")))
+                ;;             ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'notdeadline 'notscheduled 'todo '("WAITING" "DONE")))))
+                (tags-todo "PRIORITY={C}"
+                           ((org-agenda-overriding-header "LOW")))
+                            ;; (org-agenda-skip-function '(org-agenda-skip-entry-if 'notdeadline 'notscheduled 'todo '("WAITING" "DONE")))))
+                (todo "DONE|CANX"
+                      ((org-agenda-overriding-header "COMPLETED")
+                       (org-agenda-sorting-strategy '(priority-down)))))) t)
 
 
 ;;;;;;;;;;;;;;;;;;;;
