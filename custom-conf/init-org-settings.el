@@ -125,8 +125,26 @@
 (global-set-key (kbd "C-c '") 'org-edit-src-code)
 
 (use-package org-superstar
-  :config
-  (add-hook 'org-mode-hook (lambda () (org-superstar-mode 1))))
+  :hook (org-mode . org-superstar-mode)
+  :custom 
+  ;; (org-superstar-headline-bullets-list '("◉" ("🞛" ?◈) "○" "▷"))
+  (org-superstar-headline-bullets-list '( "○" "❍" "⬭" "⬮" "▢" "⬨" "⬩"))
+  (org-superstar-leading-fallback ?\s)
+  (org-superstar-leading-bullet "․")
+  (org-superstar-cycle-headline-bullets nil)
+  (org-superstar-special-todo-items t)
+  (org-superstar-todo-bullet-alist '(("TODO" . 9744) 
+                                     ("NEXT" . 925)
+                                     ("DONE" . 9745) 
+                                     ("BACKLOG" . 128193)
+                                     ("PLAN" . 128198)
+                                     ("READY" . 8729)
+                                     ("ACTIVE" . 9201)
+                                     ("REVIEW" . 128064)
+                                     ("WAIT" . 9203)
+                                     ("HOLD" . 8987)
+                                     ("CANC" . 9746)
+                                     ("COMPLETED" . 9745))))
 
 ;; *** Reveal.js export
 
