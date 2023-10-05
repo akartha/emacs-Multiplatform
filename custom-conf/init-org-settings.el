@@ -328,6 +328,16 @@
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
 
+
+(global-set-key (kbd "C-c c") 'org-capture)
+
+(setq org-capture-templates
+      '(("t" "Todo" entry (file+headline "agenda/Tasks.org" "Captured Tasks")
+         "* TODO %?\n  %i\n  %a")
+        ("s" "Schedule" entry (file+headline  "agenda/Schedule.org" "Add to Schedule")
+         "* Appointment %?\n%T")))
+
+
 (defun ak/my-insert-clipboard-png ()
   "Paste image data in clipboard and save it to the (existing or new) '_media' directory
 in the current working directory. 
