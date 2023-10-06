@@ -434,7 +434,7 @@
   (dashboard-setup-startup-hook)
   (setq dashboard-items '((recents  . 5)
                           (agenda . 10)
-                          (bookmarks  . 5)
+                          (bookmarks  . 10)
                           (registers . 5)
                           (projects  . 10)))
   (setq dashboard-set-heading-icons t
@@ -520,7 +520,7 @@
          ("M-p h" . cape-history)
          ("M-p f" . cape-file)
          ("M-p k" . cape-keyword)
-         ("M-p s" . cape-symbol) 
+         ;; ("M-p s" . cape-symbol) 
          ("M-p a" . cape-abbrev)
          ("M-p l" . cape-line)
          ("M-p w" . cape-dict)
@@ -549,7 +549,7 @@
 ;; Popper ;;
 ;;;;;;;;;;;;
 (use-package popper
-  :bind (("C-`"   . popper-toggle-latest)
+  :bind (("C-`"   . popper-toggle)
          ("M-`"   . popper-cycle)
          ("C-M-`" . popper-toggle-type))
   :init
@@ -576,7 +576,8 @@
   (setq completion-cycle-threshold 3)
 
   ;; `completion-at-point' is often bound to M-TAB.
-  (setq tab-always-indent 'complete))
+  (setq tab-always-indent 'complete
+        tab-first-completion 'word-or-paren-or-punct))
 
 
 ;;;;;;;;;;;;;;;;

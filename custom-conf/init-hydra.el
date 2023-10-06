@@ -4,13 +4,14 @@
   (defhydra hydra-jump-to-directory
     (:color amaranth
             :timeout 5)
-"
-^System^          ^Projects^            ^Personal^        
-^^^^^^^^--------------------------------------------------
-_h_: ~            _c_: emacs custom     _v_: Dropbox      
-_d_: Documents    _s_: Scripts          _o_: orgs     
-_e_: emacs        _p_: projects         _a_: Articles         
-^ ^               ^ ^                   _x_: xkcd          _q_: quit 
+    "
+^System^          ^Projects^            ^Personal^
+^^^^^^^^------------------------------------------
+_h_: ~            _c_: emacs custom     _v_: Dropbox
+_d_: Documents    _s_: Scripts          _o_: orgs
+_e_: emacs        _p_: projects         _a_: Articles
+^ ^               ^ ^                   _x_: xkcd
+_q_: quit
 "
     ("h" (find-file "~/"))
     ("d" (find-file "~/Documents"))
@@ -42,11 +43,11 @@ _e_: emacs        _p_: projects         _a_: Articles
             :timeout 5)
     "
 ^System^          ^Projects^            ^Personal^        
-^^^^^^^^--------------------------------------------------
+^^^^^^^^----------------------------------------------
 _h_: c:\          _c_: emacs custom     _v_: Dropbox      
 _d_: Documents    ^ ^                   _o_: orgs     
 _e_: emacs        ^ ^                   _a_: Articles         
-_p_: Desktop      ^ ^                   _x_: xkcd          _q_: quit
+_p_: Desktop      ^ ^                   _x_: xkcd     _q_: quit
 "
     ("h" (find-file "c:/") )
     ("d" (find-file "c:/Users/Arun/Documents/") )
@@ -65,11 +66,11 @@ _p_: Desktop      ^ ^                   _x_: xkcd          _q_: quit
   (:color amaranth
           :timeout 5)
   "
-^Sideways^             ^Vertically^         ^Absolute^              ^Command and quit
-^^^^^^^^--------------------------------------------------------------------------------
-_[_: Shrink            _,_: Shrink          _-_: Shrink to fit      _o_: Other window
-_]_: Enlarge           _._: Enlarge         _=_: balance            _s_: Ace-window
-^ ^                    ^ ^                  ^ ^                     _q_: quit 
+^Sideways^       ^Vertically^   ^Absolute^           ^Command & q
+^^^^^^^^----------------------------------------------------------
+_[_: Shrink      _,_: Shrink    _-_: Shrink to fit   _o_: Other window
+_]_: Enlarge     _._: Enlarge   _=_: balance         _s_: Ace-window
+^ ^              ^ ^            ^ ^                  _q_: quit 
 "
   ("[" (shrink-window-horizontally 2))
   ("]" (enlarge-window-horizontally 2))
@@ -110,8 +111,10 @@ _]_: Enlarge           _._: Enlarge         _=_: balance            _s_: Ace-win
   (:color amaranth)
   "jump cursor"
   ("]" (forward-sexp) "Forward sexp")
-  ("<" (beginning-of-buffer) "Beginning of buffer")
-  (">" (end-of-buffer) "End of buffer")
+  ;; ("<" (beginning-of-buffer) "Beginning of buffer")
+  ("<" (goto-char (point-min)) "Beginning of buffer")
+  ;; (">" (end-of-buffer) "End of buffer")
+  (">" (goto-char (point-max)) "End of buffer")
   ("[" (backward-sexp) "Backward sexp")
   ;; ("w" (forward-to-word 1) "Forward word")
   ("w" (forward-word-strictly 1) "Forward word")

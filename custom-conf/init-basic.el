@@ -45,8 +45,9 @@
 (unless ak/generic-linux-p (setq command-line-x-option-alist nil))
 
 ;; Performance on Windows is considerably worse than elsewhere.
-(when ak/generic-windows-p
-  ;; Reduce the workload when doing file IO
+;; (when ak/generic-windows-p
+(when (and ak/generic-windows-p (symbolp 'w32-get-true-file-attributes))
+;;   ;; Reduce the workload when doing file IO
   (setq w32-get-true-file-attributes nil))
 
 (savehist-mode 1)

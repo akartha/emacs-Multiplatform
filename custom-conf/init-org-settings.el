@@ -339,11 +339,14 @@
 
 
 (defun ak/my-insert-clipboard-png ()
-  "Paste image data in clipboard and save it to the (existing or new) '_media' directory
-in the current working directory. 
+  "Paste image data in clipboard and save it to the 
+(existing or new) '_media' directory in the current
+ working directory. 
 
-Works on Windows (using built-in powershell command), Mac (using pngpaste - install with brew) and Linux (requires xclip)
-Image is saved as png and function inserts an org buffer block with image details."
+Works on Windows (using built-in powershell command), Mac 
+(using pngpaste - install with brew) and Linux (requires xclip)
+Image is saved as png and function inserts an org buffer block 
+with image details."
   (interactive)
   (let* ((directory 
           "_media") ;;creates this directory in the current document's folder

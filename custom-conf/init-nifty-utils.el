@@ -211,7 +211,7 @@ With PREFIX - load the latest xkcd cartoon"
   (let ((url (or url
                  (read-string "Enter download URL: "))))
     (let ((download-buffer (url-retrieve-synchronously url)))
-      (save-excursion
+      ;; (save-excursion
         (set-buffer download-buffer)
         ;; we may have to trim the http response
         (goto-char (point-min))
@@ -222,7 +222,7 @@ With PREFIX - load the latest xkcd cartoon"
                                 "~/downloads/")
                             (or download-name
                                 (car (last (split-string url "/" t))))))
-        (kill-buffer download-buffer)))))
+        (kill-buffer download-buffer))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Doing =C-x k= should kill the current buffer at all times ;;
@@ -346,36 +346,36 @@ PREFIX, specify word to search"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Replace garbage in word and other copy and paste  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun ak/replace-garbage ()
-"Replace non-rendering MS and other garbage characters with latin1 equivalents."
-(interactive)
-(save-excursion             ;save the current point
-(replace-string "\221" "`" nil (point-min) (point-max))
-(replace-string "\222" "'" nil (point-min) (point-max))
-(replace-string "\226" "-" nil (point-min) (point-max))
-(replace-string "\227" "--" nil (point-min) (point-max))
-(replace-string "\223" "(" nil (point-min) (point-max))
-(replace-string "\224" ")" nil (point-min) (point-max))
-(replace-string "\205" "..." nil (point-min) (point-max))
-(replace-string "\225" "-" nil (point-min) (point-max))
-(replace-string "\344" "" nil (point-min) (point-max))
-(replace-string "\374" "" nil (point-min) (point-max))
-(replace-string "\337" "" nil (point-min) (point-max))
-(replace-string "\366" "" nil (point-min) (point-max))
-(replace-string "\247" "***" nil (point-min) (point-max))
-(replace-string "\267" "****" nil (point-min) (point-max))
-(replace-string "\351" "é" nil (point-min) (point-max))
-(replace-string "\347" "ç" nil (point-min) (point-max))
-(replace-string "\352" "ê" nil (point-min) (point-max))
-(replace-string "\342" "â" nil (point-min) (point-max))
-(replace-string "\307" "Ç" nil (point-min) (point-max))
-(replace-string "\340" "à" nil (point-min) (point-max))
-(replace-string "\340" "à" nil (point-min) (point-max))
-(replace-string "\364" "ô" nil (point-min) (point-max))
-(replace-string "\353" "ë" nil (point-min) (point-max))
-(replace-string "\243" "£" nil (point-min) (point-max))
-));end replace-garbage-characters
-;bind-key replace-garbage-characters
-(define-key  ak-map "R"  '("Replace text garbage" . ak/replace-garbage))
+;; (defun ak/replace-garbage ()
+;; "Replace non-rendering MS and other garbage characters with latin1 equivalents."
+;; (interactive)
+;; (save-excursion             ;save the current point
+;; (replace-string "\221" "`" nil (point-min) (point-max))
+;; (replace-string "\222" "'" nil (point-min) (point-max))
+;; (replace-string "\226" "-" nil (point-min) (point-max))
+;; (replace-string "\227" "--" nil (point-min) (point-max))
+;; (replace-string "\223" "(" nil (point-min) (point-max))
+;; (replace-string "\224" ")" nil (point-min) (point-max))
+;; (replace-string "\205" "..." nil (point-min) (point-max))
+;; (replace-string "\225" "-" nil (point-min) (point-max))
+;; (replace-string "\344" "" nil (point-min) (point-max))
+;; (replace-string "\374" "" nil (point-min) (point-max))
+;; (replace-string "\337" "" nil (point-min) (point-max))
+;; (replace-string "\366" "" nil (point-min) (point-max))
+;; (replace-string "\247" "***" nil (point-min) (point-max))
+;; (replace-string "\267" "****" nil (point-min) (point-max))
+;; (replace-string "\351" "é" nil (point-min) (point-max))
+;; (replace-string "\347" "ç" nil (point-min) (point-max))
+;; (replace-string "\352" "ê" nil (point-min) (point-max))
+;; (replace-string "\342" "â" nil (point-min) (point-max))
+;; (replace-string "\307" "Ç" nil (point-min) (point-max))
+;; (replace-string "\340" "à" nil (point-min) (point-max))
+;; (replace-string "\340" "à" nil (point-min) (point-max))
+;; (replace-string "\364" "ô" nil (point-min) (point-max))
+;; (replace-string "\353" "ë" nil (point-min) (point-max))
+;; (replace-string "\243" "£" nil (point-min) (point-max))
+;; ));end replace-garbage-characters
+;; ;bind-key replace-garbage-characters
+;; (define-key  ak-map "R"  '("Replace text garbage" . ak/replace-garbage))
 
 (provide 'init-nifty-utils)
