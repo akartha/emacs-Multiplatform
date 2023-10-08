@@ -7,7 +7,7 @@
 
 (require 'ob)
 
-(defun org-babel-execute:passthrough (body params)
+(defun org-babel-execute:passthrough (body _params)
   body)
 
 ;; json output is json

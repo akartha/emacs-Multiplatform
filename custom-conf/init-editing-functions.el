@@ -34,7 +34,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;
 ;; ** CRUX 
 ;;;;;;;;;;;;;;;;;;;;;
-
+;;;###autoload
 (define-prefix-command 'ak-crux-map)
 (global-set-key (kbd "` x") 'ak-crux-map)
 

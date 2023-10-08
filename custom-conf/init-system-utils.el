@@ -1,7 +1,7 @@
 ;;; -*- lexical-binding: t; -*-
 
 (require 'projectile)
-
+(require 'crm)
 
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
@@ -43,6 +43,7 @@
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
+  ;;;###autoload
   (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
@@ -146,6 +147,7 @@
          ("'" . vertico-quick-exit)
          ("C-'" . vertico-quick-embark))
   :config
+;;;###autoload
   (defun vertico-quick-embark (&optional arg)
     "Embark on candidate using quick keys."
     (interactive)

@@ -46,9 +46,9 @@
 
 ;; Performance on Windows is considerably worse than elsewhere.
 ;; (when ak/generic-windows-p
-(when (and ak/generic-windows-p (symbolp 'w32-get-true-file-attributes))
-;;   ;; Reduce the workload when doing file IO
-  (setq w32-get-true-file-attributes nil))
+;; (when (symbolp 'w32-get-true-file-attributes)
+;; ;;   ;; Reduce the workload when doing file IO
+;;   (setq w32-get-true-file-attributes nil))
 
 (savehist-mode 1)
 (tool-bar-mode -1)
@@ -114,6 +114,7 @@
 
 
 ;;below is from https://www.emacswiki.org/emacs/ExecPath
+;;;###autoload
 (defun set-exec-path-from-shell-PATH ()
   "Set up Emacs' `exec-path' and PATH environment variable to match
 that used by the user's shell.
@@ -188,6 +189,7 @@ Does not work with mac- so I have a package for that"
 (setq delete-by-moving-to-trash t)
 
 ;; Below, with tweaks, is from https://www.masteringemacs.org/article/maximizing-emacs-startup
+;;;###autoload
 (defun ak/maximize-frame ()
   "Maximizes the active frame in Windows"
   (interactive)
@@ -208,5 +210,10 @@ Does not work with mac- so I have a package for that"
 ;; *** Kill buffers without asking for confirmation
 
 (setq kill-buffer-query-functions (delq 'process-kill-buffer-query-function kill-buffer-query-functions))
+
+(setq org-crypt-key "DA289147FB279C3D")
+;; GPG key to use for encryption.
+;; nil means  use symmetric encryption unconditionally.
+;; "" means use symmetric encryption unless heading sets CRYPTKEY property.
 
 (provide 'init-basic)

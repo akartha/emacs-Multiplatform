@@ -3,11 +3,13 @@
 (require 'xkcd)
 (require 'url)
 (require 'avy)
+(require 'hydra)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved kill-word ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun ak/kill-inner-word (n)
   "Kills the entire word your cursor is in. n words if prefix argument supplied."
   (interactive "*p")
@@ -22,6 +24,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved copy-word
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;###autoload
 (defun ak/copy-whole-word (n)
   "Copy current word, plus additional n words if prefix argument supplied"
   (interactive "*p")
@@ -38,6 +42,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved copy sexp
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;###autoload
 (defun ak/copy-whole-sexp (n)
   "Copy current sexp, plus additional n words if prefix argument supplied"
   (interactive "*p")
@@ -56,6 +62,7 @@
 ;;  Regardless of where your cursor is, this quickly copies a line.  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun ak/copy-whole-line ()
   "Copies a line without regard for cursor position."
   (interactive)
@@ -100,6 +107,8 @@
 ;;From https://www.reddit.com/r/orgmode/comments/13xs6bo/converting_a_web_page_to_org_mode_to_include_in/ ;;
 ;; converts selected text in clipboard to html, and then uses pandoc to convert it to org mode            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;###autoload
 (defun ak/insert-org-from-html-clipboard ()
   "Converts selected text in system clipboard to html, 
 and then uses pandoc to convert it to org mode"
@@ -135,6 +144,7 @@ and then uses pandoc to convert it to org mode"
 ;; post]]
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; move the line(s) spanned by the active region up/down (line transposing)
+
 (defun move-lines (n)
   (let ((beg) (end) (keep))
     (if mark-active
@@ -162,11 +172,13 @@ and then uses pandoc to convert it to org mode"
         (setq mark-active t
               deactivate-mark nil))))
 
+;;;###autoload
 (defun ak/move-lines-up (n)
   "move the line(s) spanned by the active region up by N lines."
   (interactive "*p")
   (move-lines (- (or n 1))))
 
+;;;###autoload
 (defun ak/move-lines-down (n)
   "move the line(s) spanned by the active region down by N lines."
   (interactive "*p")
@@ -175,6 +187,8 @@ and then uses pandoc to convert it to org mode"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Reload xkcd cartoon on dashboard  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;###autoload
 (when window-system
   (defun ak/reload-xkcd (arg)
     "Load a random xkcd cartoon on the dashboard.
@@ -205,6 +219,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;; Below is from https://stackoverflow.com/questions/4448055/download-a-file-with-emacs-lisp ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun ak/download-file (&optional url download-dir download-name)
   (interactive)
   (message "Downloading...%s" url)
@@ -228,6 +243,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;; Doing =C-x k= should kill the current buffer at all times ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun kill-current-buffer ()
   "Kills the current buffer."
   (interactive)
@@ -240,6 +256,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;; Close All Buffers ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun close-all-buffers ()
   "Kill all buffers without regard for their origin."
   (interactive)
@@ -253,6 +270,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;; Also opens the previous buffer in the
 ;; newly opened window ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (defun split-and-follow-horizontally (prefix)
   (interactive "P")
   (split-window-below)
@@ -264,6 +282,7 @@ With PREFIX - load the latest xkcd cartoon"
 
 (global-set-key (kbd "C-x 2") '("Split window horiz" . split-and-follow-horizontally))
 
+;;;###autoload
 (defun split-and-follow-vertically (prefix)
   (interactive "P")
   (split-window-right)
@@ -278,6 +297,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom function to mark a field in an org table ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (defun ak/org-table-mark-field ()
   "Mark the current table field."
   (interactive)
@@ -295,6 +315,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;;;;;;;;;;;;;;;;;;;;;
 
 ;; Switch to scratch buffer
+;;;###autoload
 (if (> emacs-major-version 28)
     (keymap-set ak-map "z" 'scratch-buffer)
   (define-key ak-map "z" '("Switch to scratch buffer" . (lambda ()
@@ -303,6 +324,7 @@ With PREFIX - load the latest xkcd cartoon"
                                                           (switch-to-buffer "*scratch*")))))
 
 ;; Switch to text scratch buffer
+;;;###autoload
 (define-key ak-map "2" '("Switch to txt scratch" . (lambda ()
                                                       "Switch to text scratch"
                                                       (interactive)
@@ -311,6 +333,8 @@ With PREFIX - load the latest xkcd cartoon"
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Use avy to jump from cell to cell in orgmode table ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;;;###autoload
 (defun ak/avy-org-table-1-char ()
   "Avy navigation of cells in org-mode tables based on any char in the cell.
     `SPC` can be used to jump to any cell. "
@@ -334,7 +358,7 @@ With PREFIX - load the latest xkcd cartoon"
 ;; ;; Experimental features ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+;;;###autoload
 (defun ak/lookup-word(arg)
   "Lookup current word in the dictionaries. With
 PREFIX, specify word to search"
@@ -377,5 +401,37 @@ PREFIX, specify word to search"
 ;; ));end replace-garbage-characters
 ;; ;bind-key replace-garbage-characters
 ;; (define-key  ak-map "R"  '("Replace text garbage" . ak/replace-garbage))
+
+(defhydra hydra-move-lines (:color amaranth
+                                   :timeout 5
+                                   :columns 2)
+  "Move selected lines up/down"
+  ("[" (ak/move-lines-up 1) "Move up")
+  ("]" (ak/move-lines-down 1) "Move down")
+  ("q" nil "Quit" :color blue))
+
+
+(defhydra hydra-jump-cursor (:color amaranth
+                                    :columns 3)
+  "jump cursor"
+  ("]" (forward-sexp) "Forward sexp")
+  ;; ("<" (beginning-of-buffer) "Beginning of buffer")
+  ("<" (goto-char (point-min)) "Beginning of buffer")
+  ;; (">" (end-of-buffer) "End of buffer")
+  (">" (goto-char (point-max)) "End of buffer")
+  ("[" (backward-sexp) "Backward sexp")
+  ;; ("w" (forward-to-word 1) "Forward word")
+  ("w" (forward-word-strictly 1) "Forward word")
+  ;; ("b" (backward-to-word 1) "Backward word")
+  ("b" (backward-word-strictly 1) "Backward word")
+  ("e" (forward-sentence) "Forward sentence")
+  ("a" (backward-sentence) "Backward sentence")
+  ("}" (forward-paragraph) "Forward para")
+  ("{" (backward-paragraph) "Backward para")
+  ("q" nil "Quit" :color blue))
+
+(define-key ak-map "m" '("Move lines" . hydra-move-lines/body))
+
+(define-key ak-map "." '("Jump to" . hydra-jump-cursor/body))
 
 (provide 'init-nifty-utils)

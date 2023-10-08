@@ -41,7 +41,8 @@
       org-agenda-files (mapcar #'(lambda(s) (expand-file-name s ak/my-org-file-location)) 
                                (list "agenda/Trips.org"
                                      "agenda/Tasks.org"
-                                     "agenda/Schedule.org")))
+                                     "agenda/Schedule.org"))
+      org-use-speed-commands t)
 
 (add-to-list 'recentf-exclude org-agenda-files)
 
@@ -151,7 +152,7 @@
 (use-package ox-reveal
   ;; https://github.com/yjwen/org-reveal
   :config
-  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
   ;;(setq org-reveal-hlevel 2)
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
   ;; ;;    Change variable org-reveal-hlevel’s value to set HLevel globally.                                                             
@@ -175,7 +176,7 @@
   ;; ;; %d	Date                                                                                                                          ;;
   ;; ;; %%	Literal %                                                                                                                     ;;
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  )
+
 
 
 
@@ -258,8 +259,7 @@
    
    (passthrough . t)
    (shell . t)
-   (plantuml . t)
-   ))
+   (plantuml . t)))
 
 (setq org-plantuml-jar-path "~/plantuml.jar")
 
@@ -305,8 +305,7 @@
 
       ("m" "Movie/Series notes" plain "\n* Source\n- Title: %^{Title}\n- Director: %^{Director}\n- Year: %^{Year}\n- Watched?: %^{Prompt|Watched|Want to watch|Want to avoid}\n** Summary\n%^C\n\n%?"
        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Movie Series")
-       :unnarrowed t)
-     ))
+       :unnarrowed t)))
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n g" . org-roam-graph)
@@ -332,12 +331,25 @@
 (global-set-key (kbd "C-c c") 'org-capture)
 
 (setq org-capture-templates
-      '(("t" "Todo" entry (file+headline "agenda/Tasks.org" "Captured Tasks")
-         "* TODO %?\n  %i\n  %a")
-        ("s" "Schedule" entry (file+headline  "agenda/Schedule.org" "Add to Schedule")
-         "* Appointment %?\n%T")))
+      '(("t" "Todo" entry 
+         (file+headline "agenda/Tasks.org" "Captured Tasks")
+         "* TODO %?\n DEADLINE:%^t  %i\n  %a")
+        ("s" "Schedule" entry 
+         (file+headline  "agenda/Schedule.org" "Add to Schedule")
+          ;; (file+headline  ,(file-truename "agenda/Schedule.org") "Add to Schedule")
+         "* Appointment %?\n SCHEDULED:%^T\n%i")
+        ("j" "Journal")
+        ("ja" "Journal - General" entry 
+         (file+headline "agenda/jrnl.org" "General")
+         "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n %?")
+        ("jw" "Journal - Work" entry 
+         (file+headline "agenda/jrnl.org" "Work")
+         "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n %?")
+        ("jp" "Journal - Private" entry 
+         (file+headline "agenda/jrnl.org" "Private")
+         "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n%?")))
 
-
+;;;###autoload
 (defun ak/my-insert-clipboard-png ()
   "Paste image data in clipboard and save it to the 
 (existing or new) '_media' directory in the current

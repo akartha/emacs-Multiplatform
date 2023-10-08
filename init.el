@@ -220,7 +220,7 @@
 
 (require 'init-nifty-utils)
 
-(require 'init-hydra)
+;; (require 'init-hydra)
 
 (require 'init-system-utils)
 

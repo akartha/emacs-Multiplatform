@@ -2,57 +2,58 @@
 
 
 
-(define-prefix-command 'ak-emms-map)
-(global-set-key (kbd "` p") 'ak-emms-map)
+;; (define-prefix-command 'ak-emms-map)
+;; (global-set-key (kbd "` p") 'ak-emms-map)
 
-(use-package emms-setup
-  :when ak/my-framework-p
-  :init
-  (add-hook 'emms-player-started-hook 'emms-show)
-  (setq emms-show-format "Playing: %s")
-  :config
-  (emms-all)
-  (setq emms-player-list '(emms-player-mpv)
-        emms-info-functions '(emms-info-native))
+;; (use-package emms-setup
+;;   :when ak/my-framework-p
+;;   :init
+;;   (add-hook 'emms-player-started-hook 'emms-show)
+;;   (setq emms-show-format "Playing: %s")
+;;   :config
+;;   (emms-all)
+;;   (setq emms-player-list '(emms-player-mpv)
+;;         emms-info-functions '(emms-info-native))
 
-  (defun fg-emms-track-description (track)
-    "Return a somewhat nice track description."
-    (let ((artist (emms-track-get track 'info-artist))
-          (year (emms-track-get track 'info-year))
-          (album (emms-track-get track 'info-album))
-          (tracknumber (emms-track-get track 'info-tracknumber))
-          (title (emms-track-get track 'info-title)))
-      (cond
-       ((or artist title)
-        (concat (if (> (length artist) 0) artist "Unknown artist") " - "
-                (if (> (length year) 0) year "XXXX") " - "
-                (if (> (length album) 0) album "Unknown album") " - "
-                (if (> (length tracknumber) 0)
-                    (format "%02d" (string-to-number tracknumber))
-                  "XX") " - "
-                (if (> (length title) 0) title "Unknown title")))
-       (t (emms-track-simple-description track)))))
+;;   (defun fg-emms-track-description (track)
+;;     "Return a somewhat nice track description."
+;;     (let ((artist (emms-track-get track 'info-artist))
+;;           (year (emms-track-get track 'info-year))
+;;           (album (emms-track-get track 'info-album))
+;;           (tracknumber (emms-track-get track 'info-tracknumber))
+;;           (title (emms-track-get track 'info-title)))
+;;       (cond
+;;        ((or artist title)
+;;         (concat (if (> (length artist) 0) artist "Unknown artist") " - "
+;;                 (if (> (length year) 0) year "XXXX") " - "
+;;                 (if (> (length album) 0) album "Unknown album") " - "
+;;                 (if (> (length tracknumber) 0)
+;;                     (format "%02d" (string-to-number tracknumber))
+;;                   "XX") " - "
+;;                 (if (> (length title) 0) title "Unknown title")))
+;;        (t (emms-track-simple-description track)))))
 
-  (setq emms-track-description-function 'fg-emms-track-description)
-  :bind
-  (:map ak-emms-map
-  ("p" . emms-pause)
-  ("s" . emms-stop)
-  ("b" . emms-browser)
-  ("=" . emms-bookmarks-add)
-  ("{" . emms-bookmarks-prev)
-  ("}" . emms-bookmarks-next)
-  ("<" . (lambda () (interactive) (emms-seek -30)))
-  (">" . (lambda () (interactive) (emms-seek 30)))
-  ("[" . emms-seek-backward)
-  ("]" . emms-seek-forward)))
+;;   (setq emms-track-description-function 'fg-emms-track-description)
+;;   :bind
+;;   (:map ak-emms-map
+;;   ("p" . emms-pause)
+;;   ("s" . emms-stop)
+;;   ("b" . emms-browser)
+;;   ("=" . emms-bookmarks-add)
+;;   ("{" . emms-bookmarks-prev)
+;;   ("}" . emms-bookmarks-next)
+;;   ("<" . (lambda () (interactive) (emms-seek -30)))
+;;   (">" . (lambda () (interactive) (emms-seek 30)))
+;;   ("[" . emms-seek-backward)
+;;   ("]" . emms-seek-forward)))
 
-(eval-after-load 'emms '(emms-state-mode))
+;; (eval-after-load 'emms '(emms-state-mode))
 
 
 (require 'key-chord)
 (key-chord-mode t)
 
+;;;###autoload
 (key-chord-define-global "  " 'execute-extended-command)
 (key-chord-define-global "aa" 'move-beginning-of-line)
 (key-chord-define-global "''" 'move-end-of-line)
@@ -77,12 +78,14 @@
               ("<f7>" . org-web-tools-insert-link-for-url))
   :config 
   (setq org-web-tools-pandoc-sleep-time 0.7)
+;;;###autoload
   (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
     (interactive)
     (let* ((html (org-web-tools--get-url url))
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url)))))
 
+;;;###autoload
 (defun ak/dired-id3vtag ()
   "For an audiobook directory in the format '~/downloads/author- title/', this code
 will update the id3 tags associated with the audio files in it. 
@@ -110,10 +113,6 @@ TODO - No error checking implemented yet"
 (org-crypt-use-before-save-magic)
 (setq org-tags-exclude-from-inheritance '("crypt"))
 
-(setq org-crypt-key "DA289147FB279C3D")
-;; GPG key to use for encryption.
-;; nil means  use symmetric encryption unconditionally.
-;; "" means use symmetric encryption unless heading sets CRYPTKEY property.
 
 (setq auto-save-default nil)
 ;; Auto-saving does not cooperate with org-crypt.el: so you need to

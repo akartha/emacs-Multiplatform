@@ -44,6 +44,7 @@
    (go-mode . eglot-ensure)
    (rust-mode . eglot-ensure)))
 
+;;;###autoload
 (defun eglot-format-buffer-on-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 (add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
@@ -51,6 +52,7 @@
 ;;;;;;;;;;;;;
 ;; GO-MODE ;;
 ;;;;;;;;;;;;;
+;;;###autoload
 (defun ak/eglot-organize-imports ()
   (call-interactively 'eglot-code-action-organize-imports))
 
@@ -156,6 +158,7 @@
   (setq rustic-format-on-save t)
   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
+;;;###autoload
 (defun rk/rustic-mode-hook ()
   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
   ;; save rust buffers that are not file visiting. Once
@@ -205,6 +208,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'json-snatcher)
 
+;;;###autoload
 (defun ak/jq-print-path ()
   "Print the jq-path to the JSON value under point, and save it in the kill ring."
   (interactive)
@@ -216,6 +220,7 @@
 ;; ;; =sqlparse= using =pip3 install sqlparse= ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun sqlparse-region (beg end)
   (interactive "r")
   (shell-command-on-region
