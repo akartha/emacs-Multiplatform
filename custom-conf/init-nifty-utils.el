@@ -435,15 +435,16 @@ PREFIX, specify word to search"
 (define-key ak-map "." '("Jump to" . hydra-jump-cursor/body))
 
 ;;;###autoload
-(defun ak/emacs-screenshot-svg ()
-  "Save a screenshot of the current frame as an SVG image.
+(if (or ak/my-framework-p ak/generic-windows-p)
+    (defun ak/emacs-screenshot-svg ()
+      "Save a screenshot of the current frame as an SVG image.
 Saves to a temp file and puts the filename in the kill ring."
-  (interactive)
-  (let* ((filename (make-temp-file "emacs-screenshot" nil ".svg"))
-         (data (x-export-frames nil 'svg)))
-    (with-temp-file filename
-      (insert data))
-    (kill-new filename)
-    (message filename)))
+      (interactive)
+      (let* ((filename (make-temp-file "emacs-screenshot" nil ".svg"))
+             (data (x-export-frames nil 'svg)))
+        (with-temp-file filename
+          (insert data))
+        (kill-new filename)
+        (message filename))))
 
 (provide 'init-nifty-utils)

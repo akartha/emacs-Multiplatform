@@ -360,7 +360,7 @@ Works on Windows (using built-in powershell command), Mac
 Image is saved as png and function inserts an org buffer block 
 with image details."
   (interactive)
-  (let* ((directory 
+   (let* ((directory 
           "_media") ;;creates this directory in the current document's folder
          (default-file-or-caption-name 
           (concat (buffer-name) "_" (format-time-string "%Y%m%d_%H%M%S"))) ;;image defaults to this file/caption if none provided
