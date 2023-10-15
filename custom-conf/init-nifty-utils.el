@@ -639,5 +639,24 @@ Version: 2020-11-24 2023-07-16 2023-07-23"
 (define-key 'ak-map (kbd "<down>") 'xah-extend-selection)
 (define-key 'ak-map "\"" 'xah-select-text-in-quote)
 
+;;;###autoload
+(defun ak/binary-health-check ()
+  (interactive)
+  (with-output-to-string
+    (let* ((binaries '("git" "grep" "rg" "find" "locate" "ls" "xclip" "curl"
+                       "jq" "pandoc" "gpg" "fortune"  "mmdc"
+                       "gopls" "rustfmt" "pylsp" "flake8" "sbcl" "sqlformat" "abc"))
+           (loc)
+           (binary-loc)
+           (binary-version))
+      (dolist (binary binaries)
+        (setq loc (executable-find binary))
+        (if loc 
+            (progn 
+              (push (cons binary loc) binary-loc)
+              ;; (shell-eval-command (concat binary " --version")) 
+              ;; (message "%s (version %s) available at %s" binary (shell-command (concat binary " --version | head -1")) loc))
+              (message "%s available at %s" binary loc))
+          (message "%s is not on path or is not installed" binary))))))
 
 (provide 'init-nifty-utils)
