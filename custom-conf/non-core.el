@@ -50,13 +50,28 @@
 ;; (eval-after-load 'emms '(emms-state-mode))
 
 
-(require 'key-chord)
-(key-chord-mode t)
+;; (require 'key-chord)
+;; (key-chord-mode t)
 
-;;;###autoload
-(key-chord-define-global "  " 'execute-extended-command)
-(key-chord-define-global "aa" 'move-beginning-of-line)
-(key-chord-define-global "''" 'move-end-of-line)
+;; (use-package key-chord
+;;   :custom
+;;   (key-chord-one-key-delay 0.05)
+;;   (key-chord-two-keys-delay 0.10)
+;;   ;;; A 2023 release caused problems and delays. See
+;;   ;;; - https://github.com/emacsorphanage/key-chord/issues/6
+;;   ;;; - https://github.com/emacsorphanage/key-chord/issues/7
+;;   (key-chord-safety-interval-forward 0.1)
+;;   (key-chord-safety-interval-backward 0)
+;;   (key-chord-safety-interval-forward 0)
+;;   :config 
+;;   (key-chord-define-global "  " 'execute-extended-command)
+;;   (key-chord-define-global "aa" 'move-beginning-of-line)
+;;   (key-chord-define-global "''" 'move-end-of-line)
+
+;;   :init
+;;   ;; (use-package use-package-chords)
+
+;;   (key-chord-mode t))
 
 ;; https://flandrew.srht.site/listful/sw-emacs-xht.html
 (use-package xht
@@ -69,21 +84,6 @@
   (global-xht-fontify-mode)
   (global-xht-do-mode))
 
-
-(use-package org-web-tools
-  :bind (:map ak-map
-              ("<f2>" . ak/get-url-title)
-              ("<f3>" . org-web-tools-insert-web-page-as-entry)
-              ("<f6>" . org-web-tools-read-url-as-org)
-              ("<f7>" . org-web-tools-insert-link-for-url))
-  :config 
-  (setq org-web-tools-pandoc-sleep-time 0.7)
-;;;###autoload
-  (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
-    (interactive)
-    (let* ((html (org-web-tools--get-url url))
-           (title (org-web-tools--html-title html)))
-      (if title (insert title) (insert url)))))
 
 ;;;###autoload
 (defun ak/dired-id3vtag ()
@@ -109,9 +109,6 @@ TODO - No error checking implemented yet"
                  )))))
 
 
-(require 'org-crypt)
-(org-crypt-use-before-save-magic)
-(setq org-tags-exclude-from-inheritance '("crypt"))
 
 
 (setq auto-save-default nil)

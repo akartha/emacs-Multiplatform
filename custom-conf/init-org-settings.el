@@ -277,7 +277,8 @@
   ;; (org-roam-database-connector 'sqlite-builtin)
   (org-roam-directory ak/my-org-file-location)
   (org-roam-completion-everywhere t)
-  (org-roam-node-display-template "${title:55} ${tags:*}")
+  (org-roam-node-display-template (concat "${title:85} "
+                                          (propertize "${tags:*}" 'face 'org-tag)))
   (org-roam-capture-templates
    '(("d" "default" plain "%?"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags:")
@@ -348,6 +349,26 @@
         ("jp" "Journal - Private" entry 
          (file+headline "agenda/jrnl.org" "Private")
          "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n%?")))
+
+(use-package org-web-tools
+  :bind (:map ak-map
+              ("<f2>" . ak/get-url-title)
+              ("<f3>" . org-web-tools-insert-web-page-as-entry)
+              ("<f6>" . org-web-tools-read-url-as-org)
+              ("<f7>" . org-web-tools-insert-link-for-url))
+  :config 
+  (setq org-web-tools-pandoc-sleep-time 0.7)
+;;;###autoload
+  (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
+    (interactive)
+    (let* ((html (org-web-tools--get-url url))
+           (title (org-web-tools--html-title html)))
+      (if title (insert title) (insert url)))))
+
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+(setq org-tags-exclude-from-inheritance '("crypt"))
+
 
 ;;;###autoload
 (defun ak/my-insert-clipboard-png ()
