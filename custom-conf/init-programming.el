@@ -29,7 +29,13 @@
 
 (use-package eglot
   :config
-  (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
+  (add-to-list 'eglot-server-programs '((python-mode . ("pylsp"))
+                                        (rust-mode . ("rust-analyzer" 
+                                                      :initializationOptions
+                                                      (:procMacro (:enable t)
+                                                                  :cargo 
+                                                                  (:buildScripts (:enable t)
+                                                                                 :features "all"))))))
   (setq-default eglot-workspace-configuration
                 '((:pylsp . 
                                 (:configurationSources ["flake8"] :plugins
