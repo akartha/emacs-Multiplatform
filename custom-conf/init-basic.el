@@ -103,7 +103,7 @@
      ("Atlantic/Reykjavik" "Reykjavik")
      ("Europe/London" "London")
      ("Europe/Paris" "Paris/Berlin/Vatican/Zurich")
-     ("Europe/Moscow" "Moscow/Kiev")
+     ("Europe/Moscow" "Moscow/Kiev/Athens")
      ("Asia/Tehran" "Tehran")
      ("Asia/Shanghai" "Beijing/Shanghai")
      ("Asia/Singapore" "Singapore")

@@ -307,7 +307,7 @@ With PREFIX - load the latest xkcd cartoon"
   (set-mark-command nil)
   (org-table-end-of-field 1))
 
-(define-key ak-map "-" '("Mark table cell" . ak/org-table-mark-field))
+(define-key ak-map "#" '("Mark table cell" . ak/org-table-mark-field))
 
 
 ;;;;;;;;;;;;;;;;;;;;;
@@ -633,6 +633,69 @@ Version: 2020-11-24 2023-07-16 2023-07-23"
     (push-mark (point) t t)
     (skip-chars-forward xskipChars)))
 
+(defun xah-html-extract-url (*begin *end &optional *full-path-p)
+  "Extract URLs in current block or region to `kill-ring'.
+
+If `universal-argument' is called first, convert relative URL to full path.
+
+This command extracts all text of the forms
+ <‹letter› … href=\"…\" …>
+ <‹letter› … src=\"…\" …>
+that is on a a single line, by regex. The quote may be single quote.
+
+When called in lisp code, *begin *end are region begin/end positions.
+Returns a list.
+
+URL `http://ergoemacs.org/emacs/elisp_extract_url_command.html'
+Version 2016-07-28"
+  (interactive
+   (let (-p1 -p2)
+     ;; set region boundary -p1 -p2
+     (if (use-region-p)
+         (progn (setq -p1 (region-beginning))
+                (setq -p2 (region-end)))
+       (save-excursion
+         (if (re-search-backward "\n[ \t]*\n" nil "NOERROR")
+             (progn (re-search-forward "\n[ \t]*\n")
+                    (setq -p1 (point)))
+           (setq -p1 (point)))
+         (if (re-search-forward "\n[ \t]*\n" nil "NOERROR")
+             (progn (re-search-backward "\n[ \t]*\n")
+                    (setq -p2 (point)))
+           (setq -p2 (point)))))
+     (list -p1 -p2 current-prefix-arg)))
+
+  (let ((-regionText (buffer-substring-no-properties *begin *end))
+        (-urlList (list)))
+    (with-temp-buffer
+      (insert -regionText)
+
+      (goto-char 1)
+      (while (re-search-forward "<" nil t)
+        (replace-match "\n<" "FIXEDCASE" "LITERAL"))
+
+      (goto-char 1)
+      (while (re-search-forward
+              "<[A-Za-z]+.+?\\(href\\|src\\)[[:blank:]]*?=[[:blank:]]*?\\([\"']\\)\\([^\"']+?\\)\\2" nil t)
+        (push (match-string 3) -urlList)))
+    (setq -urlList (reverse -urlList))
+
+    (when *full-path-p
+      (setq -urlList
+            (mapcar
+             (lambda (-x)
+               (if (string-match "^http:\\|^https:" -x )
+                   (progn -x)
+                 (progn
+                   (expand-file-name -x (file-name-directory (buffer-file-name))))))
+             -urlList)))
+
+    (when (called-interactively-p 'any)
+      (let ((-printedResult (mapconcat 'identity -urlList "\n")))
+        (kill-new -printedResult)
+        (message "%s" -printedResult)))
+    -urlList ))
+
 
 (define-key 'ak-map "9" 'xah-select-line)
 (define-key 'ak-map (kbd "<right>") 'xah-select-block)
@@ -647,8 +710,7 @@ Version: 2020-11-24 2023-07-16 2023-07-23"
                        "jq" "pandoc" "gpg" "fortune"  "mmdc"
                        "gopls" "rustfmt" "pylsp" "flake8" "sbcl" "sqlformat" "abc"))
            (loc)
-           (binary-loc)
-           (binary-version))
+           (binary-loc))
       (dolist (binary binaries)
         (setq loc (executable-find binary))
         (if loc 
@@ -658,5 +720,17 @@ Version: 2020-11-24 2023-07-16 2023-07-23"
               ;; (message "%s (version %s) available at %s" binary (shell-command (concat binary " --version | head -1")) loc))
               (message "%s available at %s" binary loc))
           (message "%s is not on path or is not installed" binary))))))
+
+(defun ak/download-url-at-point ()
+  "Place point inside a url and this will download the url 
+to the current directory in the '_downloads' folder"
+  (interactive)
+  (let* ((url 
+          (thing-at-point-url-at-point))
+         (directory 
+          "_downloads/")
+         (local-file-name 
+          (read-from-minibuffer "Enter filename: ")))
+    (ak/download-file url directory local-file-name)))
 
 (provide 'init-nifty-utils)
