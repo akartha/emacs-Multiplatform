@@ -175,7 +175,8 @@
         key-chord
         ;; org-web-tools
         htmlize
-        plantuml-mode))
+        plantuml-mode
+        elfeed))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)

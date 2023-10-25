@@ -27,7 +27,10 @@
         ("r" . avy-kill-ring-save-region)
         ("R" . avy-kill-region)
         ("s" . avy-goto-symbol-1)
-        ("h" . avy-org-goto-heading-timer)))
+        ("h" . avy-org-goto-heading-timer))
+  (:map ak-map
+        ("<tab>" . avy-goto-line)
+        ("'" . avy-goto-char-timer)))
 
 
 

@@ -130,6 +130,25 @@ TODO - No error checking implemented yet"
   ;; (setq nov-text-width 100)
   )
 
+(use-package elfeed 
+  :bind (:map ak-map
+              ("<f6>" . elfeed))
+  :init 
+  (setq-default elfeed-search-filter "@1-month-ago +unread ")
+  :config
+  (setq elfeed-feeds
+        '(("http://nullprogram.com/feed/" blog tech) 
+          ("https://planet.emacslife.com/atom.xml" tech emacs)
+          ("https://rss.nytimes.com/services/xml/rss/nyt/HomePage.xml" news)
+          ("https://rss.nytimes.com/services/xml/rss/nyt/World.xml" news)
+          ("https://rss.nytimes.com/services/xml/rss/nyt/Technology.xml" news tech)
+          ("http://feeds.bbci.co.uk/news/rss.xml" news world)
+          ("http://feeds.bbci.co.uk/news/world/rss.xml" news world)
+          ("https://sachachua.com/blog/category/emacs-news/feed/" tech emacs)
+          ("https://www.thehindu.com/news/feeder/default.rss" news India)
+          ("https://www.newindianexpress.com/States/Kerala/rssfeed/?id=178&getXmlFeed=true" news India Kerala)
+          ("https://www.newindianexpress.com/Cities/Bengaluru/rssfeed/?id=182&getXmlFeed=true" news India Bangalore))))
+
 (provide 'non-core)
 
 ;; Graveyard

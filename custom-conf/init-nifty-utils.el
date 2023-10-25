@@ -137,6 +137,10 @@ and then uses pandoc to convert it to org mode"
                                                                      (ak/insert-org-from-html-clipboard)
                                                                      (org-web-tools--clean-pandoc-output))))
 
+(define-key ak-map (kbd "<f5>") '("Clean pandoc vestiges from buffer" . (lambda () 
+                                                                     (interactive)
+                                                                     (org-web-tools--clean-pandoc-output))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Move lines up/down
 ;; Copied from this
