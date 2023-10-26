@@ -149,6 +149,39 @@ TODO - No error checking implemented yet"
           ("https://www.newindianexpress.com/States/Kerala/rssfeed/?id=178&getXmlFeed=true" news India Kerala)
           ("https://www.newindianexpress.com/Cities/Bengaluru/rssfeed/?id=182&getXmlFeed=true" news India Bangalore))))
 
+(use-package dwim-shell-command
+  :bind (([remap shell-command] . dwim-shell-command)
+         :map dired-mode-map
+         ([remap dired-do-async-shell-command] . dwim-shell-command)
+         ([remap dired-do-shell-command] . dwim-shell-command)
+         ([remap dired-smart-shell-command] . dwim-shell-command))
+  :config
+  (require 'dwim-shell-commands)
+
+  (defun dwim-ak/dwim-shell-commands-download-clipboard-audio-url ()
+    "Download clipboard URL's audio."
+    (interactive)
+    (cl-assert (string-match-p "^http[s]?://" (current-kill 0)) nil "Not a URL")
+    (dwim-shell-command-on-marked-files
+     "Downloading"
+     "yt-dlp -N 5 --extract-audio --audio-format mp3 --audio-quality 0 --add-metadata --embed-thumbnail --newline -o \"~/audio/%(title)s.%(ext)s\" \"<<cb>>\""
+     :utils "yt-dlp"
+     :error-autofocus t
+     :monitor-directory "~/audio"
+     :silent-success t))
+
+  (defun dwim-ak/dwim-shell-commands-download-clipboard-video-url ()
+    "Download clipboard URL's video."
+    (interactive)
+    (cl-assert (string-match-p "^http[s]?://" (current-kill 0)) nil "Not a URL")
+    (dwim-shell-command-on-marked-files
+     "Downloading"
+     "yt-dlp -N 5 --format \"bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4]\" --write-subs --embed-subs --sub-lang \"en*\" --newline -o \"~/Downloads/%(title)s.%(ext)s\" \"<<cb>>\""
+     :utils "yt-dlp"
+     :error-autofocus t
+     :monitor-directory "~/Downloads"
+     :silent-success t)))
+
 (provide 'non-core)
 
 ;; Graveyard

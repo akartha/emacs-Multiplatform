@@ -711,8 +711,8 @@ Version 2016-07-28"
   (interactive)
   (with-output-to-string
     (let* ((binaries '("git" "grep" "rg" "find" "locate" "ls" "xclip" "curl"
-                       "jq" "pandoc" "gpg" "fortune"  "mmdc"
-                       "gopls" "rustfmt" "pylsp" "flake8" "sbcl" "sqlformat" "abc"))
+                       "jq" "pandoc" "gpg" "fortune"  "mmdc" "ffmpeg"
+                       "gopls" "rustfmt" "pylsp" "flake8" "sbcl" "sqlformat" "xsv" "csvlens"))
            (loc)
            (binary-loc))
       (dolist (binary binaries)

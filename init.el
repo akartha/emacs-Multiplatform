@@ -176,7 +176,8 @@
         ;; org-web-tools
         htmlize
         plantuml-mode
-        elfeed))
+        elfeed
+        dwim-shell-command))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)
