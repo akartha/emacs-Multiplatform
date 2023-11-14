@@ -177,7 +177,8 @@
         htmlize
         plantuml-mode
         elfeed
-        dwim-shell-command))
+        dwim-shell-command
+        use-package-ensure-system-package))
 
 ;; Install packages above
 (dolist (package ak/my-package-list)
