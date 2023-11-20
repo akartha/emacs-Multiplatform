@@ -107,7 +107,7 @@
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         hungry-delete
         mark-multiple 
-        expand-region
+        ;; expand-region ;;commented in favor of easy-kill (atleast for a while)
         jinx ;;added Mon 24 Apr 2023 06:15:40 PM EDT
         gptel ;;added on Tue 09 May 2023 12:06:00 PM EDT
 
@@ -178,6 +178,9 @@
         plantuml-mode
         elfeed
         dwim-shell-command
+        link-hint
+        ace-link
+        easy-kill
         use-package-ensure-system-package))
 
 ;; Install packages above

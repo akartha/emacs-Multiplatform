@@ -182,6 +182,40 @@ TODO - No error checking implemented yet"
      :monitor-directory "~/Downloads"
      :silent-success t)))
 
+(use-package ace-link
+  :init
+  (ace-link-setup-default)
+  ;; :commands (ak/ace-link-org-jump)
+  :bind(("C-c o" . ace-link-addr)
+        ("C-c L" . ak/ace-link-addr)
+        :map org-mode-map 
+             ( "C-c o" . ace-link-org)
+             ( "C-c L" . ak/ace-link-org-jump))
+  :config 
+  (defun ak/ace-link-org-jump ()
+    "Jump to a visible link in an `org-mode' buffer."
+    (interactive)
+    (require 'org)
+    (let ((pt (avy-with ak/ace-link-org-jump
+                (avy-process
+                 (mapcar #'cdr (ace-link--org-collect))
+                 (avy--style-fn avy-style)))))
+      (ak/pt--jump pt)))
+
+  (defun ak/ace-link-addr ()
+    "Open a visible link in a goto-address buffer."
+    (interactive)
+    (let ((pt (avy-with ak/ace-link-addr
+                (avy-process
+                 (ace-link--addr-collect)
+                 (avy--style-fn avy-style)))))
+      (ak/pt--jump pt)))
+
+  (defun ak/pt--jump (pt)
+    (when (numberp pt)
+      (goto-char pt))))
+
+
 (provide 'non-core)
 
 ;; Graveyard

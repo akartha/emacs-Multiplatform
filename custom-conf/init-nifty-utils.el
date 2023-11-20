@@ -90,7 +90,7 @@
 ;;                           (interactive)
 ;;                           (kill-whole-line)
 ;;                           (message "Killed whole line")))
-(define-key ak-map "L" '("Kill line" . kill-whole-line))
+;; (define-key ak-map "L" '("Kill line" . kill-whole-line))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -736,5 +736,10 @@ to the current directory in the '_downloads' folder"
          (local-file-name 
           (read-from-minibuffer "Enter filename: ")))
     (ak/download-file url directory local-file-name)))
+
+(use-package easy-kill
+  :bind ("C-=" . easy-mark)
+  :config
+  (global-set-key [remap kill-ring-save] 'easy-kill))
 
 (provide 'init-nifty-utils)

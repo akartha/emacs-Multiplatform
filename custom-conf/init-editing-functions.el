@@ -186,12 +186,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Semantically cycle through selections ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package expand-region
-  :bind
-  ("C-=" . 'er/expand-region)
-  ("C-+" . 'er/contract-region)
-  ("C-c q" . 'er/mark-inside-quotes)
-  ("C-c Q" . 'er/mark-outside-quotes))
+;; (use-package expand-region
+;;   :bind
+;;   ("C-=" . 'er/expand-region)
+;;   ("C-+" . 'er/contract-region)
+;;   ("C-c q" . 'er/mark-inside-quotes)
+;;   ("C-c Q" . 'er/mark-outside-quotes))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
