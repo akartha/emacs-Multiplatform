@@ -62,6 +62,7 @@
 (show-paren-mode 1) ;;Highlights matching parens when the cursor is just behind one of them.
 ;; Turn on transient-mark-mode
 (transient-mark-mode 1)
+(goto-address-mode 1)
 
 ;;; Text mode and Auto Fill mode
 ; Set default Emacs mode to text-mode. In addition, turn on
