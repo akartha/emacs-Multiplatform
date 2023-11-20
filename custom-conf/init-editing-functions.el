@@ -50,7 +50,7 @@
             #'abort-recursive-edit))
       (save-excursion
         (goto-char pt)
-        (dictionary-search-dwim))
+        (dictionary-search (thing-at-point 'word)))
       (select-window
        (cdr (ring-ref avy-ring 0))))
     t)
@@ -98,14 +98,14 @@
     (avy-action-kill-whole-line pt)
     (save-excursion (yank)) t)
 
-  (setq avy-keys '(?a ?s ?d ?f ?g ?j ?l ?o
-                   ?v ?b ?n ?, ?/ ?u ?p ?e ?.
+  (setq avy-keys '(?a ?s ?d ?f ?g ?h ?j ?l ?o
+                   ?v ?b ?n ?, ?/ ?u ?p ?e
                    ?c ?q ?2 ?3 ?' ?\;))
   (setq avy-dispatch-alist '((?m . avy-action-mark)
                              (?i . avy-action-ispell)
                              (?z . avy-action-zap-to-char)
                              (?.  . avy-action-embark)
-                             ;; (?= . avy-action-define)
+                             (?= . avy-action-define)
                              (?  . avy-action-mark-to-char)
                              ;; (67108925 . avy-action-tuxi)
                              ;; (?W . avy-action-tuxi)
