@@ -354,6 +354,11 @@
   :bind (:map ak-map
               ("<f2>" . ak/get-url-title)
               ("<f3>" . org-web-tools-insert-web-page-as-entry)
+              ;; ("<f3>" . (lambda ()
+              ;;             (interactive)
+              ;;             (org-web-tools-insert-web-page-as-entry) ;;(org-web-tools-read-url-as-org)
+              ;;             (sleep-for 3)
+              ;;             (ak/delete-svg-data-lines)))
               ("<f6>" . org-web-tools-read-url-as-org)
               ("<f7>" . org-web-tools-insert-link-for-url))
   :config 
@@ -363,7 +368,16 @@
     (interactive)
     (let* ((html (org-web-tools--get-url url))
            (title (org-web-tools--html-title html)))
-      (if title (insert title) (insert url)))))
+      (if title (insert title) (insert url))))
+
+(defun ak/delete-svg-data-lines ()
+  "Deletes lines containing SVG data from the buffer."
+ (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (while (re-search-forward "\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]" nil t)
+      (beginning-of-line)
+      (kill-line)))))
 
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
