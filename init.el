@@ -181,6 +181,7 @@
         link-hint
         ace-link
         easy-kill
+        denote
         use-package-ensure-system-package))
 
 ;; Install packages above

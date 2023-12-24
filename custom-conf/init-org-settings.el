@@ -370,14 +370,28 @@
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url))))
 
+;; (defun ak/delete-svg-data-lines ()
+;;   "Deletes lines containing SVG data from the buffer."
+;;  (interactive)
+;;   (save-excursion
+;;     (goto-char (point-min))
+;;     (while (re-search-forward "\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]" nil t)
+;;       (beginning-of-line)
+;;       (kill-line))))
+
 (defun ak/delete-svg-data-lines ()
   "Deletes lines containing SVG data from the buffer."
  (interactive)
   (save-excursion
-    (goto-char (point-min))
-    (while (re-search-forward "\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]" nil t)
-      (beginning-of-line)
-      (kill-line)))))
+    (let ((kill-patterns '("\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
+                           "\\[\\[data:image/svg[^]]*\\]\\]"
+                           "\\[\\[data:image/gif;base64,[^]]*\\]\\]")))
+      (dolist (kill-pattern kill-patterns)
+
+        (goto-char (point-min))
+        (while (re-search-forward kill-pattern nil t)
+          (beginning-of-line)
+          (kill-line)))))))
 
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
