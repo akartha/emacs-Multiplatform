@@ -20,24 +20,8 @@
 			 ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defvar ak/my-framework-p nil)
-(defvar ak/my-win-framework-p nil)
-(defvar ak/my-mac-p nil)
-(defvar ak/my-pi-p nil)
-(defvar ak/my-package-list nil)
 
-(cond ((string=  (system-name) "arun-framework")
-       (setq ak/my-framework-p t))
-      ((string=  (system-name) "FRAMEWORKWIN")
-       (setq ak/my-win-framework-p t))
-      ((string= (system-name) "Arun-MBP14.local")
-       (setq ak/my-mac-p t))
-      ((string= (system-name) "usbpi")
-       (setq ak/my-pi-p t)))
-
-(defvar ak/generic-windows-p (equal system-type 'windows-nt))
-(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
-(defvar ak/generic-mac-p (equal system-type 'darwin))
+(require 'init-env)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar bootstrap-version)
@@ -62,17 +46,6 @@
         use-package-enable-imenu-support t)
   (require 'use-package))
 
-;; (defvar my-server-p (and (equal (system-name) "localhost") (equal user-login-name "akartha")))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; need this for windows, as otherwise gpg doesnt understand
-;; the path that gets generated
-
-(when ak/my-win-framework-p
-  (setq package-gnupghome-dir "~/.emacs.d/elpa/gnupg"))
-
-;; (when ak/my-framework-p
-;;   (server-start)) ;;added Tue 09 May 2023 11:55:19 PM EDT
 
 (setq ak/my-package-list
       '(;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

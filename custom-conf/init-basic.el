@@ -1,7 +1,5 @@
 ;;; -*- lexical-binding: t; -*-
 
-(setq custom-file (locate-user-emacs-file "custom-vars.el"))
-(load custom-file 'noerror 'nomessage)
 ;;(setq native-comp-async-report-warnings-errors nil)
 
 (setq-default indent-tabs-mode nil
@@ -31,24 +29,11 @@
 ;; More performant rapid scrolling over unfontified regions. May cause brief
 ;; spells of inaccurate fontification immediately after scrolling.
 (setq fast-but-imprecise-scrolling t)
-(when (> emacs-major-version 27)
-  (setq redisplay-skip-fontification-on-input t))
 
 ;; Resizing the Emacs frame can be a terribly expensive part of changing the
 ;; font. By inhibiting this, we halve startup times, particularly when we use
 ;; fonts that are larger than the system default (which would resize the frame).
 (setq frame-inhibit-implied-resize t)
-
-;; Remove command line options that aren't relevant to our current OS; that
-;; means less to process at startup.
-(unless ak/generic-mac-p   (setq command-line-ns-option-alist nil))
-(unless ak/generic-linux-p (setq command-line-x-option-alist nil))
-
-;; Performance on Windows is considerably worse than elsewhere.
-;; (when ak/generic-windows-p
-;; (when (symbolp 'w32-get-true-file-attributes)
-;; ;;   ;; Reduce the workload when doing file IO
-;;   (setq w32-get-true-file-attributes nil))
 
 (savehist-mode 1)
 (tool-bar-mode -1)
@@ -114,24 +99,6 @@
      ("Pacific/Auckland" "Auckland")))
 
 
-;;below is from https://www.emacswiki.org/emacs/ExecPath
-;;;###autoload
-(defun set-exec-path-from-shell-PATH ()
-  "Set up Emacs' `exec-path' and PATH environment variable to match
-that used by the user's shell.
-Does not work with mac- so I have a package for that"
-  (interactive)
-  (let ((path-from-shell (replace-regexp-in-string
-			  "[ \t\n]*$" "" (shell-command-to-string
-					  "$SHELL --login -c 'echo $PATH'"
-						    ))))
-    (setenv "PATH" path-from-shell)
-    (setq exec-path (split-string path-from-shell path-separator))))
-
-(when
-    (or ak/generic-linux-p
-        ak/generic-mac-p)
-        (set-exec-path-from-shell-PATH))
 
 (use-package exec-path-from-shell
   :if ak/my-mac-p
@@ -189,17 +156,6 @@ Does not work with mac- so I have a package for that"
 
 (setq delete-by-moving-to-trash t)
 
-;; Below, with tweaks, is from https://www.masteringemacs.org/article/maximizing-emacs-startup
-;;;###autoload
-(defun ak/maximize-frame ()
-  "Maximizes the active frame in Windows"
-  (interactive)
-  ;; Send a `WM_SYSCOMMAND' message to the active frame with the
-  ;; `SC_MAXIMIZE' parameter.
-  (if ak/generic-windows-p
-      (w32-send-sys-command 61488)))
-
-(add-hook 'window-setup-hook 'ak/maximize-frame t)
 
 ;; added on Sat 10 Jun 2023 11:48:49 AM EDT from prots search video
 (setq isearch-lazy-count t)

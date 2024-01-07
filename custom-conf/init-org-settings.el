@@ -7,14 +7,6 @@
 
 (defvar ak/my-org-file-location nil)
 
-(cond (ak/my-framework-p
-       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
-      (ak/my-win-framework-p
-       (setq ak/my-org-file-location (expand-file-name "c:/Users/Arun/Dropbox/org-files/")))
-      (ak/my-mac-p
-       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
-      (ak/my-pi-p
-       (setq ak/my-org-file-location (expand-file-name "~/Documents/org-docs/"))))
 
 (define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
 (define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
