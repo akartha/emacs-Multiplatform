@@ -29,26 +29,39 @@
 
 (use-package eglot
   :config
-  (add-to-list 'eglot-server-programs '((python-mode . ("pylsp"))
-                                        (rust-mode . ("rust-analyzer" 
+  (tooltip-mode 1)
+  (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
+  (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
+  (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer" 
                                                       :initializationOptions
                                                       (:procMacro (:enable t)
                                                                   :cargo 
                                                                   (:buildScripts (:enable t)
-                                                                                 :features "all"))))))
+                                                                                 :features "all")))))
   (setq-default eglot-workspace-configuration
-                '((:pylsp . 
-                                (:configurationSources ["flake8"] :plugins
-                                                       (:pycodestyle (:enabled nil) :mccabe (:enabled nil) :flake8 (:enabled t) :yapf: (:enabled t))))))
-                       ;; ((:gopls .
-                       ;;          ((staticcheck . t)
-                       ;;           (usePlaceholders .t)
-                       ;;           (hoverKind . "FullDocumentation")
-                       ;;           (matcher . "Fuzzy"))))))
-  :hook
-  ((python-mode . eglot-ensure)
-   (go-mode . eglot-ensure)
-   (rust-mode . eglot-ensure)))
+                `((:pylsp . (:configurationSources ["flake8"] 
+                                                   :plugins (:pycodestyle (:enabled nil) 
+                                                                          :mccabe (:enabled nil) 
+                                                                          :flake8 (:enabled t) 
+                                                                          :yapf: (:enabled t)
+                                                                          :jedi_completion (:include_params t :fuzzy t)
+                                                                          :pylint (:enabled :json-false))))
+                  (:gopls .
+                          ((staticcheck . t)
+                           (usePlaceholders . t)
+                           (gofumpt . t)
+                           (hoverKind . "FullDocumentation")
+                           (importShortcut . "Both")
+                           (symbolScope . "all")
+                           (completeFunctionCalls . t)
+                           (linksInHover . t)
+                           (matcher . "Fuzzy")))))
+  (setq eglot-verbose t)
+  (setq eglot-debug t)
+
+  :hook ((python-mode . eglot-ensure)
+         (go-mode . eglot-ensure)
+         (rust-mode . eglot-ensure)))
 
 ;;;###autoload
 (defun eglot-format-buffer-on-save ()

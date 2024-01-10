@@ -137,6 +137,7 @@
         request
         plz
         ob-go
+        jedi
         ;; yasnippet-snippets
         all-the-icons
         xkcd

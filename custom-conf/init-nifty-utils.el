@@ -761,8 +761,8 @@ Version 2016-07-28"
 
 
 (define-key 'ak-map "9" 'xah-select-line)
-(define-key 'ak-map (kbd "<right>") 'xah-select-block)
-(define-key 'ak-map (kbd "<down>") 'xah-extend-selection)
+(define-key 'ak-map (kbd "<down>") 'xah-select-block)
+(define-key 'ak-map (kbd "SPC") 'xah-extend-selection)
 (define-key 'ak-map "\"" 'xah-select-text-in-quote)
 
 ;;;###autoload
