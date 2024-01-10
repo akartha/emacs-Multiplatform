@@ -136,20 +136,30 @@ and then uses pandoc to convert it to org mode"
   "Export org buffer to HTML, and copy it to the clipboard as rtf.
 Requires pandoc"
   (interactive)
-
   (save-window-excursion
-    (let* (
-           ;; (pandoc-command "pandoc --standalone --from=html --to=rtf")
+    (let* ((pandoc-command "pandoc --standalone --from=html --to=rtf")
            (rtf-clip-command)
            (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
            (html (with-current-buffer buf (buffer-string))))
       (cond
        (ak/generic-mac-p 
-        (setq rtf-clip-command "pbcopy --Prefer rtf"))
+        (if (not (executable-find "pandoc")) 
+            (error "pandoc executable not found"))
+        (setq rtf-clip-command "pbcopy --Prefer rtf")
+        (with-current-buffer buf
+          (shell-command-on-region
+           (point-min)
+           (point-max)
+           (concat pandoc-command "|" rtf-clip-command))))
        (ak/generic-windows-p
         (if (not (executable-find "pandoc")) 
             (error "pandoc executable not found"))
-        (setq rtf-clip-command "powershell -command Set-Clipboard -AsHtml"))
+        (setq rtf-clip-command "powershell -command Set-Clipboard -AsHtml")
+        (with-current-buffer buf
+          (shell-command-on-region
+           (point-min)
+           (point-max)
+           (concat pandoc-command "|" rtf-clip-command))))
        (t ;;;generic linux station. requires xclip. 
         (if (not (executable-find "xclip")) 
             (error "xclip executable not found. Linux requires it!"))
@@ -160,9 +170,8 @@ Requires pandoc"
                       (split-string-and-unquote
                        (format-spec rtf-clip-command
                                     `((?f . ,tmpfile))) " "))))
-          (set-process-query-on-exit-flag proc nil)))
-      ;; (concat pandoc-command "|" rtf-clip-command)))
-      (kill-buffer buf)))))
+          (set-process-query-on-exit-flag proc nil))))
+      (kill-buffer buf))))
 
 
 
