@@ -94,7 +94,7 @@
            :bold-weight extrabold)
           (reading
            :default-family "Noto Serif" 
-           :default-weight semilight
+           :default-weight bold
            :default-height 175
            :line-spacing 5)              ;this is in pixels
           (t

@@ -131,15 +131,74 @@ and then uses pandoc to convert it to org mode"
      (t 
       (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
 
-;; (define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
-(define-key ak-map (kbd "<f4>") '("Insert clipboard as org" . (lambda () 
-                                                                     (interactive)
-                                                                     (ak/insert-org-from-html-clipboard)
-                                                                     (org-web-tools--clean-pandoc-output))))
+;;;###autoload
+(defun ak/export-org-to-clipboard-as-rtf ()
+  "Export org buffer to HTML, and copy it to the clipboard as rtf.
+Requires pandoc"
+  (interactive)
+  (if (not (executable-find "pandoc")) 
+      (error "pandoc executable not found"))
+  (save-window-excursion
+    (let* ((pandoc-command "pandoc --standalone --from=html --to=rtf")
+           (rtf-clip-command)
+           (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           (html (with-current-buffer buf (buffer-string))))
+      (cond
+       (ak/generic-mac-p 
+        (setq rtf-clip-command "pbcopy --Prefer rtf"))
+       (ak/generic-windows-p 
+        (setq rtf-clip-command "powershell -command Set-Clipboard -AsHtml"))
+       (t 
+        (setq rtf-clip-command "xclip -t text/html")))
+      (with-current-buffer buf
+        (shell-command-on-region
+         (point-min)
+         (point-max)
+         (concat pandoc-command "|" rtf-clip-command)))
+      (kill-buffer buf))))
 
-(define-key ak-map (kbd "<f5>") '("Clean pandoc vestiges from buffer" . (lambda () 
-                                                                     (interactive)
-                                                                     (org-web-tools--clean-pandoc-output))))
+
+
+;; (define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
+(define-key ak-map (kbd "<f4>") '("Insert clipboard as org" . 
+                                  (lambda () 
+                                    (interactive)
+                                    (ak/insert-org-from-html-clipboard)
+                                    (org-web-tools--clean-pandoc-output))))
+
+(define-key ak-map (kbd "<f5>") '("Clean pandoc vestiges from buffer" . 
+                                  (lambda () 
+                                    (interactive)
+                                    (org-web-tools--clean-pandoc-output))))
+
+(define-key ak-map (kbd "<f8>") '("Copy Org as Rich Text" . 
+                                    (ak/export-org-to-clipboard-as-rtf)))
+
+
+;; from https://coredumped.dev/2019/02/08/using-org-mode-to-write-email-for-outlook/  ;;
+;; (defun org-email-html-head ()                                                      ;;
+;;   "Create the header with CSS for use with email"                                  ;;
+;;   (concat                                                                          ;;
+;;    "<style type=\"text/css\">\n"                                                   ;;
+;;    "<!--/*--><![CDATA[/*><!--*/\n"                                                 ;;
+;;    (with-temp-buffer                                                               ;;
+;;      (insert-file-contents                                                         ;;
+;;       "~/Dropbox/org-files/org-email-head.css")                                    ;;
+;;      (buffer-string))                                                              ;;
+;;    "/*]]>*/-->\n"                                                                  ;;
+;;    "</style>\n"))                                                                  ;;
+;;                                                                                    ;;
+;; (defun export-org-email ()                                                         ;;
+;;   "Export the current email org buffer and copy it to the                          ;;
+;; clipboard"                                                                         ;;
+;;   (interactive)                                                                    ;;
+;;   (let ((org-export-show-temporary-export-buffer nil)                              ;;
+;;         (org-html-head (org-email-html-head)))                                     ;;
+;;     (org-html-export-as-html)                                                      ;;
+;;     (with-current-buffer "*Org HTML Export*"                                       ;;
+;;       (kill-new (buffer-string)))                                                  ;;
+;;     (message "HTML copied to clipboard")))                                         ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Move lines up/down
