@@ -136,26 +136,33 @@ and then uses pandoc to convert it to org mode"
   "Export org buffer to HTML, and copy it to the clipboard as rtf.
 Requires pandoc"
   (interactive)
-  (if (not (executable-find "pandoc")) 
-      (error "pandoc executable not found"))
+
   (save-window-excursion
-    (let* ((pandoc-command "pandoc --standalone --from=html --to=rtf")
+    (let* (
+           ;; (pandoc-command "pandoc --standalone --from=html --to=rtf")
            (rtf-clip-command)
            (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
            (html (with-current-buffer buf (buffer-string))))
       (cond
        (ak/generic-mac-p 
         (setq rtf-clip-command "pbcopy --Prefer rtf"))
-       (ak/generic-windows-p 
+       (ak/generic-windows-p
+        (if (not (executable-find "pandoc")) 
+            (error "pandoc executable not found"))
         (setq rtf-clip-command "powershell -command Set-Clipboard -AsHtml"))
-       (t 
-        (setq rtf-clip-command "xclip -t text/html")))
-      (with-current-buffer buf
-        (shell-command-on-region
-         (point-min)
-         (point-max)
-         (concat pandoc-command "|" rtf-clip-command)))
-      (kill-buffer buf))))
+       (t ;;;generic linux station. requires xclip. 
+        (if (not (executable-find "xclip")) 
+            (error "xclip executable not found. Linux requires it!"))
+        (setq rtf-clip-command "xclip -verbose -i \"%f\" -t text/html -selection clipboard")
+        (let* ((tmpfile (make-temp-file "org-rtf-clip-" nil ".html" html))
+               (proc (apply 
+                      'start-process "org-rtf-clip" "*org-rtf-clip*" 
+                      (split-string-and-unquote
+                       (format-spec rtf-clip-command
+                                    `((?f . ,tmpfile))) " "))))
+          (set-process-query-on-exit-flag proc nil)))
+      ;; (concat pandoc-command "|" rtf-clip-command)))
+      (kill-buffer buf)))))
 
 
 
@@ -171,8 +178,7 @@ Requires pandoc"
                                     (interactive)
                                     (org-web-tools--clean-pandoc-output))))
 
-(define-key ak-map (kbd "<f8>") '("Copy Org as Rich Text" . 
-                                    (ak/export-org-to-clipboard-as-rtf)))
+(define-key ak-map (kbd "<f8>") '("Copy Org as Rich Text" . ak/export-org-to-clipboard-as-rtf))
 
 
 ;; from https://coredumped.dev/2019/02/08/using-org-mode-to-write-email-for-outlook/  ;;
