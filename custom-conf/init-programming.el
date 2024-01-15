@@ -252,4 +252,24 @@
   :if ak/my-framework-p
   :init (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
 
+
+;; see https://xenodium.com/further-sqlite-mode-extensions/ for details
+(use-package sqlite-mode-extras
+  :bind (:map
+         sqlite-mode-map
+         ("n" . next-line)
+         ("p" . previous-line)
+         ("b" . sqlite-mode-extras-backtab-dwim)
+         ("f" . sqlite-mode-extras-tab-dwim)
+         ("+" . sqlite-mode-extras-add-row)
+         ("D" . sqlite-mode-extras-delete-row-dwim)
+         ("C" . sqlite-mode-extras-compose-and-execute)
+         ("E" . sqlite-mode-extras-execute)
+         ("S" . sqlite-mode-extras-execute-and-display-select-query)
+         ("DEL" . sqlite-mode-extras-delete-row-dwim)
+         ("g" . sqlite-mode-extras-refresh)
+         ("<backtab>" . sqlite-mode-extras-backtab-dwim)
+         ("<tab>" . sqlite-mode-extras-tab-dwim)
+         ("RET" . sqlite-mode-extras-ret-dwim)))
+
 (provide 'init-programming)

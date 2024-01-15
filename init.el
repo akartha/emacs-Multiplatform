@@ -210,6 +210,10 @@
 
 (require 'init-programming)
 
+(load-file "~/.emacs.d/custom-macros.el")
+
+(require 'sqlite-mode-extras)
+
 
 ;; (when (file-readable-p "~/.emacs.d/config.org")
 ;;   (org-babel-load-file (expand-file-name "~/.emacs.d/config.org")))
