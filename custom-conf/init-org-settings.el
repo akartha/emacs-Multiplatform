@@ -3,10 +3,11 @@
 ;; * Org Common settings ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+(require 'org)
 
 (defvar ak/my-org-file-location nil)
 
+(add-to-list 'org-modules 'org-habit t)
 
 (define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
 (define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
@@ -26,7 +27,8 @@
       '((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d!)")
         (sequence "BACKLOG(b)" "PLAN(p)" "READY(r)" "ACTIVE(a)" "REVIEW(v)" "WAIT(w@/!)" "HOLD(h)"  "|" "COMPLETED(c)" "CANC(k@)"))
 
-      org-src-window-setup 'current-window)
+      org-src-window-setup 'current-window
+      org-habit-show-all-today t)
 
 
 (setq org-directory ak/my-org-file-location
@@ -377,6 +379,7 @@
   (save-excursion
     (let ((kill-patterns '("\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
                            "\\[\\[data:image/svg[^]]*\\]\\]"
+                           "\\[\\[data:image/png[^]]*\\]\\]"
                            "\\[\\[data:image/gif;base64,[^]]*\\]\\]")))
       (dolist (kill-pattern kill-patterns)
 

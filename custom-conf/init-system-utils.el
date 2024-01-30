@@ -442,7 +442,8 @@
   (setq dashboard-set-heading-icons t
         dashboard-center-content t
         dashboard-set-file-icons t
-        dashboard-set-navigator nil)
+        dashboard-set-navigator nil
+        dashboard-week-agenda t)
   (if (executable-find "fortune")
       ;; (or ak/my-framework-p ak/my-mac-p) 
       (setq dashboard-footer-messages (list (shell-command-to-string "fortune"))))
