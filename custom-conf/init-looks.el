@@ -47,8 +47,7 @@
            :default-height 185
            :line-spacing 15)              ;this is in pixels
           (t
-           ;; I keep all properties for didactic purposes, but most can be
-           ;; omitted.  See the fontaine manual for the technicalities:
+           ;; See the fontaine manual for the technicalities:
            ;; <https://protesilaos.com/emacs/fontaine>.
            :default-family "Iosevka Comfy"
            :default-weight regular
@@ -66,7 +65,7 @@
            :bold-weight bold
            :italic-family "Iosevka Comfy Motion"
            :italic-slant italic
-           :line-spacing nil))))
+           :line-spacing 3))))
 
 (when ak/my-mac-p 
   (setq fontaine-presets
@@ -98,8 +97,7 @@
            :default-height 175
            :line-spacing 5)              ;this is in pixels
           (t
-           ;; I keep all properties for didactic purposes, but most can be
-           ;; omitted.  See the fontaine manual for the technicalities:
+           ;; See the fontaine manual for the technicalities:
            ;; <https://protesilaos.com/emacs/fontaine>.
            :default-family "Iosevka Comfy"
            :default-weight regular
@@ -117,7 +115,7 @@
            :bold-weight bold
            :italic-family "Iosevka Comfy Motion"
            :italic-slant italic
-           :line-spacing 2))))
+           :line-spacing 5))))
 
 (fontaine-restore-latest-preset)
 
