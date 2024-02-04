@@ -120,7 +120,8 @@
         json-reformat
         jq-format
         verb
-        rustic
+        ;; rustic
+        rust-ts-mode
         ob-mermaid
         projectile
         magit
@@ -157,6 +158,7 @@
         ace-link
         easy-kill
         denote
+        qrencode
         use-package-ensure-system-package))
 
 ;; Install packages above

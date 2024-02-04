@@ -216,6 +216,42 @@ TODO - No error checking implemented yet"
       (goto-char pt))))
 
 
+(defun my-org-link-as-url (link)
+  "Return the final URL for LINK."
+  (dom-attr
+   (dom-by-tag
+    (with-temp-buffer
+      (insert (org-export-string-as link 'html t))
+      (xml-parse-region (point-min) (point-max)))
+    'a)
+   'href))
+
+(defun my-org-stored-link-as-url (&optional link insert)
+  "Copy the stored link as a plain URL.
+If LINK is specified, use that instead."
+  (interactive (list nil current-prefix-arg))
+  (setq link (or link (caar org-stored-links)))
+  (let ((url (if link
+                 (my-org-link-as-url link)
+               (error "No stored link"))))
+    (when (called-interactively-p 'any)
+      (if url
+          (if insert (insert url) (kill-new url))
+        (error "Could not find URL.")))
+    url))
+
+
+(defun ak/my-org-link-qr (url)
+  "Display a QR code for URL in a buffer."
+  (let ((buf (save-window-excursion (qrencode--encode-to-buffer (my-org-stored-link-as-url url)))))
+    (display-buffer-in-side-window buf '((side . right)))))
+
+(use-package qrencode
+  :config
+  (with-eval-after-load 'embark
+    (define-key embark-org-link-map (kbd "q") #'ak/my-org-link-qr)))
+
+
 (provide 'non-core)
 
 ;; Graveyard

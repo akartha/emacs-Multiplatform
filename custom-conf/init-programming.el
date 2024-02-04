@@ -22,7 +22,40 @@
 (use-package eldoc
   :hook (after-init . global-eldoc-mode))
 
+;;Treesitter modules
 
+(setq treesit-language-source-alist
+   '((rust "https://github.com/tree-sitter/tree-sitter-rust")
+     (bash "https://github.com/tree-sitter/tree-sitter-bash")
+     (cmake "https://github.com/uyha/tree-sitter-cmake")
+     (css "https://github.com/tree-sitter/tree-sitter-css")
+     (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+     (go "https://github.com/tree-sitter/tree-sitter-go")
+     (gomod "https://github.com/camdencheek/tree-sitter-go-mod")
+     (html "https://github.com/tree-sitter/tree-sitter-html")
+     (javascript "https://github.com/tree-sitter/tree-sitter-javascript" "master" "src")
+     (json "https://github.com/tree-sitter/tree-sitter-json")
+     (make "https://github.com/alemuller/tree-sitter-make")
+     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+     (python "https://github.com/tree-sitter/tree-sitter-python")
+     (toml "https://github.com/tree-sitter/tree-sitter-toml")
+     (yaml "https://github.com/ikatyang/tree-sitter-yaml")
+     (sql "https://github.com/DerekStride/tree-sitter-sql")))
+
+;; (mapc #'treesit-install-language-grammar (mapcar #'car treesit-language-source-alist))
+
+(defun ak/treesit-install-all-languages ()
+    "Install all languages specified by `treesit-language-source-alist'."
+    (interactive)
+    (let ((languages (mapcar 'car treesit-language-source-alist)))
+      (dolist (lang languages)
+	      (treesit-install-language-grammar lang)
+	      (message "`%s' parser was installed." lang)
+	      (sit-for 0.75))))
+
+(add-to-list 'major-mode-remap-alist '((python-mode . python-ts-mode)
+                                       (elisp-mode . elisp-ts-mode)
+                                       (sql-mode . sql-ts-mode)))
 ;;;;;;;;;;;;;;;;;;
 ;; EGLOT config ;;
 ;;;;;;;;;;;;;;;;;;
@@ -30,9 +63,10 @@
 (use-package eglot
   :config
   (tooltip-mode 1)
-  (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
-  (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
-  (add-to-list 'eglot-server-programs '(rust-mode . ("rust-analyzer" 
+  ;; (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
+  (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp")))
+  (add-to-list 'eglot-server-programs '(go-ts-mode . ("gopls")))
+  (add-to-list 'eglot-server-programs '(rust-ts-mode . ("rust-analyzer" 
                                                       :initializationOptions
                                                       (:procMacro (:enable t)
                                                                   :cargo 
@@ -40,10 +74,17 @@
                                                                                  :features "all")))))
   (setq-default eglot-workspace-configuration
                 `((:pylsp . (:configurationSources ["flake8"] 
-                                                   :plugins (:pycodestyle (:enabled nil) 
-                                                                          :mccabe (:enabled nil) 
-                                                                          :flake8 (:enabled t) 
-                                                                          :yapf: (:enabled t)
+                                                   :plugins (:pycodestyle (:enabled :json-false) 
+                                                                          :mccabe (:enabled :json-false) 
+                                                                          :pyflakes (:enabled :json-false) 
+                                                                          :flake8 (:enabled :json-false
+                                                                                            :maxLineLength 88)
+                                                                          :ruff (:enabled t
+                                                                                          :lineLength 88)
+                                                                          :pydocstyle (:enabled t
+                                                                                                :convention "numpy")
+                                                                          :yapf: (:enabled :json-false)
+                                                                          :autopep8 (:enabled :json-false)
                                                                           :jedi_completion (:include_params t :fuzzy t)
                                                                           :pylint (:enabled :json-false))))
                   (:gopls .
@@ -55,18 +96,32 @@
                            (symbolScope . "all")
                            (completeFunctionCalls . t)
                            (linksInHover . t)
-                           (matcher . "Fuzzy")))))
+                           (matcher . "Fuzzy")))
+                  (:rust-analyzer .
+                                  (:procMacro (:attributes (:enable t)
+                                                           :enable t)
+                                              :cargo (:buildScripts (:enable t)
+                                                                    :features "all")
+                                              :diagnostics (:disabled ["unresolved-proc-macros"
+                                                                       "unresolved-macro-call"])))))
   (setq eglot-verbose t)
   (setq eglot-debug t)
 
-  :hook ((python-mode . eglot-ensure)
-         (go-mode . eglot-ensure)
-         (rust-mode . eglot-ensure)))
+  :hook ((python-ts-mode . eglot-ensure)
+         (go-ts-mode . eglot-ensure)
+         (rust-ts-mode . eglot-ensure))
+  :bind (:map eglot-mode-map 
+              ("<f6>" . eglot-format-buffer)
+              ("C-c a" . eglot-code-actions)
+              ("C-c r" . eglot-rename)
+              ("<f5" . recompile ))
+  :custom 
+  (auto-shutdown t))
 
 ;;;###autoload
-(defun eglot-format-buffer-on-save ()
+(defun ak/eglot-format-buffer-on-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
-(add-hook 'go-mode-hook #'eglot-format-buffer-on-save)
+(add-hook 'go-ts-mode-hook #'ak/eglot-format-buffer-on-save)
 
 ;;;;;;;;;;;;;
 ;; GO-MODE ;;
@@ -75,8 +130,8 @@
 (defun ak/eglot-organize-imports ()
   (call-interactively 'eglot-code-action-organize-imports))
 
-(use-package go-mode
-    :hook (go-mode . (lambda ()
+(use-package go-ts-mode
+    :hook (go-ts-mode . (lambda ()
                        ;; Using depth -10 will put this before eglot's
                        ;; willSave notification so that the notification
                        ;; reports the actual contents that will be
@@ -156,35 +211,39 @@
 ;; ;; *** Rust ;;
 ;;;;;;;;;;;;;;;;;
 
-(use-package rustic
-  ;; :bind (:map rustic-mode-map
-  ;;             ("M-j" . lsp-ui-imenu)
-  ;;             ("M-?" . lsp-find-references)
-  ;;             ("C-c C-c l" . flycheck-list-errors)
-  ;;             ("C-c C-c a" . lsp-execute-code-action)
-  ;;             ("C-c C-c r" . lsp-rename)
-  ;;             ("C-c C-c q" . lsp-workspace-restart)
-  ;;             ("C-c C-c Q" . lsp-workspace-shutdown)
-  ;;             ("C-c C-c s" . lsp-rust-analyzer-status))
-  :config
-  ;; uncomment for less flashiness
-  ;; (setq lsp-eldoc-hook nil)
-  ;; (setq lsp-enable-symbol-highlighting nil)
-  ;; (setq lsp-signature-auto-activate nil)
-  ;; (with-eval-after-load "lsp-mode"
-  ;;   (add-to-list 'lsp-enabled-clients 'rust-analyzer))
-  ;; comment to disable rustfmt on save
-  (setq rustic-format-on-save t)
-  (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
+;; (use-package rustic
+;;   ;; :bind (:map rustic-mode-map
+;;   ;;             ("M-j" . lsp-ui-imenu)
+;;   ;;             ("M-?" . lsp-find-references)
+;;   ;;             ("C-c C-c l" . flycheck-list-errors)
+;;   ;;             ("C-c C-c a" . lsp-execute-code-action)
+;;   ;;             ("C-c C-c r" . lsp-rename)
+;;   ;;             ("C-c C-c q" . lsp-workspace-restart)
+;;   ;;             ("C-c C-c Q" . lsp-workspace-shutdown)
+;;   ;;             ("C-c C-c s" . lsp-rust-analyzer-status))
+;;   :config
+;;   ;; uncomment for less flashiness
+;;   ;; (setq lsp-eldoc-hook nil)
+;;   ;; (setq lsp-enable-symbol-highlighting nil)
+;;   ;; (setq lsp-signature-auto-activate nil)
+;;   ;; (with-eval-after-load "lsp-mode"
+;;   ;;   (add-to-list 'lsp-enabled-clients 'rust-analyzer))
+;;   ;; comment to disable rustfmt on save
+;;   (setq rustic-format-on-save t)
+;;   (add-hook 'rustic-mode-hook 'rk/rustic-mode-hook))
 
-;;;###autoload
-(defun rk/rustic-mode-hook ()
-  ;; so that run C-c C-c C-r works without having to confirm, but don't try to
-  ;; save rust buffers that are not file visiting. Once
-  ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
-  ;; no longer be necessary.
-  (when buffer-file-name
-    (setq-local buffer-save-without-query t)))
+;; ;;;###autoload
+;; (defun rk/rustic-mode-hook ()
+;;   ;; so that run C-c C-c C-r works without having to confirm, but don't try to
+;;   ;; save rust buffers that are not file visiting. Once
+;;   ;; https://github.com/brotzeit/rustic/issues/253 has been resolved this should
+;;   ;; no longer be necessary.
+;;   (when buffer-file-name
+;;     (setq-local buffer-save-without-query t)))
+
+(use-package rust-ts-mode
+  :mode ("\\.rs\\'" . rust-ts-mode)
+  :hook ((rust-ts-mode . company-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; * Projectile                                                        
