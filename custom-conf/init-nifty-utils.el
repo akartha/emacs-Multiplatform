@@ -137,10 +137,15 @@ and then uses pandoc to convert it to org mode"
 Requires pandoc"
   (interactive)
   (save-window-excursion
-    (let* ((pandoc-command "pandoc --standalone --from=html --to=rtf")
-           (rtf-clip-command)
-           (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
-           (html (with-current-buffer buf (buffer-string))))
+    (let* ((pandoc-command "pandoc --embed-resource --standalone --from=html --to=rtf")
+           (rtf-clip-command nil)
+           (org-export-show-temporary-export-buffer nil)
+           (buf "*Org HTML Export*")
+           (html nil))
+      (org-html-export-as-html)
+      (setq html (with-current-buffer buf (buffer-string)))
+           ;;  (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           ;; (html (with-current-buffer buf (buffer-string))))
       (cond
        (ak/generic-mac-p 
         (if (not (executable-find "pandoc")) 
