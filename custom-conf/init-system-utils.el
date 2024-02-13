@@ -516,6 +516,7 @@
 (use-package cape
   ;; Bind rededicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
+  :after corfu 
   :bind (("M-p p" . completion-at-point) ;; capf
          ("M-p t" . complete-tag)        ;; etags
          ("M-p d" . cape-dabbrev)        ;; or dabbrev-completion
@@ -536,11 +537,13 @@
   ;; (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-keyword) ;;;; `cape-keyword': Complete programming language keyword  
   (add-to-list 'completion-at-point-functions #'cape-dabbrev) ;;Complete word from current buffers
-  (add-to-list 'completion-at-point-functions #'cape-dict))
+  (add-to-list 'completion-at-point-functions #'cape-dict)
+  (add-to-list 'completion-at-point-functions #'cape-file)
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   ;; :hook (prog-mode . cape-mode))
   ;; (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
-  ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
-
+  (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
+  (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
   ;; (add-to-list 'completion-at-point-functions #'cape-history) ;;;; `cape-history': Complete from Eshell, Comint or minibuffer history
   ;;(add-to-list 'completion-at-point-functions #'cape-tex) 
   ;; (add-to-list 'completion-at-point-functions #'cape-sgml)

@@ -15,6 +15,18 @@
 (add-hook 'project-find-functions #'project-find-go-module)
 
 
+
+;;;;;;;;;;;;;;;;;;;;;
+;; ;; ** yasnippet ;;
+;;;;;;;;;;;;;;;;;;;;;
+
+(use-package yasnippet
+  :commands yas-minor-mode
+  :hook ((go-ts-mode . yas-minor-mode)
+         (python-ts-mode . yas-minor-mode))
+  :config
+  (yas-reload-all))
+
 ;;;;;;;;;;;
 ;; ELDOC ;;
 ;;;;;;;;;;;
@@ -53,60 +65,53 @@
 	      (message "`%s' parser was installed." lang)
 	      (sit-for 0.75))))
 
-(add-to-list 'major-mode-remap-alist '((python-mode . python-ts-mode)
-                                       (elisp-mode . elisp-ts-mode)
-                                       (sql-mode . sql-ts-mode)))
+
 ;;;;;;;;;;;;;;;;;;
 ;; EGLOT config ;;
 ;;;;;;;;;;;;;;;;;;
 
 (use-package eglot
+  :defer t 
+  :commands (eglot eglot-ensure)
   :config
   (tooltip-mode 1)
-  ;; (add-to-list 'eglot-server-programs '(python-mode . ("pylsp")))
-  (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp")))
+  (add-to-list 'eglot-server-programs '(python-ts-mode . ("pyright-langserver" "--stdio")))
+  ;; (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp")))
   (add-to-list 'eglot-server-programs '(go-ts-mode . ("gopls")))
   (add-to-list 'eglot-server-programs '(rust-ts-mode . ("rust-analyzer" 
-                                                      :initializationOptions
-                                                      (:procMacro (:enable t)
-                                                                  :cargo 
-                                                                  (:buildScripts (:enable t)
-                                                                                 :features "all")))))
-  (setq-default eglot-workspace-configuration
-                `((:pylsp . (:configurationSources ["flake8"] 
-                                                   :plugins (:pycodestyle (:enabled :json-false) 
-                                                                          :mccabe (:enabled :json-false) 
-                                                                          :pyflakes (:enabled :json-false) 
-                                                                          :flake8 (:enabled :json-false
-                                                                                            :maxLineLength 88)
-                                                                          :ruff (:enabled t
-                                                                                          :lineLength 88)
-                                                                          :pydocstyle (:enabled t
-                                                                                                :convention "numpy")
-                                                                          :yapf: (:enabled :json-false)
-                                                                          :autopep8 (:enabled :json-false)
-                                                                          :jedi_completion (:include_params t :fuzzy t)
-                                                                          :pylint (:enabled :json-false))))
-                  (:gopls .
-                          ((staticcheck . t)
-                           (usePlaceholders . t)
-                           (gofumpt . t)
-                           (hoverKind . "FullDocumentation")
-                           (importShortcut . "Both")
-                           (symbolScope . "all")
-                           (completeFunctionCalls . t)
-                           (linksInHover . t)
-                           (matcher . "Fuzzy")))
-                  (:rust-analyzer .
-                                  (:procMacro (:attributes (:enable t)
-                                                           :enable t)
-                                              :cargo (:buildScripts (:enable t)
-                                                                    :features "all")
-                                              :diagnostics (:disabled ["unresolved-proc-macros"
-                                                                       "unresolved-macro-call"])))))
-  (setq eglot-verbose t)
-  (setq eglot-debug t)
-
+                                                        :initializationOptions
+                                                        (:procMacro (:enable t)
+                                                                    :cargo 
+                                                                    (:buildScripts (:enable t)
+                                                                                   :features "all")))))
+  (setq eglot-verbose t
+        eglot-debug t)
+  :custom (eglot-workspace-configuration
+           '((:pyright . 
+                       (:configurationSources ["flake8"] 
+                                              :plugins (:pycodestyle (:enabled nil) 
+                                                                     :mccabe (:enabled nil) 
+                                                                     :pyflakes (:enabled :json-false) 
+                                                                     :flake8 (:enabled t :maxLineLength 88)
+                                                                     :ruff (:enabled t :lineLength 88)
+                                                                     :pydocstyle (:enabled t :convention "numpy")
+                                                                     :yapf: (:enabled t)
+                                                                     :autopep8 (:enabled :json-false)
+                                                                     :jedi_completion (:include_params t :fuzzy t)
+                                                                     :pylint (:enabled :json-false))))
+             (:gopls .
+                     ((staticcheck . t)
+                      (usePlaceholders . t)
+                      (gofumpt . t)
+                      (hoverKind . "FullDocumentation")
+                      (importShortcut . "Both")
+                      (symbolScope . "all")
+                      (completeFunctionCalls . t)
+                      (linksInHover . t)
+                      (matcher . "Fuzzy")))))
+  (read-process-output-max (* 1024 1024))
+  (eglot-sync-connect 0)
+  (eglot-autoshutdown t)
   :hook ((python-ts-mode . eglot-ensure)
          (go-ts-mode . eglot-ensure)
          (rust-ts-mode . eglot-ensure))
@@ -114,14 +119,19 @@
               ("<f6>" . eglot-format-buffer)
               ("C-c a" . eglot-code-actions)
               ("C-c r" . eglot-rename)
-              ("<f5" . recompile ))
-  :custom 
-  (auto-shutdown t))
+              ("C-c d" . eldoc)
+              ("<f5" . recompile )))
 
 ;;;###autoload
 (defun ak/eglot-format-buffer-on-save ()
   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
 (add-hook 'go-ts-mode-hook #'ak/eglot-format-buffer-on-save)
+
+;;Python pyright 
+(use-package lsp-pyright
+  ;; :ensure t
+  :hook (python-ts-mode . (lambda ()
+                          (require 'lsp-pyright))))  ; or lsp
 
 ;;;;;;;;;;;;;
 ;; GO-MODE ;;
@@ -330,5 +340,10 @@
          ("<backtab>" . sqlite-mode-extras-backtab-dwim)
          ("<tab>" . sqlite-mode-extras-tab-dwim)
          ("RET" . sqlite-mode-extras-ret-dwim)))
+
+
+(use-package eldoc
+  :custom (eldoc-documentation-strategy #'eldoc-documentation-compose)
+  :config (eldoc-add-command-completions "paredit-"))
 
 (provide 'init-programming)

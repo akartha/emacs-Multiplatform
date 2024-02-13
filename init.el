@@ -125,6 +125,7 @@
         ob-mermaid
         projectile
         magit
+        lsp-pyright
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         ;; No custom options defined for the below ;;
         ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
