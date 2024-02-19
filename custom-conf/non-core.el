@@ -251,6 +251,72 @@ If LINK is specified, use that instead."
   (with-eval-after-load 'embark
     (define-key embark-org-link-map (kbd "q") #'ak/my-org-link-qr)))
 
+;; (setq denote-directory "~/Dropbox/Documents/Denote")
+;; (setq denote-known-keywords '("journal" "projects" "ideas"))
+;; ;; (setq denote-prompts '(title subdirectory))
+
+;; ;; Buttonize all denote links in text buffers
+;; (add-hook 'find-file-hook #'denote-link-buttonize-buffer)
+
+;; ;; Fontify file names in Dired
+;; ;; (require 'denote-dired)
+;; (add-hook 'dired-mode-hook #'denote-dired-mode)
+
+;; (with-eval-after-load 'org-capture
+;;   ;; (require 'denote-org-capture)
+;;   (add-to-list 'org-capture-templates
+;;                '("n" "New note (with Denote)" plain
+;;                  (file denote-last-path)
+;;                  #'denote-org-capture
+;;                  :no-save t
+;;                  :immediate-finish nil
+;;                  :kill-buffer t
+;;                  :jump-to-captured t)))
+
+;; (defun my-denote-journal ()
+;;   "Create an entry tagged journal with the date as its title."
+;;   (interactive)
+;;   (denote
+;;    (format-time-string "%A %e %B %Y")   ; format like Tuesday 14 June 2022
+;;    '("journal")
+;;    nil
+;;    "~/Dropbox/Documents/Denote/Journal")
+
+;;   (insert "* Thoughts\n\n* Tasks\n\n")) ; multiple keywords are a list of strings: '("one" "two")
+
+(define-prefix-command 'ak-denote-map)
+(global-set-key (kbd "` n") '("Denote commands" . ak-denote-map))
+
+(use-package denote
+  :hook
+  (dired-mode . denote-dired-mode)
+  :bind (:map ak-denote-map ("c" . 'denote)
+              ("k" . 'denote-keywords-add)
+              ("K" . 'denote-keywords-remove)
+              ("r" . 'denote-rename-file)
+              ("l" . 'denote-link)
+              ("b" . 'denote-backlinks)
+              ("j" . 'ak/denote-journal)
+              ("w" . 'ak/denote-clip-url))
+  :custom
+  (denote-known-keywords '("journal" "recipe" "article" "story" "musings" "work" "study"))
+  :preface
+  (defun ak/denote-journal ()
+    "Create an entry tagged journal with the date as its title."
+    (interactive)
+    (denote
+     (format-time-string "%A %e %B %Y") 
+     '("journal")))
+  :init
+  (setq denote-directory "~/Dropbox/Documents/Denote")
+  ;; (defun ak/denote-clip-url()
+  ;;   "Create denote with title from url"
+  ;;   (interactive)
+  ;;   (let* ((web-title 'ak/get-url-title))
+  ;;     (denote 
+  ;;      'web-title
+  ;;      '("article"))))
+)
 
 (provide 'non-core)
 
