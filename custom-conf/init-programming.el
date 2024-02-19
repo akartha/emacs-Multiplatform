@@ -23,9 +23,7 @@
 (use-package yasnippet
   :commands yas-minor-mode
   :hook ((go-ts-mode . yas-minor-mode)
-         (python-ts-mode . yas-minor-mode))
-  :config
-  (yas-reload-all))
+         (python-ts-mode . yas-minor-mode)))
 
 ;;;;;;;;;;;
 ;; ELDOC ;;

@@ -22,7 +22,8 @@
   :commands
   vertico-mode
   :after minibuffer 
-  :bind (:map vertico-map
+  :bind (("C-x /" . vertico-suspend)
+         (:map vertico-map
               ("M-RET"   . nil)
               ("M-s"     . nil)
               ("<tab>"     . vertico-insert)
@@ -36,7 +37,7 @@
               (">"       . embark-become)
               ("C-*"     . embark-act-all)
               ("M-s o"   . embark-export)
-              ("C-l"     . embark-export)))
+              ("C-l"     . embark-export))))
 
 ;; A few more useful bits...
 (use-package emacs
