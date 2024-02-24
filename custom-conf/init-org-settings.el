@@ -4,6 +4,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'org)
+(require 'org-web-tools)
 
 (defvar ak/my-org-file-location nil)
 

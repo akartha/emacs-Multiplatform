@@ -143,9 +143,10 @@
 
 
 (use-package lambda-line
+  ;; :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
   :custom
-  ;; (lambda-line-icon-time t) ;; requires ClockFace font (see below)
-  ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
+  (lambda-line-icon-time t) ;; requires ClockFace font (see below)
+  (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
   (lambda-line-position 'bottom) ;; Set position of status-line 
   (lambda-line-abbrev t) ;; abbreviate major modes
   (lambda-line-hspace "  ")  ;; add some cushion
@@ -171,7 +172,6 @@
 
 
 (use-package all-the-icons-completion
-  ;; :straight t 
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
@@ -196,7 +196,6 @@
 
 (use-package rainbow-delimiters
   :diminish
-  ;; :straight t
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
@@ -206,7 +205,6 @@
 ;; showing up and taking up space. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package diminish
-  ;; :straight t
   :init
   (diminish 'visual-line-mode)
   (diminish 'subword-mode)
