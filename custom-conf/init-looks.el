@@ -1,11 +1,27 @@
 ;;; -*- lexical-binding: t; -*-
 
-(use-package modus-themes
-  ;; :straight t
-  :custom
-  (setq modus-themes-org-blocks 'tinted-background)
+;; (use-package modus-themes
+;;   ;; :straight t
+;;   :custom
+;;   (setq modus-themes-org-blocks 'tinted-background)
+;;   :init
+;;   (load-theme 'modus-vivendi-tinted t)) ;;other themes - modus-vivendi, modus-operandi, modus-operandi-tinted/deuteranopia, etc.
+
+(use-package ef-themes
   :init
-  (load-theme 'modus-vivendi-tinted t)) ;;other themes - modus-vivendi, modus-operandi, modus-operandi-tinted/deuteranopia, etc.
+  (load-theme 'ef-symbiosis t))
+;; Dark Themes I like - ef-autumn
+;;                      ef-dark 
+;;                      ef-duo-dark 
+;;                      ef-deuteranopia-dark 
+;;                      ef-elea-dark 
+;;                      ef-maris-dark 
+;;                      ef-night  
+;;                      ef-symbiosis  
+
+;; Light Themes -       ef-cyprus                                   
+;;                      ef-deuteranopia-light  
+;;                      ef-light  
 
 (use-package ef-themes
   ;; :straight t
