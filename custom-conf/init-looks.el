@@ -7,6 +7,14 @@
   :init
   (load-theme 'modus-vivendi-tinted t)) ;;other themes - modus-vivendi, modus-operandi, modus-operandi-tinted/deuteranopia, etc.
 
+(use-package ef-themes
+  ;; :straight t
+  ;; :custom
+  ;; (setq modus-themes-org-blocks 'tinted-background)
+  :init
+  (load-theme 'ef-autumn t))
+
+
 (setq fontaine-latest-state-file
       (locate-user-emacs-file "fontaine-latest-state.eld"))
 
@@ -213,6 +221,61 @@
   ;; (diminish 'yas-minor-mode)
   (diminish 'org-indent-mode))
 
+
+(setq spacious-padding-widths
+      '( :internal-border-width 45
+         :header-line-width 4
+         :mode-line-width 3
+         :tab-width 4
+         :right-divider-width 30
+         :scroll-bar-width 8
+         :fringe-width 8))
+
+;; Read the doc string of `spacious-padding-subtle-mode-line' as it
+;; is very flexible and provides several examples.
+(setq spacious-padding-subtle-mode-line 
+      '(:mode-line-active "#0000ff" 
+                          :mode-line-inactive "#aaaa77"))
+
+;; If you want to use outlines instead of page breaks (the ^L):
+(setq logos-outlines-are-pages t)
+
+;; This is the default value for the outlines:
+(setq logos-outline-regexp-alist
+      `((emacs-lisp-mode . "^;;;+ ")
+        (org-mode . "^\\*+ +")
+        (markdown-mode . "^\\#+ +")))
+
+;; These apply when `logos-focus-mode' is enabled.  Their value is
+;; buffer-local.
+(setq-default logos-hide-cursor nil
+              logos-hide-mode-line t
+              logos-hide-header-line t
+              logos-hide-buffer-boundaries t
+              logos-hide-fringe t
+              logos-variable-pitch nil
+              logos-buffer-read-only nil
+              logos-scroll-lock nil
+              logos-olivetti nil)
+
+;; Also check this manual for `logos-focus-mode-hook'.  It lets you
+;; extend `logos-focus-mode'.
+
+(let ((map global-map))
+  (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
+  (define-key map [remap forward-page] #'logos-forward-page-dwim)
+  (define-key map [remap backward-page] #'logos-backward-page-dwim)
+  (define-key map (kbd "<f11>") #'logos-focus-mode))
+
+;; Also consider adding keys to `logos-focus-mode-map'.  They will take
+;; effect when `logos-focus-mode' is enabled.
+
+(define-prefix-command 'ak-display-settings-keymap)
+(global-set-key (kbd "` d") 'ak-display-settings-keymap)
+
+(define-key ak-display-settings-keymap "f" '("Fontaine Presets" . fontaine-set-preset))
+(define-key ak-display-settings-keymap (kbd "<f8>") '("Spacious padding mode" . spacious-padding-mode))
+(define-key ak-display-settings-keymap (kbd "<f9>") '("Consult theme" . consult-theme))
 
 
 (provide 'init-looks)

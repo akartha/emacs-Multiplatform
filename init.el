@@ -147,6 +147,9 @@
 ;; (elpaca       transient 		    )
 (elpaca       qrencode				)
 (elpaca       use-package-ensure-system-package )
+(elpaca       ef-themes             )
+(elpaca       logos                 )
+(elpaca       spacious-padding      )
 
 ;; ;;custom options for vertico are defined in init-system-utils
 ;; (straight-use-package
