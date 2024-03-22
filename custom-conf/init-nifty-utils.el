@@ -830,6 +830,24 @@ to the current directory in the '_downloads' folder"
           (read-from-minibuffer "Enter filename: ")))
     (ak/download-file url directory local-file-name)))
 
+(defun ak/download-image-at-point-and-insert-org-link ()
+  "Download the image in an org article to '_downloads' folder
+and insert org image block for it"
+  (interactive)
+  (let* ((url (thing-at-point-url-at-point))
+         (url-bnds (bounds-of-thing-at-point 'url))
+         (directory "_downloads/")
+         (local-file-name (read-from-minibuffer "Enter File Name:" (buffer-name))))
+    (kill-region (car url-bnds) (cdr url-bnds))
+    (kill-whole-line)
+    (insert(format 
+            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s"
+            local-file-name url (concat directory local-file-name) ))
+    ;; Message success to the minibuffer
+    (org-display-inline-images)
+    (ak/download-file url directory local-file-name)))
+
+
 (use-package easy-kill
   :bind ("C-=" . easy-mark)
   :config

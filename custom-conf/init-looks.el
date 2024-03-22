@@ -23,12 +23,12 @@
 ;;                      ef-deuteranopia-light  
 ;;                      ef-light  
 
-(use-package ef-themes
-  ;; :straight t
-  ;; :custom
-  ;; (setq modus-themes-org-blocks 'tinted-background)
-  :init
-  (load-theme 'ef-autumn t))
+;; (use-package ef-themes
+;;   ;; :straight t
+;;   ;; :custom
+;;   ;; (setq modus-themes-org-blocks 'tinted-background)
+;;   :init
+;;   (load-theme 'ef-autumn t))
 
 
 (setq fontaine-latest-state-file
@@ -102,10 +102,10 @@
           (regular
            :default-height 150)
           (medium
-           :default-height 170)
+           :default-height 175)
           (large
            :default-weight semilight
-           :default-height 180
+           :default-height 195
            :bold-weight extrabold)
           (code-demo
            :default-weight semilight
@@ -117,9 +117,9 @@
            :bold-weight extrabold)
           (reading
            :default-family "Noto Serif" 
-           :default-weight bold
-           :default-height 175
-           :line-spacing 5)              ;this is in pixels
+           ;; :default-weight bold
+           :default-height 205
+           :line-spacing 8)              ;this is in pixels
           (t
            ;; See the fontaine manual for the technicalities:
            ;; <https://protesilaos.com/emacs/fontaine>.
@@ -169,8 +169,8 @@
 (use-package lambda-line
   ;; :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
   :custom
-  (lambda-line-icon-time t) ;; requires ClockFace font (see below)
-  (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
+  (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
+  (lambda-line-clockface-update-fontset "ClockFaceFatHands") ;; set clock icon
   (lambda-line-position 'bottom) ;; Set position of status-line 
   (lambda-line-abbrev t) ;; abbreviate major modes
   (lambda-line-hspace "  ")  ;; add some cushion
