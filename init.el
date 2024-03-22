@@ -169,6 +169,8 @@
 
 (elpaca (xht :type git :host sourcehut :repo "flandrew/xht"))
 
+(elpaca (org-margin :type git :host github :repo "rougier/org-margin"))
+
 (elpaca-wait)
 
 (elpaca-process-queues)
