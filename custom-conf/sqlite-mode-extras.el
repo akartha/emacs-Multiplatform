@@ -373,7 +373,7 @@ When BACKWARD is set, navigate to previous column."
       (while (not (eobp))
         (when-let ((table (sqlite-mode-extras--table-name))
                    (_ (sqlite-mode-extras--table-expanded-p)))
-          (add-to-list 'tables table))
+          (cl-pushnew 'tables table))
         (forward-line))
       tables)))
 

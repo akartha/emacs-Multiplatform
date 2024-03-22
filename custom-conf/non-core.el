@@ -175,6 +175,7 @@ If LINK is specified, use that instead."
     (display-buffer-in-side-window buf '((side . right)))))
 
 (use-package qrencode
+  :after embark-org 
   :config
   (with-eval-after-load 'embark
     (define-key embark-org-link-map (kbd "q") #'ak/my-org-link-qr)))
@@ -191,8 +192,8 @@ If LINK is specified, use that instead."
               ("r" . 'denote-rename-file)
               ("l" . 'denote-link)
               ("b" . 'denote-backlinks)
-              ("j" . 'ak/denote-journal)
-              ("w" . 'ak/denote-clip-url))
+              ("j" . 'ak/denote-journal))
+              ;; ("w" . 'ak/denote-clip-url))
   :custom
   (denote-known-keywords '("journal" "recipe" "article" "story" "musings" "work" "study"))
   :preface
