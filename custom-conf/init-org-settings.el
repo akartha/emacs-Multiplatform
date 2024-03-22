@@ -349,21 +349,31 @@
 
 (use-package org-web-tools
   :bind (:map ak-map
-              ("<f2>" . ak/get-url-title)
+              ;; ("<f2>" . ak/get-url-title)
+              ("<f2>" . ak/clip-web-page-title-and-search-org-roam)
               ("<f3>" . org-web-tools-insert-web-page-as-entry)
               ("<f6>" . org-web-tools-read-url-as-org)
-              ("<f7>" . org-web-tools-insert-link-for-url))
+              ("<f7>" . org-web-tools-insert-link-for-url)
+              ("<f8>" . ak/delete-image-base-64-data-lines))
   :config 
   (setq org-web-tools-pandoc-sleep-time 0.7)
 ;;;###autoload
   (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
+"Parses web page's title from url in clipboard."
     (interactive)
     (let* ((html (org-web-tools--get-url url))
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url))))
 
-(defun ak/delete-svg-data-lines ()
-  "Deletes lines containing SVG data from the buffer."
+  (cl-defun ak/clip-web-page-title-and-search-org-roam(&optional (url (org-web-tools--get-first-url)))
+"Parses web page's title from url in clipboard and searches org-roam"
+  (interactive)
+   (let* ((html (org-web-tools--get-url url))
+           (title (org-web-tools--html-title html)))
+  (org-roam-node-find nil title)))
+
+(defun ak/delete-image-base-64-data-lines ()
+  "Deletes lines containing base-64 image data from the buffer."
  (interactive)
   (save-excursion
     (let ((kill-patterns '(;;"\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"

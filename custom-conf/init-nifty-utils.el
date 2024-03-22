@@ -192,8 +192,22 @@ Requires pandoc"
                                     (interactive)
                                     (org-web-tools--clean-pandoc-output))))
 
-(define-key ak-map (kbd "<f8>") '("Copy Org as Rich Text" . ak/export-org-to-clipboard-as-rtf))
+(define-key ak-map (kbd "<f12>") '("Copy Org as Rich Text" . ak/export-org-to-clipboard-as-rtf))
 
+
+(defun ak/search-replace-with-region (beg end prefix)
+  "Replace selected region text from whole buffer with blanks.
+With PREFIX, prompt for replacement string"
+(interactive "r\nP")
+    (let ((region (buffer-substring beg end))
+          (replace-text (if prefix (read-string "Whats the replacement string?:")
+                          "")))
+      (save-excursion
+        (goto-char beg)
+        (deactivate-mark)
+        (query-replace region replace-text))))
+
+(define-key ak-map (kbd "5") '("Delete Selected region matches from buffer" . ak/search-replace-with-region))
 
 ;; from https://coredumped.dev/2019/02/08/using-org-mode-to-write-email-for-outlook/  ;;
 ;; (defun org-email-html-head ()                                                      ;;

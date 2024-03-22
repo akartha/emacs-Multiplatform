@@ -173,4 +173,16 @@
 ;; nil means  use symmetric encryption unconditionally.
 ;; "" means use symmetric encryption unless heading sets CRYPTKEY property.
 
+(defun ak/isearch-with-region ()
+  "Use region as the isearch text."
+  (when mark-active
+    (let ((region (funcall region-extract-function nil)))
+      (goto-char (region-beginning))
+      (deactivate-mark)
+      ;; (isearch-push-state)
+      (isearch-update)
+      (isearch-yank-string region))))
+
+(add-hook 'isearch-mode-hook #'ak/isearch-with-region)
+
 (provide 'init-basic)
