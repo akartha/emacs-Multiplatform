@@ -12,7 +12,31 @@
 
 (define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
 (define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
-                          
+        
+
+
+
+(defun ak/next-entry-or-next-visible-header ()
+  (interactive)
+  (condition-case err
+      (org-next-item)
+    (error (org-next-visible-heading 1))))
+;; (define-key org-mode-map (kbd "C-c C-n") #'ag/next-entry-or-next-visible-header)
+
+(defun ak/previous-entry-or-previous-visible-header ()
+  (interactive)
+  (condition-case err
+      (org-previous-item)
+    (error (org-previous-visible-heading 1))))
+;; (define-key org-mode-map (kbd "C-c C-p") #'ag/previous-entry-or-previous-visible-header)
+
+
+;; (define-key ak-map "p" '("Previous heading" . org-previous-visible-heading))
+;; (define-key ak-map "P" '("Next heading" . org-next-visible-heading))
+                  
+(define-key ak-map "p" '("Previous item/heading" . ak/previous-entry-or-previous-visible-header))
+(define-key ak-map "n" '("Next item/heading" . ak/next-entry-or-next-visible-header))    
+                  
 (setq org-ellipsis "⤵"
       org-src-fontify-natively t
       org-src-tab-acts-natively t
@@ -184,6 +208,7 @@
 (org-babel-do-load-languages
  'org-babel-load-languages
  '((python . t)
+   (R . t)
    (restclient . t)
    (sql . t)
    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -254,6 +279,7 @@
    
    (passthrough . t)
    (shell . t)
+   (latex . t)
    (plantuml . t)))
 
 (setq org-plantuml-jar-path "~/plantuml.jar")

@@ -150,6 +150,7 @@
 (elpaca       ef-themes             )
 (elpaca       logos                 )
 (elpaca       spacious-padding      )
+(elpaca       ess      )
 
 ;; ;;custom options for vertico are defined in init-system-utils
 ;; (straight-use-package

@@ -181,7 +181,7 @@ If LINK is specified, use that instead."
     (define-key embark-org-link-map (kbd "q") #'ak/my-org-link-qr)))
 
 (define-prefix-command 'ak-denote-map)
-(global-set-key (kbd "` n") '("Denote commands" . ak-denote-map))
+(global-set-key (kbd "` t") '("Denote commands" . ak-denote-map))
 
 (use-package denote
   :hook
