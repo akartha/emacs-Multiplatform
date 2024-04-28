@@ -4,7 +4,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'org)
-(require 'org-web-tools)
 
 (defvar ak/my-org-file-location nil)
 
@@ -145,6 +144,7 @@
 (global-set-key (kbd "C-c '") 'org-edit-src-code)
 
 (use-package org-superstar
+  :ensure t
   :hook (org-mode . org-superstar-mode)
   :custom 
   ;; (org-superstar-headline-bullets-list '("◉" ("🞛" ?◈) "○" "▷"))
@@ -169,6 +169,7 @@
 ;; *** Reveal.js export
 
 (use-package ox-reveal
+  :ensure t
   ;; https://github.com/yjwen/org-reveal
   :config
   (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
@@ -198,89 +199,58 @@
 
 
 
+(require 'ob-passthrough)
+
+(use-package ob-go
+  :ensure t
+  :after go)
+
+(use-package restclient
+  :ensure t)
+
+(use-package ob-restclient
+  :ensure t
+  :after restclient)
+
+(use-package plantuml-mode
+  :ensure t)
+
+(use-package verb
+  :ensure t
+  :demand t
+  :mode ("\\.org\\'" . org-mode)
+  :config 
+  (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Org Babel languages ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(require 'ob-passthrough)
-
-(org-babel-do-load-languages
- 'org-babel-load-languages
- '((python . t)
-   (R . t)
-   (restclient . t)
-   (sql . t)
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html ;;
-   ;;                                                                            ;;
-   ;; ;; Header Arguments                                                        ;;
-   ;; ;; The :colnames header argument defaults to "yes".                        ;;
-   ;; ;; There are several SQL-specific header arguments:                        ;;
-   ;; ;; :engine                                                                 ;;
-   ;; ;;     one of "dbi", "monetdb", "msosql", "mysql", "postgresql";           ;;
-   ;; ;; :cmdline                                                                ;;
-   ;; ;;     extra command line arguments for the RDBMS executable;              ;;
-   ;; ;; :dbhost                                                                 ;;
-   ;; ;;     the host name;                                                      ;;
-   ;; ;; :dbuser                                                                 ;;
-   ;; ;;     the user name;                                                      ;;
-   ;; ;; :dbpassword                                                             ;;
-   ;; ;;     the user's password;                                                ;;
-   ;; ;; :database                                                               ;;
-   ;; ;;     the database name;                                                  ;;
-   ;; ;; #+name: my-query                                                        ;;
-   ;; ;; #+header: :engine mysql                                                 ;;
-   ;; ;; #+header: :dbhost host                                                  ;;
-   ;; ;; #+header: :dbuser user                                                  ;;
-   ;; ;; #+header: :dbpassword pwd                                               ;;
-   ;; ;; #+header: :database dbname                                              ;;
-   ;; ;; #+begin_src sql                                                         ;;
-   ;; ;;   SELECT * FROM mytable                                                 ;;
-   ;; ;;   WHERE id > 500                                                        ;;
-   ;; ;; #+end_src                                                               ;;
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (sqlite . t)
-   (C . t)
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; ;;   Example code                        ;;
-   ;; ;;   #+begin_src C++ :includes <stdio.h> ;;
-   ;; ;;    int a=1;                           ;;
-   ;; ;;    int b=1;                           ;;
-   ;; ;;    printf("%d\n", a+b);               ;;
-   ;; ;;   #+end_src                           ;;
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-   (awk . t)
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   ;; ;; There are three AWK-specific header arguments.                                                                         ;;
-   ;; ;; :cmd-line                                                                                                              ;;
-   ;; ;;     takes command line arguments to pass to the AWK executable                                                         ;;
-   ;; ;; :in-file                                                                                                               ;;
-   ;; ;;     takes a path to a file of data to be processed by AWK                                                              ;;
-   ;; ;; :stdin                                                                                                                 ;;
-   ;; ;;     takes an Org-mode data or code block reference, the value of which will be passed to the AWK process through STDIN ;;
-   ;;                                                                                                                           ;;
-   ;;                                                                                                                           ;;
-   ;; ;;    example code                                                                                                        ;;
-   ;; ;;    #+begin_src awk :stdin inventory-shipped :exports results                                                           ;;
-   ;; ;;     $1 ~ /J/                                                                                                           ;;
-   ;; ;;    #+end_src                                                                                                           ;;
-   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-   (go . t)
-
-   ;;https://github.com/ljos/jq-mode
-   (jq . t)
-   ;;https://github.com/arnm/ob-mermaid
-   (mermaid . t)
-
-   (verb . t)
-   (js . t)
-   
-   (passthrough . t)
-   (shell . t)
-   (latex . t)
-   (plantuml . t)))
+(use-package org-babel
+  :no-require
+  :after (ob-go restclient ob-restclient ob-mermaid verb plantuml-mode)
+  :config 
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   '((python . t)
+     (R . t)
+     (restclient . t)
+     (sql . t)
+     ;; ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html ;;
+     (sqlite . t)
+     (C . t)
+     (awk . t)
+     (go . t)
+     ;;https://github.com/ljos/jq-mode
+     (jq . t)
+     ;;https://github.com/arnm/ob-mermaid
+     (mermaid . t)
+     (verb . t)
+     (js . t)
+     (passthrough . t)
+     (shell . t)
+     (latex . t)
+     (plantuml . t))))
 
 (setq org-plantuml-jar-path "~/plantuml.jar")
 
@@ -290,6 +260,7 @@
 ;;;;;;;;;;;;;;;;;
 
 (use-package org-roam
+  :ensure t 
   ;; :straight t
   :init
   (setq org-roam-v2-ack t)
@@ -377,7 +348,21 @@
          (file+headline "agenda/jrnl.org" "Private")
          "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n%?")))
 
+(use-package ox-odt 
+  :ensure (:type git :host github :repo "kjambunathan/org-mode-ox-odt"
+                 :files ("lisp/ox-odt.el"
+                         "lisp/odt.el"
+                         "etc"
+                         "docs"
+                         "contrib/odt/LibreOffice")))
+
+(use-package ox-twbs
+  :ensure t)
+
 (use-package org-web-tools
+  :load-path "custom-conf/third-party/org-web-tools/"
+  :ensure t
+  :after org 
   :bind (:map ak-map
               ;; ("<f2>" . ak/get-url-title)
               ("<f2>" . ak/clip-web-page-title-and-search-org-roam)
@@ -389,18 +374,18 @@
   (setq org-web-tools-pandoc-sleep-time 0.7)
 ;;;###autoload
   (cl-defun ak/get-url-title(&optional (url (org-web-tools--get-first-url)))
-"Parses web page's title from url in clipboard."
+    "Parses web page's title from url in clipboard."
     (interactive)
     (let* ((html (org-web-tools--get-url url))
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url))))
 
   (cl-defun ak/clip-web-page-title-and-search-org-roam(&optional (url (org-web-tools--get-first-url)))
-"Parses web page's title from url in clipboard and searches org-roam"
-  (interactive)
-   (let* ((html (org-web-tools--get-url url))
+    "Parses web page's title from url in clipboard and searches org-roam"
+    (interactive)
+    (let* ((html (org-web-tools--get-url url))
            (title (org-web-tools--html-title html)))
-  (org-roam-node-find nil title)))
+      (org-roam-node-find nil title)))
 
 (defun ak/delete-image-base-64-data-lines ()
   "Deletes lines containing base-64 image data from the buffer."
@@ -472,5 +457,11 @@ with image details."
   (org-display-inline-images))
 
 (define-key ak-map "v" '("Save clipboard image as org" . ak/my-insert-clipboard-png))
+
+;; (use-package ox-pandoc
+;;   :ensure t)
+
+(use-package org-margin 
+  :ensure (:type git :host github :repo "rougier/org-margin"))
 
 (provide 'init-org-settings)

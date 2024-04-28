@@ -22,7 +22,12 @@
 ;;;    Indenting
       indent-line-function 'insert-tab
       electric-indent-mode nil ;;annoying when it tabs on text files. Maybe I should only enable for prog-mode
-      sentence-end-double-space nil)  ;; Sentence end need not be double spaced
+      sentence-end-double-space nil  ;; Sentence end need not be double spaced
+      epa-pinentry-mode 'loopback)
+
+(epa-file-enable)
+
+(put 'narrow-to-region 'disabled nil)
 
 (add-hook 'after-change-major-mode-hook (lambda() (electric-indent-mode -1)))
 
@@ -101,6 +106,7 @@
 
 
 (use-package exec-path-from-shell
+  :ensure t
   :if ak/my-mac-p
   :config
   (exec-path-from-shell-initialize))
@@ -148,11 +154,13 @@
   (require 'xdvi-search))
 
 ;; See https://github.com/vedang/pdf-tools for more info
-(pdf-loader-install)
+(use-package pdf-tools 
+  :ensure t
+  :init 
+  (pdf-loader-install))
 
 (add-hook 'text-mode-hook 'abbrev-mode)
 
-(setq gptel-default-mode 'org-mode) ;;added on Tue 09 May 2023 12:34:28 PM EDT
 
 (setq delete-by-moving-to-trash t)
 
@@ -184,5 +192,7 @@
       (isearch-yank-string region))))
 
 (add-hook 'isearch-mode-hook #'ak/isearch-with-region)
+
+
 
 (provide 'init-basic)

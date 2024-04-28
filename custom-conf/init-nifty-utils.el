@@ -1,9 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
-(require 'xkcd)
+;; (require 'xkcd)
 (require 'url)
-(require 'avy)
-(require 'hydra)
+;; (require 'avy)
+;; (require 'hydra)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved kill-word ;;
@@ -285,8 +285,11 @@ With PREFIX, prompt for replacement string"
 ;; Reload xkcd cartoon on dashboard  ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use-package xkcd
+  :if window-system 
+  :ensure t
+  :config 
 ;;;###autoload
-(when window-system
   (defun ak/reload-xkcd (arg)
     "Load a random xkcd cartoon on the dashboard.
 With PREFIX - load the latest xkcd cartoon"
@@ -499,38 +502,42 @@ PREFIX, specify word to search"
 ;; ;bind-key replace-garbage-characters
 ;; (define-key  ak-map "R"  '("Replace text garbage" . ak/replace-garbage))
 
+
+(use-package hydra
+  :ensure t
+  :config 
 ;;;###autoload
-(defhydra hydra-move-lines (:color amaranth
-                                   :timeout 5
-                                   :columns 2)
-  "Move selected lines up/down"
-  ("[" (ak/move-lines-up 1) "Move up")
-  ("]" (ak/move-lines-down 1) "Move down")
-  ("q" nil "Quit" :color blue))
+  (defhydra hydra-move-lines (:color amaranth
+                                     :timeout 5
+                                     :columns 2)
+    "Move selected lines up/down"
+    ("[" (ak/move-lines-up 1) "Move up")
+    ("]" (ak/move-lines-down 1) "Move down")
+    ("q" nil "Quit" :color blue))
 
 ;;;###autoload
-(defhydra hydra-jump-cursor (:color amaranth
-                                    :columns 3)
-  "jump cursor"
-  ("]" (forward-sexp) "Forward sexp")
-  ;; ("<" (beginning-of-buffer) "Beginning of buffer")
-  ("<" (goto-char (point-min)) "Beginning of buffer")
-  ;; (">" (end-of-buffer) "End of buffer")
-  (">" (goto-char (point-max)) "End of buffer")
-  ("[" (backward-sexp) "Backward sexp")
-  ;; ("w" (forward-to-word 1) "Forward word")
-  ("w" (forward-word-strictly 1) "Forward word")
-  ;; ("b" (backward-to-word 1) "Backward word")
-  ("b" (backward-word-strictly 1) "Backward word")
-  ("e" (forward-sentence) "Forward sentence")
-  ("a" (backward-sentence) "Backward sentence")
-  ("}" (forward-paragraph) "Forward para")
-  ("{" (backward-paragraph) "Backward para")
-  ("q" nil "Quit" :color blue))
+  (defhydra hydra-jump-cursor (:color amaranth
+                                      :columns 3)
+    "jump cursor"
+    ("]" (forward-sexp) "Forward sexp")
+    ;; ("<" (beginning-of-buffer) "Beginning of buffer")
+    ("<" (goto-char (point-min)) "Beginning of buffer")
+    ;; (">" (end-of-buffer) "End of buffer")
+    (">" (goto-char (point-max)) "End of buffer")
+    ("[" (backward-sexp) "Backward sexp")
+    ;; ("w" (forward-to-word 1) "Forward word")
+    ("w" (forward-word-strictly 1) "Forward word")
+    ;; ("b" (backward-to-word 1) "Backward word")
+    ("b" (backward-word-strictly 1) "Backward word")
+    ("e" (forward-sentence) "Forward sentence")
+    ("a" (backward-sentence) "Backward sentence")
+    ("}" (forward-paragraph) "Forward para")
+    ("{" (backward-paragraph) "Backward para")
+    ("q" nil "Quit" :color blue))
 
-(define-key ak-map "m" '("Move lines" . hydra-move-lines/body))
+  (define-key ak-map "m" '("Move lines" . hydra-move-lines/body))
 
-(define-key ak-map "." '("Jump to" . hydra-jump-cursor/body))
+  (define-key ak-map "." '("Jump to" . hydra-jump-cursor/body)))
 
 ;;;###autoload
 (if (or ak/my-framework-p ak/generic-windows-p)
@@ -849,6 +856,7 @@ and insert org image block for it"
 
 
 (use-package easy-kill
+  :ensure t
   :bind ("C-=" . easy-mark)
   :config
   (global-set-key [remap kill-ring-save] 'easy-kill))

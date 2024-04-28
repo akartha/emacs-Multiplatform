@@ -1,17 +1,10 @@
 ;;; -*- lexical-binding: t; -*-
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** avy
-;; ;; https://github.com/abo-abo/avy
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
 (define-prefix-command 'avy-custom-keymap)
 (global-set-key (kbd "` y") 'avy-custom-keymap)
 
-
 (use-package avy
-  ;; :straight t
+  :ensure t
   :bind
   (:map avy-custom-keymap
         ("l" . avy-goto-line)
@@ -137,6 +130,7 @@
 (global-set-key (kbd "` x") 'ak-crux-map)
 
 (use-package crux
+  :ensure t
   :bind
   ("C-k" . crux-smart-kill-line)
   (:map ak-map 
@@ -179,6 +173,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package hungry-delete
+  :ensure t
   :diminish
   :config
   (global-hungry-delete-mode))
@@ -190,6 +185,7 @@
 ;; region and edit them all at once. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package mark-multiple
+  :ensure t
   ;; :straight t
   :bind (:map ak-map
               ((">" . mark-next-like-this)
@@ -210,6 +206,7 @@
   (put 'upcase-region 'disabled nil))
 
 (use-package jinx
+  :ensure t
   ;; :hook (emacs-startup . global-jinx-mode)
   :bind ([remap ispell-word] . jinx-correct)
   :config (dolist

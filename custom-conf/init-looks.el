@@ -6,8 +6,8 @@
 ;;   (setq modus-themes-org-blocks 'tinted-background)
 ;;   :init
 ;;   (load-theme 'modus-vivendi-tinted t)) ;;other themes - modus-vivendi, modus-operandi, modus-operandi-tinted/deuteranopia, etc.
-
 (use-package ef-themes
+  :ensure t 
   :init
   (load-theme 'ef-symbiosis t))
 ;; Dark Themes I like - ef-autumn
@@ -30,130 +30,134 @@
 ;;   :init
 ;;   (load-theme 'ef-autumn t))
 
+(use-package fontaine 
+  :ensure t
+  :config 
 
-(setq fontaine-latest-state-file
-      (locate-user-emacs-file "fontaine-latest-state.eld"))
 
-;; Iosevka Comfy            == monospaced, supports ligatures
-;; Iosevka Comfy Fixed      == monospaced, no ligatures
-;; Iosevka Comfy Duo        == quasi-proportional, supports ligatures
-;; Iosevka Comfy Wide       == like Iosevka Comfy, but wider
-;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
-;; Iosevka Comfy Motion     == monospaced, supports ligatures, fancier glyphs
-;; Iosevka Comfy Motion Duo == as above, but quasi-proportional
-(when (or ak/my-framework-p ak/my-win-framework-p ak/my-pi-p)
-  (setq fontaine-presets
-        '((tiny
-           :default-family "Iosevka Comfy Wide Fixed"
-           :default-height 90)
-          (small
-           :default-family "Iosevka Comfy Fixed"
-           :default-height 110)
-          (regular
-           :default-height 125)
-          (medium
-           :default-height 140)
-          (large
-           :default-weight semilight
-           :default-height 150
-           :bold-weight extrabold)
-          (code-demo
-           :default-weight semilight
-           :default-height 170
-           :bold-weight extrabold)
-          (presentation
-           :default-weight semilight
-           :default-height 220
-           :bold-weight extrabold)
-          (reading
-           :default-family "Iosevka Comfy Motion Duo" 
-           :default-weight semilight
-           :default-height 185
-           :line-spacing 15)              ;this is in pixels
-          (t
-           ;; See the fontaine manual for the technicalities:
-           ;; <https://protesilaos.com/emacs/fontaine>.
-           :default-family "Iosevka Comfy"
-           :default-weight regular
-           :default-height 100
-           :fixed-pitch-family nil ; falls back to :default-family
-           :fixed-pitch-weight nil ; falls back to :default-weight
-           :fixed-pitch-height 1.0
-           :fixed-pitch-serif-family nil ; falls back to :default-family
-           :fixed-pitch-serif-weight nil ; falls back to :default-weight
-           :fixed-pitch-serif-height 1.0
-           :variable-pitch-family "Iosevka Comfy Motion Duo"
-           :variable-pitch-weight nil
-           :variable-pitch-height 1.0
-           :bold-family nil ; use whatever the underlying face has
-           :bold-weight bold
-           :italic-family "Iosevka Comfy Motion"
-           :italic-slant italic
-           :line-spacing 3))))
+  (setq fontaine-latest-state-file
+        (locate-user-emacs-file "fontaine-latest-state.eld"))
 
-(when ak/my-mac-p 
-  (setq fontaine-presets
-        '((tiny
-           :default-family "Iosevka Comfy Wide Fixed"
-           :default-height 90)
-          (small
-           :default-family "Iosevka Comfy Fixed"
-           :default-height 110)
-          (regular
-           :default-height 150)
-          (medium
-           :default-height 175)
-          (large
-           :default-weight semilight
-           :default-height 195
-           :bold-weight extrabold)
-          (code-demo
-           :default-weight semilight
-           :default-height 175
-           :bold-weight extrabold)
-          (presentation
-           :default-weight semilight
-           :default-height 220
-           :bold-weight extrabold)
-          (reading
-           :default-family "Noto Serif" 
-           ;; :default-weight bold
-           :default-height 205
-           :line-spacing 8)              ;this is in pixels
-          (t
-           ;; See the fontaine manual for the technicalities:
-           ;; <https://protesilaos.com/emacs/fontaine>.
-           :default-family "Iosevka Comfy"
-           :default-weight regular
-           :default-height 100
-           :fixed-pitch-family nil ; falls back to :default-family
-           :fixed-pitch-weight nil ; falls back to :default-weight
-           :fixed-pitch-height 1.0
-           :fixed-pitch-serif-family nil ; falls back to :default-family
-           :fixed-pitch-serif-weight nil ; falls back to :default-weight
-           :fixed-pitch-serif-height 1.0
-           :variable-pitch-family "Iosevka Comfy Motion Duo"
-           :variable-pitch-weight nil
-           :variable-pitch-height 1.0
-           :bold-family nil ; use whatever the underlying face has
-           :bold-weight bold
-           :italic-family "Iosevka Comfy Motion"
-           :italic-slant italic
-           :line-spacing 5))))
+  ;; Iosevka Comfy            == monospaced, supports ligatures
+  ;; Iosevka Comfy Fixed      == monospaced, no ligatures
+  ;; Iosevka Comfy Duo        == quasi-proportional, supports ligatures
+  ;; Iosevka Comfy Wide       == like Iosevka Comfy, but wider
+  ;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
+  ;; Iosevka Comfy Motion     == monospaced, supports ligatures, fancier glyphs
+  ;; Iosevka Comfy Motion Duo == as above, but quasi-proportional
+  (when (or ak/my-framework-p ak/my-win-framework-p ak/my-pi-p)
+    (setq fontaine-presets
+          '((tiny
+             :default-family "Iosevka Comfy Wide Fixed"
+             :default-height 90)
+            (small
+             :default-family "Iosevka Comfy Fixed"
+             :default-height 110)
+            (regular
+             :default-height 125)
+            (medium
+             :default-height 140)
+            (large
+             :default-weight semilight
+             :default-height 150
+             :bold-weight extrabold)
+            (code-demo
+             :default-weight semilight
+             :default-height 170
+             :bold-weight extrabold)
+            (presentation
+             :default-weight semilight
+             :default-height 220
+             :bold-weight extrabold)
+            (reading
+             :default-family "Iosevka Comfy Motion Duo" 
+             :default-weight semilight
+             :default-height 185
+             :line-spacing 15)              ;this is in pixels
+            (t
+             ;; See the fontaine manual for the technicalities:
+             ;; <https://protesilaos.com/emacs/fontaine>.
+             :default-family "Iosevka Comfy"
+             :default-weight regular
+             :default-height 100
+             :fixed-pitch-family nil ; falls back to :default-family
+             :fixed-pitch-weight nil ; falls back to :default-weight
+             :fixed-pitch-height 1.0
+             :fixed-pitch-serif-family nil ; falls back to :default-family
+             :fixed-pitch-serif-weight nil ; falls back to :default-weight
+             :fixed-pitch-serif-height 1.0
+             :variable-pitch-family "Iosevka Comfy Motion Duo"
+             :variable-pitch-weight nil
+             :variable-pitch-height 1.0
+             :bold-family nil ; use whatever the underlying face has
+             :bold-weight bold
+             :italic-family "Iosevka Comfy Motion"
+             :italic-slant italic
+             :line-spacing 3))))
 
-(fontaine-restore-latest-preset)
+  (when ak/my-mac-p 
+    (setq fontaine-presets
+          '((tiny
+             :default-family "Iosevka Comfy Wide Fixed"
+             :default-height 90)
+            (small
+             :default-family "Iosevka Comfy Fixed"
+             :default-height 110)
+            (regular
+             :default-height 150)
+            (medium
+             :default-height 175)
+            (large
+             :default-weight semilight
+             :default-height 195
+             :bold-weight extrabold)
+            (code-demo
+             :default-weight semilight
+             :default-height 175
+             :bold-weight extrabold)
+            (presentation
+             :default-weight semilight
+             :default-height 220
+             :bold-weight extrabold)
+            (reading
+             :default-family "Noto Serif" 
+             ;; :default-weight bold
+             :default-height 205
+             :line-spacing 8)              ;this is in pixels
+            (t
+             ;; See the fontaine manual for the technicalities:
+             ;; <https://protesilaos.com/emacs/fontaine>.
+             :default-family "Iosevka Comfy"
+             :default-weight regular
+             :default-height 100
+             :fixed-pitch-family nil ; falls back to :default-family
+             :fixed-pitch-weight nil ; falls back to :default-weight
+             :fixed-pitch-height 1.0
+             :fixed-pitch-serif-family nil ; falls back to :default-family
+             :fixed-pitch-serif-weight nil ; falls back to :default-weight
+             :fixed-pitch-serif-height 1.0
+             :variable-pitch-family "Iosevka Comfy Motion Duo"
+             :variable-pitch-weight nil
+             :variable-pitch-height 1.0
+             :bold-family nil ; use whatever the underlying face has
+             :bold-weight bold
+             :italic-family "Iosevka Comfy Motion"
+             :italic-slant italic
+             :line-spacing 5))))
 
-;; Use `fontaine-recovered-preset' if available, else fall back to the
-;; desired style from `fontaine-presets'.
-;; (if-let ((state fontaine-recovered-preset))
-;;     (fontaine-set-preset state)
-;;   (fontaine-set-preset 'regular))
-(fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
+  (fontaine-restore-latest-preset)
 
-;; The other side of `fontaine-restore-latest-preset'.
-(add-hook 'kill-emacs-hook #'fontaine-store-latest-preset)
+  ;; Use `fontaine-recovered-preset' if available, else fall back to the
+  ;; desired style from `fontaine-presets'.
+  ;; (if-let ((state fontaine-recovered-preset))
+  ;;     (fontaine-set-preset state)
+  ;;   (fontaine-set-preset 'regular))
+  (fontaine-set-preset (or (fontaine-restore-latest-preset) 'regular))
 
-(add-hook 'modus-themes-after-load-theme-hook #'fontaine-apply-current-preset)
+  ;; The other side of `fontaine-restore-latest-preset'.
+  (add-hook 'kill-emacs-hook #'fontaine-store-latest-preset))
+
+;; (add-hook 'modus-themes-after-load-theme-hook #'fontaine-apply-current-preset)
 
 ;; fontaine does not define any key bindings.  This is just a sample
 ;; that respects the key binding conventions.  Evaluate:
@@ -162,12 +166,12 @@
 (define-key global-map (kbd "C-c F") #'fontaine-set-preset)
 (define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
 
-;; (use-package all-the-icons
-;;   :straight t)
+(use-package all-the-icons
+  :ensure t)
 
 
 (use-package lambda-line
-  ;; :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
+  :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
   :custom
   (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
   (lambda-line-clockface-update-fontset "ClockFaceFatHands") ;; set clock icon
@@ -196,6 +200,7 @@
 
 
 (use-package all-the-icons-completion
+  :ensure t 
   :after (marginalia all-the-icons)
   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
   :init (all-the-icons-completion-mode))
@@ -204,6 +209,7 @@
 ;; look for your cursor.  Every time you change buffers, the current
 ;; position of your cursor will be briefly highlighted
 (use-package beacon
+  :ensure t
   :diminish
   :config
   (beacon-mode 1))
@@ -212,6 +218,7 @@
 ;; color, it will automatically highlight it in the appropriate color.
 
 (use-package rainbow-mode
+  :ensure t
   :diminish
   :init
   (add-hook 'prog-mode-hook 'rainbow-mode))
@@ -219,6 +226,7 @@
 ;; Colors parentheses and other delimiters depending on their depth
 
 (use-package rainbow-delimiters
+  :ensure t
   :diminish
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
@@ -229,6 +237,7 @@
 ;; showing up and taking up space. 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package diminish
+  :ensure t 
   :init
   (diminish 'visual-line-mode)
   (diminish 'subword-mode)
@@ -237,54 +246,48 @@
   ;; (diminish 'yas-minor-mode)
   (diminish 'org-indent-mode))
 
+(use-package spacious-padding 
+  :ensure t
+  :config
+  (setq spacious-padding-widths '( :internal-border-width 45
+                                   :header-line-width 4
+                                   :mode-line-width 3
+                                   :tab-width 4
+                                   :right-divider-width 30
+                                   :scroll-bar-width 8
+                                   :fringe-width 8))
 
-(setq spacious-padding-widths
-      '( :internal-border-width 45
-         :header-line-width 4
-         :mode-line-width 3
-         :tab-width 4
-         :right-divider-width 30
-         :scroll-bar-width 8
-         :fringe-width 8))
+  ;; Read the doc string of `spacious-padding-subtle-mode-line' as it
+  ;; is very flexible and provides several examples.
+  (setq spacious-padding-subtle-mode-line 
+        '(:mode-line-active "#0000ff" 
+                            :mode-line-inactive "#aaaa77")))
 
-;; Read the doc string of `spacious-padding-subtle-mode-line' as it
-;; is very flexible and provides several examples.
-(setq spacious-padding-subtle-mode-line 
-      '(:mode-line-active "#0000ff" 
-                          :mode-line-inactive "#aaaa77"))
-
+(use-package logos
+  :ensure t
+  :config 
 ;; If you want to use outlines instead of page breaks (the ^L):
-(setq logos-outlines-are-pages t)
+  (setq logos-outlines-are-pages t
+        ;; This is the default value for the outlines:
+        logos-outline-regexp-alist `((emacs-lisp-mode . "^;;;+ ")
+                                     (org-mode . "^\\*+ +")
+                                     (markdown-mode . "^\\#+ +")))
+  (setq-default logos-hide-cursor nil
+                logos-hide-mode-line t
+                logos-hide-header-line t
+                logos-hide-buffer-boundaries t
+                logos-hide-fringe t
+                logos-variable-pitch nil
+                logos-buffer-read-only nil
+                logos-scroll-lock nil
+                logos-olivetti nil))
 
-;; This is the default value for the outlines:
-(setq logos-outline-regexp-alist
-      `((emacs-lisp-mode . "^;;;+ ")
-        (org-mode . "^\\*+ +")
-        (markdown-mode . "^\\#+ +")))
+;; (let ((map global-map))
+(define-key global-map [remap narrow-to-region] #'logos-narrow-dwim)
+(define-key global-map [remap forward-page] #'logos-forward-page-dwim)
+(define-key global-map [remap backward-page] #'logos-backward-page-dwim)
+(define-key global-map (kbd "<f11>") #'logos-focus-mode)
 
-;; These apply when `logos-focus-mode' is enabled.  Their value is
-;; buffer-local.
-(setq-default logos-hide-cursor nil
-              logos-hide-mode-line t
-              logos-hide-header-line t
-              logos-hide-buffer-boundaries t
-              logos-hide-fringe t
-              logos-variable-pitch nil
-              logos-buffer-read-only nil
-              logos-scroll-lock nil
-              logos-olivetti nil)
-
-;; Also check this manual for `logos-focus-mode-hook'.  It lets you
-;; extend `logos-focus-mode'.
-
-(let ((map global-map))
-  (define-key map [remap narrow-to-region] #'logos-narrow-dwim)
-  (define-key map [remap forward-page] #'logos-forward-page-dwim)
-  (define-key map [remap backward-page] #'logos-backward-page-dwim)
-  (define-key map (kbd "<f11>") #'logos-focus-mode))
-
-;; Also consider adding keys to `logos-focus-mode-map'.  They will take
-;; effect when `logos-focus-mode' is enabled.
 
 (define-prefix-command 'ak-display-settings-keymap)
 (global-set-key (kbd "` d") 'ak-display-settings-keymap)

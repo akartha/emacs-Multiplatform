@@ -3,6 +3,7 @@
 
 ;; https://flandrew.srht.site/listful/sw-emacs-xht.html
 (use-package xht
+  :ensure (:type git :host sourcehut :repo "flandrew/xht")
   :commands (global-xht-fontify-mode
              global-xht-do-mode
              xht-fontify-mode
@@ -49,6 +50,7 @@ TODO - No error checking implemented yet"
 ;; # -*- buffer-auto-save-file-name: nil; -*-
 
 (use-package nov
+  :ensure t
   :config
   (add-to-list 'auto-mode-alist '("\\.epub\\'" . nov-mode))
   ;; (defun my-nov-font-setup ()
@@ -59,6 +61,7 @@ TODO - No error checking implemented yet"
   )
 
 (use-package elfeed 
+  :ensure t
   :bind (:map ak-map
               ("<f6>" . elfeed))
   :init 
@@ -78,6 +81,7 @@ TODO - No error checking implemented yet"
           ("https://www.newindianexpress.com/Cities/Bengaluru/rssfeed/?id=182&getXmlFeed=true" news India Bangalore))))
 
 (use-package dwim-shell-command
+  :ensure t 
   :bind (([remap shell-command] . dwim-shell-command)
          :map dired-mode-map
          ([remap dired-do-async-shell-command] . dwim-shell-command)
@@ -111,6 +115,7 @@ TODO - No error checking implemented yet"
      :silent-success t)))
 
 (use-package ace-link
+  :ensure t 
   :init
   (ace-link-setup-default)
   ;; :commands (ak/ace-link-org-jump)
@@ -175,6 +180,7 @@ If LINK is specified, use that instead."
     (display-buffer-in-side-window buf '((side . right)))))
 
 (use-package qrencode
+  :ensure t
   :after embark-org 
   :config
   (with-eval-after-load 'embark
@@ -184,6 +190,7 @@ If LINK is specified, use that instead."
 (global-set-key (kbd "` t") '("Denote commands" . ak-denote-map))
 
 (use-package denote
+  :ensure t
   :hook
   (dired-mode . denote-dired-mode)
   :bind (:map ak-denote-map ("c" . 'denote)

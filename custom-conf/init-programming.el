@@ -15,23 +15,16 @@
 (add-hook 'project-find-functions #'project-find-go-module)
 
 
-
-;;;;;;;;;;;;;;;;;;;;;
-;; ;; ** yasnippet ;;
-;;;;;;;;;;;;;;;;;;;;;
-
 (use-package yasnippet
   :commands yas-minor-mode
   :hook ((go-ts-mode . yas-minor-mode)
          (python-ts-mode . yas-minor-mode)))
 
-;;;;;;;;;;;
-;; ELDOC ;;
-;;;;;;;;;;;
-
 (use-package eldoc
   :hook (after-init . global-eldoc-mode))
 
+(use-package htmlize 
+  :ensure t)
 ;;Treesitter modules
 
 (setq treesit-language-source-alist
@@ -64,12 +57,17 @@
 	      (sit-for 0.75))))
 
 
+
+(use-package jedi
+  :ensure t)
+
 ;;;;;;;;;;;;;;;;;;
 ;; EGLOT config ;;
 ;;;;;;;;;;;;;;;;;;
 
 (use-package eglot
   :defer t 
+  ;; :after (lsp-pyright)
   :commands (eglot eglot-ensure)
   :config
   (tooltip-mode 1)
@@ -127,7 +125,7 @@
 
 ;;Python pyright 
 (use-package lsp-pyright
-  ;; :ensure t
+  :ensure t
   :hook (python-ts-mode . (lambda ()
                           (require 'lsp-pyright))))  ; or lsp
 
@@ -154,6 +152,7 @@
 ;;;;;;;;;;;;;;;;;;;;
 
 (use-package flycheck
+  :ensure t
   :diminish)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -165,6 +164,7 @@
 
 (use-package slime
   :if ak/my-framework-p
+  :ensure t
   :config
   (setq inferior-lisp-program "/usr/bin/sbcl")
   (setq slime-contribs '(slime-fancy)))
@@ -185,6 +185,7 @@
 (global-set-key (kbd "` j") '("JSON mode commands" . ak-json-manipulation-map))
 
 (use-package json-mode
+  :ensure t
   :mode (("\\.json\\'" . json-mode)
          ("\\.js\\'" . json-mode)
          ("\\.tmpl\\'" . json-mode)
@@ -201,6 +202,7 @@
         ("-" . json-decrement-number-at-point)))
 
 (use-package jq-mode
+  :ensure t
   :mode (("\\.jq$" . jq-mode)))
 
 (with-eval-after-load "json-mode"
@@ -208,11 +210,13 @@
 
 
 (use-package json-reformat
+  :ensure t 
   :after json-mode
   :bind (("C-c f" . json-reformat-region)))
 
 (use-package jq-format
-  :demand t
+  :ensure t
+  ;; :demand t
   :after json-mode)
 
 ;;;;;;;;;;;;;;;;;
@@ -258,6 +262,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package projectile
+  :ensure t 
   :init
   (projectile-mode +1)
   :bind (:map projectile-mode-map
@@ -274,25 +279,17 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package magit
+  :ensure t
   :config
   (setq magit-push-always-verify nil
         git-commit-summary-max-length 50)
   :bind (:map ak-map
               ("g" . magit-status)))
 
-;;;;;;;;;;;;;
-;; verb.el ;;
-;;;;;;;;;;;;;
-
-(use-package verb
-  ;; :straight t
-  :mode ("\\.org\\'" . org-mode)
-  :config (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom functions to make life a little easier ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(require 'json-snatcher)
+;; (require 'json-snatcher)
 
 ;;;###autoload
 (defun ak/jq-print-path ()
@@ -306,6 +303,12 @@
 ;; ;; =sqlparse= using =pip3 install sqlparse= ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+(use-package sqlformat
+  :ensure t
+  :config 
+  (setq sqlformat-command 'sqlformat
+        sqlformat-args '("-r" "--indent_columns" "-k" "upper" "-i" "upper")))
+
 ;;;###autoload
 (defun sqlparse-region (beg end)
   (interactive "r")
@@ -315,13 +318,20 @@
    "sqlformat --keywords \"upper\" --reindent --indent_columns - "
    t t))
 
+(use-package mermaid-mode
+  :ensure t)
+
 (use-package ob-mermaid
-  :if ak/my-framework-p
-  :init (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
+  :ensure t
+  :after mermaid-mode
+  ;; :if ak/my-framework-p
+  :init (if ak/my-framework-p 
+             (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc")))
 
 
 ;; see https://xenodium.com/further-sqlite-mode-extensions/ for details
 (use-package sqlite-mode-extras
+  :load-path "custom-conf/third-party/"
   :bind (:map
          sqlite-mode-map
          ("n" . next-line)

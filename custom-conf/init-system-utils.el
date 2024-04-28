@@ -1,6 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-(require 'projectile)
+;; (require 'projectile)
 (require 'crm)
 
 ;;;;;;;;;;;;;;;;
@@ -8,6 +8,7 @@
 ;;;;;;;;;;;;;;;;
 
 (use-package vertico
+  :ensure (:files (:defaults "extensions/*"))
   :init
   (vertico-mode 1)
   ;; Different scroll margin
@@ -182,6 +183,7 @@
 ;;;;;;;;;;;;;;;;
 
 (use-package consult
+  :ensure t
   :bind (;; C-c bindings (mode-specific-map)
          ("C-c h" . consult-history)
          ("C-c m" . consult-mode-command)
@@ -283,6 +285,7 @@
 ;; ** Embark ;;
 ;;;;;;;;;;;;;;;
 (use-package embark
+  :ensure t
   :bind
   (("C-." . embark-act)         ;; pick some comfortable binding
    ("C-;" . embark-dwim)        ;; good alternative: M-.
@@ -299,6 +302,7 @@
 
 ;; Consult users will also want the embark-consult package.
 (use-package embark-consult
+  :ensure t
   :hook
   (embark-collect-mode . consult-preview-at-point-mode))
 
@@ -307,6 +311,7 @@
 ;;;;;;;;;;;;;;;;;;
 
 (use-package orderless
+  :ensure t
   :demand t
   :config
   ;; below is from https://github.com/minad/consult/wiki
@@ -364,6 +369,7 @@
 ;;;;;;;;;;;;;;;;;;;
 
 (use-package marginalia
+  :ensure t
   :after vertico
   ;; :straight t
   :custom (marginalia-annotators '(marginalia-annottators-heavy marginalia-annottators-light nil))
@@ -391,10 +397,12 @@
   (setq dired-free-space nil))
 
 (use-package nerd-icons-dired
+  :ensure t
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-open
+  :ensure t
   :config
   (when ak/my-framework-p
     (setq dired-open-extensions '(("png" . "feh")
@@ -406,6 +414,7 @@
                                   ("opus" . "mpv")))))
 
 (use-package dired-sidebar
+  :ensure t
   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
   :commands (dired-sidebar-toggle-sidebar)
   :init
@@ -425,6 +434,7 @@
 
 ;; Async
 (use-package async
+  :ensure t
   :init (dired-async-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -432,6 +442,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (use-package dashboard
+  :ensure t
   :custom (visual-line-mode t)
   :config
   (dashboard-setup-startup-hook)
@@ -461,6 +472,7 @@
  ;;;;;;;;;;;;;;;;;;
 
 (use-package which-key
+  :ensure t
   :diminish
   :config
   (which-key-setup-side-window-right-bottom) ;;prefer right side - but will go for bottom if there is not enough space
@@ -470,6 +482,7 @@
 ;; CORFU ;;
 ;;;;;;;;;;;
 (use-package corfu
+  :ensure t
   ;; Optional customizations
   ;; :after eglot 
   :custom
@@ -504,6 +517,7 @@
 
 
 (use-package kind-icon 
+  :ensure t
   :after corfu
   :custom
   (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
@@ -515,6 +529,7 @@
 ;; CAPE ;;
 ;;;;;;;;;;
 (use-package cape
+  :ensure t
   ;; Bind rededicated completion commands
   ;; Alternative prefix keys: C-c p, M-p, M-+, ...
   :after corfu 
@@ -557,6 +572,7 @@
 ;; Popper ;;
 ;;;;;;;;;;;;
 (use-package popper
+  :ensure t
   :bind (("C-`"   . popper-toggle)
          ("M-`"   . popper-cycle)
          ("C-M-`" . popper-toggle-type))
@@ -593,6 +609,7 @@
 ;;;;;;;;;;;;;;;;
 
 (use-package ace-window
+  :ensure t
   :bind
   ("C-x o" . ace-window)
   ("M-o" . other-window)
