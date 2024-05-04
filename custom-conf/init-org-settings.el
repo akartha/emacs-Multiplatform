@@ -458,8 +458,9 @@ with image details."
 
 (define-key ak-map "v" '("Save clipboard image as org" . ak/my-insert-clipboard-png))
 
-;; (use-package ox-pandoc
-;;   :ensure t)
+(use-package ox-pandoc
+  :demand t
+  :ensure t)
 
 (use-package org-margin 
   :ensure (:type git :host github :repo "rougier/org-margin"))

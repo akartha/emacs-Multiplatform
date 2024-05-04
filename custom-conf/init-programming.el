@@ -18,7 +18,12 @@
 (use-package yasnippet
   :commands yas-minor-mode
   :hook ((go-ts-mode . yas-minor-mode)
-         (python-ts-mode . yas-minor-mode)))
+         (python-ts-mode . yas-minor-mode))
+  :config (yas-reload-all))
+
+(use-package yasnippet-snippets
+  :after yasnippet
+  :ensure t)
 
 (use-package eldoc
   :hook (after-init . global-eldoc-mode))
@@ -289,13 +294,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom functions to make life a little easier ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (require 'json-snatcher)
-
-;;;###autoload
-(defun ak/jq-print-path ()
-  "Print the jq-path to the JSON value under point, and save it in the kill ring."
-  (interactive)
-  (jsons-print-path-jq))
+;; (use-package json-snatcher
+;;   :load-path "custom-conf/third-party/"
+;;   :config 
+;;   (defun ak/jq-print-path ()
+;;     "Print the jq-path to the JSON value under point, and save it in the kill ring."
+;;     (interactive)
+;;     (jsons-print-path-jq)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; SQL                                                                 
@@ -352,6 +357,7 @@
 
 (use-package eldoc
   :custom (eldoc-documentation-strategy #'eldoc-documentation-compose)
+  :hook (after-init . global-eldoc-mode)
   :config (eldoc-add-command-completions "paredit-"))
 
 (provide 'init-programming)
