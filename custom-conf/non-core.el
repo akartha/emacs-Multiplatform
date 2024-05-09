@@ -221,6 +221,26 @@ If LINK is specified, use that instead."
   ;;      '("article"))))
 )
 
+
+(defun ak/embark-clip-web-page-title-and-search-org-roam (url)
+  "Parses web page's title from url and searches org-roam.
+Provides an embark action to capture urls in org-roam from url/org-link at point"
+  ;; (interactive )
+  (let* ((html (org-web-tools--get-url url))
+         (title (org-web-tools--html-title html)))
+    (kill-new url)
+    (org-roam-node-find t title nil nil 
+                        :templates 
+                        '(("w" "web" plain "%?"
+                           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+category:web article\n#+filetags: web\n")
+                           :unnarrowed t)))))
+
+(with-eval-after-load 'embark
+  (define-key embark-url-map (kbd "<f2>") #'ak/embark-clip-web-page-title-and-search-org-roam)
+  (define-key embark-org-link-map (kbd "<f2>") #'ak/embark-clip-web-page-title-and-search-org-roam))
+
+
+
 (provide 'non-core)
 
 

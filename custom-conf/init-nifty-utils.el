@@ -855,6 +855,26 @@ and insert org image block for it"
     (ak/download-file url directory local-file-name)))
 
 
+(defun ak/embark-download-image-at-point-and-insert-org-link (url )
+  "Act on image at point, download  to '_downloads' folder
+and insert org image block for it"
+  ;; (interactive)
+  (let* ((url-bnds (bounds-of-thing-at-point 'url))
+         (directory "_downloads/")
+         ;; (local-file-name (read-from-minibuffer "Enter File Name:" (buffer-name))))
+         (local-file-name (read-from-minibuffer "Enter File Name:" (last (string-split url "/" t) ))))
+    (kill-region (car url-bnds) (cdr url-bnds))
+    (kill-whole-line)
+    (insert(format 
+            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s"
+            local-file-name url (concat directory local-file-name) ))
+    ;; Message success to the minibuffer
+    (org-display-inline-images)
+    (ak/download-file url directory local-file-name)))
+
+(define-key embark-org-link-map (kbd "<f12>") #'ak/embark-download-image-at-point-and-insert-org-link)
+
+
 (use-package easy-kill
   :ensure t
   :bind ("C-=" . easy-mark)
