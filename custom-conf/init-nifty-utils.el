@@ -872,7 +872,8 @@ and insert org image block for it"
     (org-display-inline-images)
     (ak/download-file url directory local-file-name)))
 
-(define-key embark-org-link-map (kbd "<f12>") #'ak/embark-download-image-at-point-and-insert-org-link)
+(with-eval-after-load 'embark
+  (define-key embark-org-link-map (kbd "<f12>") #'ak/embark-download-image-at-point-and-insert-org-link))
 
 
 (use-package easy-kill
