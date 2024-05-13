@@ -81,6 +81,13 @@
 
 (add-hook 'prog-mode-hook 'subword-mode)
 
+
+(add-hook 'prog-mode-hook 
+          (defun ak/prog-mode-hook()
+            (display-line-numbers-mode)
+            (setq display-line-numbers 'relative)
+            (display-fill-column-indicator-mode)))
+                            
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 (setq-default zoneinfo-style-world-list

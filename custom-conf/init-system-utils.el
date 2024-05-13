@@ -359,7 +359,9 @@
                                         ;; enable initialism by default for symbols
                                         (command (styles +orderless-with-initialism))
                                         (variable (styles +orderless-with-initialism))
-                                        (symbol (styles +orderless-with-initialism)))
+                                        (symbol (styles +orderless-with-initialism))
+                                        (eglot (styles orderless))
+                                        (eglot-capf (styles orderless)))
         orderless-component-separator #'orderless-escapable-split-on-space ;; allow escaping space with backslash!
         orderless-style-dispatchers (list #'+orderless-consult-dispatch
                                           #'orderless-affix-dispatch)))
@@ -555,10 +557,12 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev) ;;Complete word from current buffers
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-file)
-  (add-to-list 'completion-at-point-functions #'cape-elisp-block)
+  ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   ;; :hook (prog-mode . cape-mode))
   ;; (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
   (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
+
+
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
   ;; (add-to-list 'completion-at-point-functions #'cape-history) ;;;; `cape-history': Complete from Eshell, Comint or minibuffer history
   ;;(add-to-list 'completion-at-point-functions #'cape-tex) 

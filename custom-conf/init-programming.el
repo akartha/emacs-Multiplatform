@@ -18,7 +18,14 @@
 (use-package yasnippet
   :commands yas-minor-mode
   :hook ((go-ts-mode . yas-minor-mode)
-         (python-ts-mode . yas-minor-mode))
+         (python-ts-mode . yas-minor-mode)
+         (rust-ts-mode . yas-minor-mode)
+         (emacs-lisp-mode . yas-minor-mode)
+         (sql-mode . yas-minor-mode)
+         (html-mode . yas-minor-mode)
+         (nxml-mode . yas-minor-mode)
+         (css-mode . yas-minor-mode)
+         (org-mode . yas-minor-mode))
   :config (yas-reload-all))
 
 (use-package yasnippet-snippets
@@ -26,7 +33,13 @@
   :ensure t)
 
 (use-package eldoc
-  :hook (after-init . global-eldoc-mode))
+  :preface (add-to-list 'display-buffer-alist
+               '("^\\*eldoc for" display-buffer-at-bottom
+                 (window-height . 4)))
+  :hook (after-init . global-eldoc-mode)
+  :config 
+  (setq eldoc-documentation-strategy
+            'eldoc-documentation-compose-eagerly))
 
 (use-package htmlize 
   :ensure t)
@@ -72,19 +85,16 @@
 
 (use-package eglot
   :defer t 
-  ;; :after (lsp-pyright)
+  :after (lsp-pyright)
   :commands (eglot eglot-ensure)
   :config
   (tooltip-mode 1)
   (add-to-list 'eglot-server-programs '(python-ts-mode . ("pyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
   ;; (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp")))
   (add-to-list 'eglot-server-programs '(go-ts-mode . ("gopls")))
-  (add-to-list 'eglot-server-programs '(rust-ts-mode . ("rust-analyzer" 
-                                                        :initializationOptions
-                                                        (:procMacro (:enable t)
-                                                                    :cargo 
-                                                                    (:buildScripts (:enable t)
-                                                                                   :features "all")))))
+  (add-to-list 'eglot-server-programs '(rust-ts-mode . ("rust-analyzer" )))
+
   (setq eglot-verbose t
         eglot-debug t)
   :custom (eglot-workspace-configuration
@@ -109,11 +119,19 @@
                       (symbolScope . "all")
                       (completeFunctionCalls . t)
                       (linksInHover . t)
-                      (matcher . "Fuzzy")))))
+                      (matcher . "Fuzzy")))
+             (:rust-analyzer .
+                             ( :procMacro ( :attributes ( :enable t)
+                                            :enable t)
+                               :cargo ( :buildScripts (:enable t)
+                                        :features "all")
+                               :diagnostics ( :disabled ["unresolved-proc-macro"
+                                                         "unresolved-macro-call"])))))
   (read-process-output-max (* 1024 1024))
   (eglot-sync-connect 0)
   (eglot-autoshutdown t)
   :hook ((python-ts-mode . eglot-ensure)
+         (python-mode . eglot-ensure)
          (go-ts-mode . eglot-ensure)
          (rust-ts-mode . eglot-ensure))
   :bind (:map eglot-mode-map 
@@ -121,7 +139,7 @@
               ("C-c a" . eglot-code-actions)
               ("C-c r" . eglot-rename)
               ("C-c d" . eldoc)
-              ("<f5" . recompile )))
+              ("<f5>" . recompile )))
 
 ;;;###autoload
 (defun ak/eglot-format-buffer-on-save ()
@@ -164,7 +182,7 @@
 ;; ;;  emacs-lisp ;;
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+;; (add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
 ;; (add-hook 'emacs-lisp-mode-hook 'yas-minor-mode)
 
 (use-package slime
@@ -259,8 +277,8 @@
 ;;     (setq-local buffer-save-without-query t)))
 
 (use-package rust-ts-mode
-  :mode ("\\.rs\\'" . rust-ts-mode)
-  :hook ((rust-ts-mode . company-mode)))
+  :mode ("\\.rs\\'" . rust-ts-mode))
+  ;; :hook ((rust-ts-mode . company-mode)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ;; * Projectile                                                        
