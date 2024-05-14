@@ -41,7 +41,9 @@
 (setq frame-inhibit-implied-resize t)
 
 (savehist-mode 1)
-(tool-bar-mode -1)
+(when (display-graphic-p)
+   (tool-bar-mode -1))
+;; (tool-bar-mode -1)
 (menu-bar-mode -1)
 (if window-system (scroll-bar-mode -1))
 (global-auto-revert-mode 1)
