@@ -87,6 +87,7 @@
 (add-hook 'prog-mode-hook 
           (defun ak/prog-mode-hook()
             (display-line-numbers-mode)
+            (set-fill-column 88)
             (setq display-line-numbers 'relative)
             (display-fill-column-indicator-mode)))
                             
