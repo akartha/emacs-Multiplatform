@@ -877,7 +877,7 @@ and insert org image block for it"
 and insert org image block for it"
   ;; (interactive)
   (let* ((url-bnds (bounds-of-thing-at-point 'url))
-         (directory (format "_downloads/%s/" (first (string-split (buffer-name) "-" t)) "/"))
+         (directory (format "_downloads/%s/" (nth 1 (string-split (buffer-name) "-" t)) "/"))
          (local-file-name (read-from-minibuffer "Enter File Name:" (last (string-split url "/" t) ))))
     (kill-region (car url-bnds) (cdr url-bnds))
     (kill-whole-line)

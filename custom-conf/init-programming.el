@@ -22,9 +22,9 @@
          (rust-ts-mode . yas-minor-mode)
          (emacs-lisp-mode . yas-minor-mode)
          (sql-mode . yas-minor-mode)
-         (html-mode . yas-minor-mode)
-         (nxml-mode . yas-minor-mode)
-         (css-mode . yas-minor-mode)
+         ;; (html-mode . yas-minor-mode)
+         ;; (nxml-mode . yas-minor-mode)
+         ;; (css-mode . yas-minor-mode)
          (org-mode . yas-minor-mode))
   :config (yas-reload-all))
 
@@ -295,20 +295,6 @@
 
 (global-set-key (kbd "<f5>") 'projectile-compile-project)
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  * Magit                                        ;;
-;; Magit is great. It's easy and intuitive to use, ;;
-;; shows its options at a keypress and much more.  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(use-package magit
-  :ensure t
-  :config
-  (setq magit-push-always-verify nil
-        git-commit-summary-max-length 50)
-  :bind (:map ak-map
-              ("g" . magit-status)))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom functions to make life a little easier ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -377,5 +363,10 @@
   :custom (eldoc-documentation-strategy #'eldoc-documentation-compose)
   :hook (after-init . global-eldoc-mode)
   :config (eldoc-add-command-completions "paredit-"))
+
+(use-package emmet-mode
+  :ensure t
+  :hook ((sgml-mode . emmet-mode)
+         (css-mode . emmet-mode)))
 
 (provide 'init-programming)

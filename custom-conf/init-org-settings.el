@@ -228,11 +228,12 @@
 
 (use-package org-babel
   :no-require
-  :after (ob-go restclient ob-restclient ob-mermaid verb plantuml-mode)
+  :after (org ob-go restclient ob-restclient ob-mermaid verb plantuml-mode)
   :config 
   (org-babel-do-load-languages
    'org-babel-load-languages
-   '((python . t)
+   '((emacs-lisp .t)
+     (python . t)
      (R . t)
      (restclient . t)
      (sql . t)
@@ -324,6 +325,19 @@
   :config
   (require 'org-roam-dailies)
   (org-roam-db-autosync-mode))
+
+(use-package org-roam-ui
+    :ensure t
+    :after org-roam
+;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
+;;         a hookable mode anymore, you're advised to pick something yourself
+;;         if you don't care about startup time, use
+;;  :hook (after-init . org-roam-ui-mode)
+    :config
+    (setq org-roam-ui-sync-theme t
+          org-roam-ui-follow t
+          org-roam-ui-update-on-save t
+          org-roam-ui-open-on-start t))
 
 
 (global-set-key (kbd "C-c c") 'org-capture)

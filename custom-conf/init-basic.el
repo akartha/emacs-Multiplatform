@@ -23,7 +23,8 @@
       indent-line-function 'insert-tab
       electric-indent-mode nil ;;annoying when it tabs on text files. Maybe I should only enable for prog-mode
       sentence-end-double-space nil  ;; Sentence end need not be double spaced
-      epa-pinentry-mode 'loopback)
+      epa-pinentry-mode 'loopback
+      package-install-upgrade-built-in t)
 
 (epa-file-enable)
 
@@ -203,6 +204,19 @@
 
 (add-hook 'isearch-mode-hook #'ak/isearch-with-region)
 
+;;Sometimes, magit requires the latest version 
+;;of transient 
+(use-package transient
+    :ensure t)
+
+(use-package magit
+  :ensure t
+  :after transient
+  :config
+  (setq magit-push-always-verify nil
+        git-commit-summary-max-length 50)
+  :bind (:map ak-map
+              ("g" . magit-status)))
 
 
 (provide 'init-basic)
