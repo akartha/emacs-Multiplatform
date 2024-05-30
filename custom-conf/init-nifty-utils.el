@@ -846,9 +846,9 @@ and insert org image block for it"
          (directory "_downloads/")
          (local-file-name (read-from-minibuffer "Enter File Name:" (buffer-name))))
     (kill-region (car url-bnds) (cdr url-bnds))
-    (kill-whole-line)
+    (kill-whole-line 0)
     (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s"
+            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s \n"
             local-file-name url (concat directory local-file-name) ))
     ;; Message success to the minibuffer
     (org-display-inline-images)

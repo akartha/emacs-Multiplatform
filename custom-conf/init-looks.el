@@ -118,7 +118,8 @@
             (presentation
              :default-weight semilight
              :default-height 220
-             :bold-weight extrabold)
+             :bold-weight extrabold
+             :line-spacing 10)
             (reading
              :default-family "Noto Serif" 
              ;; :default-weight bold

@@ -228,7 +228,7 @@
 
 (use-package org-babel
   :no-require
-  :after (org ob-go restclient ob-restclient ob-mermaid verb plantuml-mode)
+  :after (org ob-go restclient ob-restclient ob-mermaid verb plantuml-mode ob-jq)
   :config 
   (org-babel-do-load-languages
    'org-babel-load-languages
