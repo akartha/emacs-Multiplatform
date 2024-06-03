@@ -23,7 +23,7 @@
       indent-line-function 'insert-tab
       electric-indent-mode nil ;;annoying when it tabs on text files. Maybe I should only enable for prog-mode
       sentence-end-double-space nil  ;; Sentence end need not be double spaced
-      epa-pinentry-mode 'loopback
+      epg-pinentry-mode 'loopback
       package-install-upgrade-built-in t)
 
 (epa-file-enable)
@@ -168,7 +168,7 @@
 (use-package pdf-tools 
   :ensure t
   :init 
-  (pdf-loader-install))
+  (pdf-loader-install :no-query))
 
 (add-hook 'text-mode-hook 'abbrev-mode)
 
@@ -218,5 +218,10 @@
   :bind (:map ak-map
               ("g" . magit-status)))
 
+(use-package benchmark-init
+  :ensure t
+  :config
+  ;; To disable collection of benchmark data after init is done.
+  (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
 (provide 'init-basic)

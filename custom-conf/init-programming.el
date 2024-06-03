@@ -10,7 +10,7 @@
     (cons 'go-module root)))
 
 (cl-defmethod project-root ((project (head go-module)))
-  (cdr project))
+  (list (cdr project)))
 
 (add-hook 'project-find-functions #'project-find-go-module)
 
