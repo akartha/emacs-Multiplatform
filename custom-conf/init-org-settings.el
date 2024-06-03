@@ -11,10 +11,24 @@
 
 (define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
 (define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
+
+
+(setq org-babel-load-languages 
+      '((emacs-lisp . t)
+        (python . t)
+        (R . t)
+        (sql . t)
+        ;; ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html ;;
+        (sqlite . t)
+        (C . t)
+        (awk . t)
+        (js . t)
+        (passthrough . t)
+        (shell . t)
+        (latex . t)
+        (dot . t)))
+
         
-
-
-
 (defun ak/next-entry-or-next-visible-header ()
   (interactive)
   (condition-case err
@@ -203,58 +217,55 @@
 
 (use-package ob-go
   :ensure t
-  :after go)
+  :after (go org)
+  :config 
+  (push '(go . t) org-babel-load-languages))
 
 (use-package restclient
-  :ensure t)
+  :ensure t
+  :after org)
 
 (use-package ob-restclient
   :ensure t
-  :after restclient)
+  :demand t
+  :config 
+  (push '(restclient . t) org-babel-load-languages))
 
 (use-package plantuml-mode
-  :ensure t)
+  :ensure t
+  :after org 
+  :init
+  (setq plantuml-jar-path "~/plantuml.jar")
+  (setq org-plantuml-jar-path plantuml-jar-path)
+  (setq plantuml-default-exec-mode 'jar)
+  :config
+  (push  '(plantuml . t) org-babel-load-languages ))
 
 (use-package verb
   :ensure t
   :demand t
+  :after org 
   :mode ("\\.org\\'" . org-mode)
   :config 
+    (push '(verb . t) org-babel-load-languages)
   (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Org Babel languages ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(use-package mermaid-mode
+  :ensure t)
 
-(use-package org-babel
-  :no-require
-  :after (org ob-go restclient ob-restclient ob-mermaid verb plantuml-mode ob-jq)
+(use-package ob-mermaid
+  :ensure t
+  :after mermaid-mode
+  ;; :if ak/my-framework-p
+  :init 
+  (if ak/my-framework-p 
+      (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
   :config 
-  (org-babel-do-load-languages
-   'org-babel-load-languages
-   '((emacs-lisp .t)
-     (python . t)
-     (R . t)
-     (restclient . t)
-     (sql . t)
-     ;; ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html ;;
-     (sqlite . t)
-     (C . t)
-     (awk . t)
-     (go . t)
-     ;;https://github.com/ljos/jq-mode
-     (jq . t)
-     ;;https://github.com/arnm/ob-mermaid
-     (mermaid . t)
-     (verb . t)
-     (js . t)
-     (passthrough . t)
-     (shell . t)
-     (latex . t)
-     (plantuml . t))))
+  (push '(mermaid . t) org-babel-load-languages))
 
-(setq org-plantuml-jar-path "~/plantuml.jar")
 
+
+(org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 
 ;;;;;;;;;;;;;;;;;
 ;; ** Org Roam ;;

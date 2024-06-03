@@ -226,7 +226,9 @@
 
 (use-package jq-mode
   :ensure t
-  :mode (("\\.jq$" . jq-mode)))
+  :mode (("\\.jq$" . jq-mode))
+  :config 
+  (push '(jq . t) org-babel-load-languages))
 
 (with-eval-after-load "json-mode"
   (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively))
@@ -326,16 +328,6 @@
    ;; "python3 -c 'import sys, sqlparse; print(sqlparse.format(sys.stdin.read(), identifiers = \"upper\", reindent = True, comma_first = True, indent_columns = True))'"
    "sqlformat --keywords \"upper\" --reindent --indent_columns - "
    t t))
-
-(use-package mermaid-mode
-  :ensure t)
-
-(use-package ob-mermaid
-  :ensure t
-  :after mermaid-mode
-  ;; :if ak/my-framework-p
-  :init (if ak/my-framework-p 
-             (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc")))
 
 
 ;; see https://xenodium.com/further-sqlite-mode-extensions/ for details
