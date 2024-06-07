@@ -91,6 +91,8 @@
             (set-fill-column 88)
             (setq display-line-numbers 'relative)
             (display-fill-column-indicator-mode)))
+
+(add-hook 'prog-mode-hook 'electric-pair-mode)
                             
 (defalias 'yes-or-no-p 'y-or-n-p)
 

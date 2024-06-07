@@ -212,6 +212,10 @@
 (use-package beacon
   :ensure t
   :diminish
+  :custom 
+  (beacon-size 75)
+  (beacon-blink-duration 0.75)
+  (beacon-color "#666600")
   :config
   (beacon-mode 1))
 
