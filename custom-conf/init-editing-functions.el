@@ -207,11 +207,11 @@
 
 (use-package jinx
   :ensure t
-  ;; :hook (emacs-startup . global-jinx-mode)
-  :bind ([remap ispell-word] . jinx-correct)
-  :config (dolist
-              (hook '(text-mode-hook org-mode-hook))
-            (add-hook hook #'jinx-mode)))
+  :hook (text-mode . jinx-mode)
+  :bind ([remap ispell-word] . jinx-correct))
+  ;; :config (dolist
+  ;;             (hook '(text-mode-hook org-mode-hook))
+  ;;           (add-hook hook #'jinx-mode)))
 
 
 

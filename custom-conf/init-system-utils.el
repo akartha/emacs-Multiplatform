@@ -104,7 +104,8 @@
            (org-roam-node reverse indexed)
            (t grid indexed)))
    (setq vertico-multiform-commands
-         '((jinx-correct reverse indexed)
+         '(;;(jinx-correct reverse indexed)
+           (jinx grid (vertico-grid-annotate . 20))
            (tab-bookmark-open reverse)
            (dired-goto-file grid indexed)
            (load-theme grid reverse)
@@ -489,32 +490,45 @@
   ;; :after eglot 
   :custom
   (corfu-cycle t)                ;; Enable cycling for `corfu-next/previous'
-  (corfu-auto t)                 ;; Enable auto completion
+  ;; (corfu-auto t)                 ;; Enable auto completion
+  (corfu-auto nil)                 ;; Disable  auto completion
   (corfu-separator ?\s)          ;; Orderless field separator
   (corfu-quit-no-match 'separator) 
   (corfu-scroll-margin 5)        ;; Use scroll margin
   (corfu-auto-delay 0.4)      ;; delay for a bit so that the popup menu isnt constantly flashing
   (corfu-min-width 70)        ;; have a comfortable display 
   (corfu-max-width corfu-min-width) ;; have that comfortable display be constant size
-  (corfu-count 14)       
-  ;; :hook ((prog-mode . corfu-mode)
-  ;;        (org-mode . corfu-mode)
-  ;;        (text-mode . corfu-mode)
-  ;;        (shell-mode . corfu-mode)
-  ;;        (eshell-mode . corfu-mode)
-  ;;        (eglot . corfu-mode))
-  :init 
-  (global-corfu-mode)
+  (corfu-count 14)
+  (corfu-popupinfo-mode)
+  :hook 
+  (((prog-mode text-mode shell-mode eshell-mode minibuffer-setup) . corfu-mode)
+  (prog-mode . corfu-popupinfo-mode)
+  ((prog-mode minibuffer-setup) . corfu-history-mode))
   :bind
   ;; Another key binding can be used, such as S-SPC.
   (:map corfu-map 
         ("M-n" . corfu-next)
         ("M-p" . corfu-previous)
         ("M-SPC" . corfu-insert-separator)
-        ("M-d" . corfu-show-documentation)
-        ("M-l" . corfu-show-location)
+        ;; ("M-d" . corfu-show-documentation)
+        ;; ("M-l" . corfu-show-location)
         ("<return>" . corfu-insert)
-        ("<escape>" . corfu-quit)))
+        ("<escape>" . corfu-quit))
+  :config
+      (add-to-list 'savehist-additional-variables 'corfu-history))
+
+  (use-package corfu-candidate-overlay
+    :ensure t
+    :after corfu
+    :config
+    ;; enable corfu-candidate-overlay mode globally
+    ;; this relies on having corfu-auto set to nil
+    (corfu-candidate-overlay-mode +1)
+    ;; bind Ctrl + TAB to trigger the completion popup of corfu
+    (global-set-key (kbd "C-<tab>") 'completion-at-point)
+    ;; bind Ctrl + Shift + Tab to trigger completion of the first candidate
+    ;; (keybing <iso-lefttab> may not work for your keyboard model)
+    (global-set-key (kbd "C-<iso-lefttab>") 'corfu-candidate-overlay-complete-at-point))
 
 
 
