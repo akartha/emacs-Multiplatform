@@ -275,7 +275,6 @@
 
 (use-package org-roam
   :ensure t 
-  ;; :straight t
   :init
   (setq org-roam-v2-ack t)
   ;; org-roam-database-connector 'sqlite-module)
@@ -284,7 +283,9 @@
   (org-roam-directory ak/my-org-file-location)
   (org-roam-completion-everywhere t)
   (org-roam-node-display-template (concat "${title:85} "
-                                          (propertize "${tags:*}" 'face 'org-tag)))
+                                          (propertize "${author:20}" 'face 'org-meta-line)
+                                          ;; (propertize "${test:20}" 'face 'org-tag)
+                                          (propertize "${tags:30}" 'face 'org-tag)))
   (org-roam-capture-templates
    '(("d" "default" plain "%?"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags:")
@@ -295,7 +296,6 @@
       :unnarrowed t)
 
      ("f" "fiction" plain "%?"
-      ;; :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+category: fiction\n#+filetags: fiction\n#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"~/.emacs.d/custom-css/org-email-head.css\" />\n#+OPTIONS: toc:nil num:nil")
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+category: fiction\n#+filetags: fiction")
       :unnarrowed t)
 
@@ -315,9 +315,6 @@
        :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: Musings\n")
        :unnarrowed t)))
 
-      ;; ("m" "Movie/Series notes" plain "\n* Source\n- Title: %^{Title}\n- Director: %^{Director}\n- Year: %^{Year}\n- Watched?: %^{Prompt|Watched|Want to watch|Want to avoid}\n** Summary\n%^C\n\n%?"
-       ;; :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Movie Series\n#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"~/.emacs.d/custom-css/org-email-head.css\" />\n#+OPTIONS: toc:nil num:nil")
-       ;; :unnarrowed t)))
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
          ("C-c n g" . org-roam-graph)
@@ -337,7 +334,14 @@
   ("C-c n d" . org-roam-dailies-map)
   :config
   (require 'org-roam-dailies)
-  (org-roam-db-autosync-mode))
+  (org-roam-db-autosync-mode)
+  (cl-defmethod org-roam-node-author ((node org-roam-node))
+    "Return the currently set author for the NODE."
+    (cdr (assoc-string "AUTHOR" (org-roam-node-properties node))))
+  
+  (cl-defmethod org-roam-node-test ((node org-roam-node))
+    "Return the currently set category for the NODE."
+    (cdr (assoc-string "CATEGORY" (org-roam-node-tags node)))))
 
 (use-package org-roam-ui
     :ensure t
@@ -426,6 +430,22 @@
         (goto-char (point-min))
         (while (re-search-forward kill-pattern nil t)
           (beginning-of-line)
+          (kill-line))))))
+
+(defun ak/delete-repeated-lines ()
+  "Deletes repeated junk lines in org-web articles"
+ (interactive)
+  (save-excursion
+    (let ((kill-patterns '(
+;;"\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
+                           "\\[\\[data:image/svg[^]]*\\]\\]"
+                           "\\[\\[data:image/png[^]]*\\]\\]"
+                           "\\[\\[data:image/gif;base64,[^]]*\\]\\]")))
+      (dolist (kill-pattern kill-patterns)
+
+        (goto-char (point-min))
+        (while (re-search-forward kill-pattern nil t)
+          (beginning-of-line)
           (kill-line)))))))
 
 (require 'org-crypt)
@@ -488,7 +508,31 @@ with image details."
   :demand t
   :ensure t)
 
-(use-package org-margin 
-  :ensure (:type git :host github :repo "rougier/org-margin"))
+;; (use-package org-margin 
+;;   :ensure (:type git :host github :repo "rougier/org-margin"))
+
+(defun ak/set-author-property()
+  (interactive)
+  (if (region-active-p) (call-interactively 'ak/set-author-property-with-region)
+    (call-interactively 'ak/set-author-property-with-value)))
+
+(defun ak/set-author-property-with-value(auth)
+  (interactive "sEnter Author value: ")
+  (save-excursion
+    (goto-char (point-min))
+    (org-set-property "AUTHOR" auth)))
+
+
+(defun ak/set-author-property-with-region(beg end)
+  (interactive "r")
+  (let ((region (buffer-substring beg end)))
+  (save-excursion
+    (goto-char (point-min))
+    (org-set-property "AUTHOR" region))))
+
+(define-key ak-map "3" '("Org roam entry creation from heading" . (lambda() 
+                                                       (interactive)
+                                                       (org-id-get-create)
+                                                       (call-interactively 'org-set-property))))
 
 (provide 'init-org-settings)
