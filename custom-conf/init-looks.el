@@ -1,5 +1,9 @@
 ;;; -*- lexical-binding: t; -*-
 
+
+(add-to-list 'default-frame-alist '(mouse-color . "#FF8800"))
+(add-to-list 'default-frame-alist '(cursor-color . "#FF0000"))
+
 ;; (use-package modus-themes
 ;;   ;; :straight t
 ;;   :custom

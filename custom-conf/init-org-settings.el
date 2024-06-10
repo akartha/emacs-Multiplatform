@@ -219,7 +219,7 @@
   :ensure t
   :after (go org)
   :config 
-  (push '(go . t) org-babel-load-languages))
+  (add-to-list 'org-babel-load-languages '(go . t)))
 
 (use-package restclient
   :ensure t
@@ -229,7 +229,7 @@
   :ensure t
   :demand t
   :config 
-  (push '(restclient . t) org-babel-load-languages))
+  (add-to-list 'org-babel-load-languages '(restclient . t)))
 
 (use-package plantuml-mode
   :ensure t
@@ -239,7 +239,7 @@
   (setq org-plantuml-jar-path plantuml-jar-path)
   (setq plantuml-default-exec-mode 'jar)
   :config
-  (push  '(plantuml . t) org-babel-load-languages ))
+  (add-to-list 'org-babel-load-languages  '(plantuml . t)))
 
 (use-package verb
   :ensure t
@@ -247,7 +247,8 @@
   :after org 
   :mode ("\\.org\\'" . org-mode)
   :config 
-    (push '(verb . t) org-babel-load-languages)
+    ;; (cl-pushnew '(verb . t) org-babel-load-languages)
+  (add-to-list 'org-babel-load-languages '(verb . t))
   (define-key org-mode-map (kbd "C-c C-r") verb-command-map))
 
 (use-package mermaid-mode
@@ -261,7 +262,8 @@
   (if ak/my-framework-p 
       (setq ob-mermaid-cli-path "~/.nvm/versions/node/v19.5.0/bin/mmdc"))
   :config 
-  (push '(mermaid . t) org-babel-load-languages))
+  ;; (cl-pushnew '(mermaid . t) org-babel-load-languages))
+  (add-to-list 'org-babel-load-languages '(mermaid . t)))
 
 
 
