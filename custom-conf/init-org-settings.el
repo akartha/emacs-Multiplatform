@@ -7,26 +7,26 @@
 
 (defvar ak/my-org-file-location nil)
 
-(add-to-list 'org-modules 'org-habit t)
 
-(define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
+
 (define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
 
+(add-to-list 'org-modules 'org-habit t)
 
 (setq org-babel-load-languages 
-      '((emacs-lisp . t)
-        (python . t)
-        (R . t)
-        (sql . t)
-        ;; ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html ;;
-        (sqlite . t)
-        (C . t)
-        (awk . t)
-        (js . t)
-        (passthrough . t)
-        (shell . t)
-        (latex . t)
-        (dot . t)))
+        '((emacs-lisp . t)
+          (python . t)
+          (R . t)
+          (sql . t)
+          ;; ;;    https://orgmode.org/worg/org-contrib/babel/languages/ob-doc-sql.html ;;
+          (sqlite . t)
+          (C . t)
+          (awk . t)
+          (js . t)
+          (passthrough . t)
+          (shell . t)
+          (latex . t)
+          (dot . t)))
 
         
 (defun ak/next-entry-or-next-visible-header ()
@@ -69,12 +69,14 @@
       org-habit-show-all-today t)
 
 
-(setq org-directory ak/my-org-file-location
-      org-agenda-files (mapcar #'(lambda(s) (expand-file-name s ak/my-org-file-location)) 
+(setq org-directory ak/my-org-file-location)
+
+(setq org-agenda-files (mapcar #'(lambda(s) (expand-file-name s org-directory)) 
                                (list "agenda/Trips.org"
                                      "agenda/Tasks.org"
-                                     "agenda/Schedule.org"))
-      org-use-speed-commands t)
+                                     "agenda/Schedule.org")))
+
+(setq org-use-speed-commands t)
 
 (add-to-list 'recentf-exclude org-agenda-files)
 
@@ -152,10 +154,12 @@
                        (org-agenda-sorting-strategy '(priority-down)))))) t)
 
 
+
 ;;;;;;;;;;;;;;;;;;;;
 ;; ** Keybindings ;;
 ;;;;;;;;;;;;;;;;;;;;
 (global-set-key (kbd "C-c '") 'org-edit-src-code)
+(define-key global-map (kbd "C-c a") '("Org agenda" . org-agenda))
 
 (use-package org-superstar
   :ensure t
@@ -187,30 +191,6 @@
   ;; https://github.com/yjwen/org-reveal
   :config
   (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js"))
-  ;;(setq org-reveal-hlevel 2)
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-  ;; ;;    Change variable org-reveal-hlevel’s value to set HLevel globally.                                                             
-  ;; ;; Setting Org files local HLevel to option REVEAL_HLEVEL. #+REVEAL_HLEVEL: 2                                                        ;;
-  ;; ;; org-reveal-title-slide nil)                                                                                                       ;;
-  ;; ;;   To avoid a title slide, please set variable org-reveal-title-slide to nil, or add reveal_title_slide:nil to #+OPTIONS: line.    ;;
-  ;; ;; To restore the default title slide, please set variable org-reveal-title-slide to ~’auto~                                         ;;
-  ;; ;;   Customize the Title Slide                                                                                                       ;;
-  ;;                                                                                                                                      ;;
-  ;; ;; There are 3 ways to customize the title slide.                                                                                    ;;
-  ;;                                                                                                                                      ;;
-  ;; ;;     Set variable org-reveal-title-slide to a string of HTML markups.                                                              ;;
-  ;; ;;     Set reveal_title_slide in the #+OPTIONS: line to a string of HTML markups.                                                    ;;
-  ;; ;;     Use one or more option lines #+REVEAL_TITLE_SLIDE: to specify the HTML of the title slide.                                    ;;
-  ;;                                                                                                                                      ;;
-  ;; ;; The following escaping characters can be used to retrieve document information:                                                   ;;
-  ;; ;; %t	Title                                                                                                                         ;;
-  ;; ;; %s	Subtitle                                                                                                                      ;;
-  ;; ;; %a	Author                                                                                                                        ;;
-  ;; ;; %e	Email                                                                                                                         ;;
-  ;; ;; %d	Date                                                                                                                          ;;
-  ;; ;; %%	Literal %                                                                                                                     ;;
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 
 (require 'ob-passthrough)
