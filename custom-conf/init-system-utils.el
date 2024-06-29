@@ -528,7 +528,7 @@
     (global-set-key (kbd "C-<tab>") 'completion-at-point)
     ;; bind Ctrl + Shift + Tab to trigger completion of the first candidate
     ;; (keybing <iso-lefttab> may not work for your keyboard model)
-    (global-set-key (kbd "C-<iso-lefttab>") 'corfu-candidate-overlay-complete-at-point))
+    (global-set-key (kbd "<backtab>") 'corfu-candidate-overlay-complete-at-point))
 
 
 

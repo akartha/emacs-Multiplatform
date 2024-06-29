@@ -311,7 +311,7 @@ With PREFIX - load the latest xkcd cartoon"
                   dashboard-init-info xkcd-alt))))
     (revert-buffer))
 
-  (define-key ak-map "X" '("Reload xkcd dashboard" . ak/reload-xkcd)))
+  (define-key dashboard-mode-map "X" '("Reload xkcd dashboard" . ak/reload-xkcd)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
