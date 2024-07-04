@@ -76,7 +76,7 @@
             (reading
              :default-family "Iosevka Comfy Motion Duo" 
              :default-weight semilight
-             :default-height 185
+             :default-height 235
              :line-spacing 15)              ;this is in pixels
             (t
              ;; See the fontaine manual for the technicalities:
@@ -92,7 +92,7 @@
              :fixed-pitch-serif-height 1.0
              :variable-pitch-family "Iosevka Comfy Motion Duo"
              :variable-pitch-weight nil
-             :variable-pitch-height 1.0
+             :variable-pitch-height 1.3
              :bold-family nil ; use whatever the underlying face has
              :bold-weight bold
              :italic-family "Iosevka Comfy Motion"
