@@ -138,6 +138,9 @@
                                        (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg")))))
 
 (define-key ak-map "0" '("Repeat last command" . repeat))
+(define-key ak-map (kbd "<left>")  '("Previous Buffer" . previous-buffer))
+(define-key ak-map (kbd "<right>")  '("Next Buffer" . next-buffer))
+(define-key ak-map (kbd "<up>")  '("Switch to Buffer" . consult-buffer))
 
 (use-package savehist
   :defer
