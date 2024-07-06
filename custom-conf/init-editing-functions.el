@@ -206,6 +206,7 @@
   (put 'upcase-region 'disabled nil))
 
 (use-package jinx
+  :if (not ak/generic-windows-p)
   :ensure t
   :hook (text-mode . jinx-mode)
   :bind ([remap ispell-word] . jinx-correct))
