@@ -11,7 +11,7 @@
       make-backup-files nil
       auto-save-default t
       global-auto-revert-non-file-buffers t ;; Revert Dired and other buffers
-      history-length 200
+      history-length t
       ;;Show the current line and column for your cursor.
       line-number-mode t
       column-number-mode t
@@ -138,6 +138,9 @@
                                        (load(expand-file-name "~/.emacs.d/custom-conf/load-details.el.gpg")))))
 
 (define-key ak-map "0" '("Repeat last command" . repeat))
+(define-key ak-map (kbd "<left>")  '("Previous Buffer" . previous-buffer))
+(define-key ak-map (kbd "<right>")  '("Next Buffer" . next-buffer))
+(define-key ak-map (kbd "<up>")  '("Switch to Buffer" . consult-buffer))
 
 (use-package savehist
   :defer

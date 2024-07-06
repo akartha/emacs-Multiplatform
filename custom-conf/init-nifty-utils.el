@@ -311,7 +311,7 @@ With PREFIX - load the latest xkcd cartoon"
                   dashboard-init-info xkcd-alt))))
     (revert-buffer))
 
-  (define-key ak-map "X" '("Reload xkcd dashboard" . ak/reload-xkcd)))
+  (define-key dashboard-mode-map "X" '("Reload xkcd dashboard" . ak/reload-xkcd)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -897,5 +897,24 @@ and insert org image block for it"
   :bind ("C-=" . easy-mark)
   :config
   (global-set-key [remap kill-ring-save] 'easy-kill))
+
+
+(defun ak/add-org-to-roam (f)
+  (save-excursion 
+    (find-file f)
+    (goto-char (point-min))
+    (org-id-get-create)
+    ;; (org-roam-tag-add '("nytimes"))
+    (write-file f)
+    (kill-buffer (current-buffer))))
+
+(defun ak/process-input-org-dir-for-roam (dir) 
+  (mapc 'ak/add-org-to-roam 
+        (directory-files dir t ".org$")))
+;; Then run 
+;; (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/")
+
+
+
 
 (provide 'init-nifty-utils)

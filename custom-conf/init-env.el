@@ -12,7 +12,7 @@
        (setq ak/my-win-framework-p t))
       ((string= (system-name) "Arun-MBP14.local")
        (setq ak/my-mac-p t))
-      ((string= (system-name) "usbpi")
+      ((or (string= (system-name) "usbpi") (string= (system-name) "pi-o-mine"))
        (setq ak/my-pi-p t)))
 
 (defvar ak/generic-windows-p (equal system-type 'windows-nt))

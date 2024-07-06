@@ -197,34 +197,39 @@
 
 (use-package ob-go
   :ensure t
-  :after (go org)
+  :demand t 
+  ;; :after (go org)
   :config 
   (add-to-list 'org-babel-load-languages '(go . t)))
 
 (use-package restclient
-  :ensure t
-  :after org)
+  :ensure t)
+  ;; :after org)
 
 (use-package ob-restclient
   :ensure t
   :demand t
+  :mode ("\\.org\\'" . org-mode)
   :config 
   (add-to-list 'org-babel-load-languages '(restclient . t)))
 
 (use-package plantuml-mode
   :ensure t
-  :after org 
+  ;; :demand t 
+  ;; :after org 
+  :mode ("\\.org\\'" . org-mode)
   :init
   (setq plantuml-jar-path "~/plantuml.jar")
   (setq org-plantuml-jar-path plantuml-jar-path)
   (setq plantuml-default-exec-mode 'jar)
   :config
-  (add-to-list 'org-babel-load-languages  '(plantuml . t)))
+  ;; (add-to-list 'org-babel-load-languages  '(plantuml . t)))
+  (cl-pushnew '(plantuml . t) org-babel-load-languages))
 
 (use-package verb
   :ensure t
   :demand t
-  :after org 
+  ;; :after org 
   :mode ("\\.org\\'" . org-mode)
   :config 
     ;; (cl-pushnew '(verb . t) org-babel-load-languages)
@@ -237,6 +242,8 @@
 (use-package ob-mermaid
   :ensure t
   :after mermaid-mode
+  :demand t 
+  :mode ("\\.org\\'" . org-mode)
   ;; :if ak/my-framework-p
   :init 
   (if ak/my-framework-p 
@@ -402,9 +409,13 @@
  (interactive)
   (save-excursion
     (let ((kill-patterns '(;;"\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
+                           "^Advertisement$"
                            "\\[\\[data:image/svg[^]]*\\]\\]"
                            "\\[\\[data:image/png[^]]*\\]\\]"
-                           "\\[\\[data:image/gif;base64,[^]]*\\]\\]")))
+                           "\\[\\[data:image/gif;base64,[^]]*\\]\\]"
+                           "^Copy link to cartoon$"
+                           "^Link copied$"
+                           "^Shop$")))
       (dolist (kill-pattern kill-patterns)
 
         (goto-char (point-min))
