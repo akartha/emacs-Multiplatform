@@ -265,14 +265,21 @@
   :init
   (setq org-roam-v2-ack t)
   ;; org-roam-database-connector 'sqlite-module)
+  (setq org-roam-node-display-template
+        (cond
+         (ak/my-pi-p ;;not as wide a display
+          (concat "${title:60} "
+                  (propertize "${author:25}" 'face 'org-meta-line)
+                  (propertize "${tags:20}" 'face 'org-tag)))
+         (t 
+          (concat "${title:85} "
+                  (propertize "${author:25} " 'face 'org-meta-line)
+                  ;; (propertize "${category:20}" 'face 'org-tag)
+                  (propertize "${tags:30}" 'face 'org-tag)))))
   :custom
   ;; (org-roam-database-connector 'sqlite-builtin)
   (org-roam-directory ak/my-org-file-location)
   (org-roam-completion-everywhere t)
-  (org-roam-node-display-template (concat "${title:85} "
-                                          (propertize "${author:20}" 'face 'org-meta-line)
-                                          ;; (propertize "${test:20}" 'face 'org-tag)
-                                          (propertize "${tags:30}" 'face 'org-tag)))
   (org-roam-capture-templates
    '(("d" "default" plain "%?"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags:")
@@ -283,7 +290,7 @@
       :unnarrowed t)
 
      ("f" "fiction" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+category: fiction\n#+filetags: fiction")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+category: fiction\n#+filetags: fiction")
       :unnarrowed t)
 
      ("r" "recipe" plain "%?"
@@ -324,11 +331,7 @@
   (org-roam-db-autosync-mode)
   (cl-defmethod org-roam-node-author ((node org-roam-node))
     "Return the currently set author for the NODE."
-    (cdr (assoc-string "AUTHOR" (org-roam-node-properties node))))
-  
-  (cl-defmethod org-roam-node-test ((node org-roam-node))
-    "Return the currently set category for the NODE."
-    (cdr (assoc-string "CATEGORY" (org-roam-node-tags node)))))
+    (cdr (assoc-string "AUTHOR" (org-roam-node-properties node)))))
 
 (use-package org-roam-ui
     :ensure t

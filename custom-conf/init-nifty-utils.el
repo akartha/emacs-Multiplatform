@@ -899,12 +899,49 @@ and insert org image block for it"
   (global-set-key [remap kill-ring-save] 'easy-kill))
 
 
+;; this is from 
+;; https://stackoverflow.com/questions/66574715/how-to-get-org-mode-file-title-and-other-file-level-properties-from-an-arbitra
+
+  
+(defun ak/get-keyword-key-value (kwd)
+  (let ((data (cadr kwd)))
+    (list (plist-get data :key)
+          (plist-get data :value))))
+
+(defun ak/org-current-buffer-get-title ()
+  (nth 1
+       (assoc "TITLE"
+              (org-element-map (org-element-parse-buffer 'greater-element)
+                  '(keyword)
+                #'ak/get-keyword-key-value))))
+
+
+(defun ak/org-current-buffer-get-author ()
+  (nth 1
+       (assoc "AUTHOR"
+              (org-element-map (org-element-parse-buffer 'greater-element)
+                  '(keyword)
+                #'ak/get-keyword-key-value))))
+
+(defun ak/org-file-get-title (file)
+  (with-current-buffer (find-file-noselect file)
+    (ak/org-current-buffer-get-title)))
+
+
+(defun ak/org-file-get-author (file)
+  (with-current-buffer (find-file-noselect file)
+    (ak/org-current-buffer-get-author)))
+
+
+;; Following is for a means to move separately generated org files
+;; For e.g. nytimes downloaded articles, into orgroam
 (defun ak/add-org-to-roam (f)
   (save-excursion 
     (find-file f)
     (goto-char (point-min))
     (org-id-get-create)
     ;; (org-roam-tag-add '("nytimes"))
+    (org-set-property "AUTHOR" (ak/org-file-get-author f))
     (write-file f)
     (kill-buffer (current-buffer))))
 
@@ -913,8 +950,6 @@ and insert org image block for it"
         (directory-files dir t ".org$")))
 ;; Then run 
 ;; (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/")
-
-
 
 
 (provide 'init-nifty-utils)
