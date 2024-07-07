@@ -49,6 +49,8 @@
                   
 (define-key ak-map "p" '("Previous item/heading" . ak/previous-entry-or-previous-visible-header))
 (define-key ak-map "n" '("Next item/heading" . ak/next-entry-or-next-visible-header))    
+(define-key org-mode-map (kbd "M-]") '("Next org item" . org-forward-element))
+(define-key org-mode-map (kbd "M-[") '("Previous org item" . org-backward-element))
                   
 (setq org-ellipsis "⤵"
       org-src-fontify-natively t
