@@ -143,7 +143,7 @@
 (define-key ak-map (kbd "<up>")  '("Switch to Buffer" . consult-buffer))
 
 (use-package savehist
-  :defer
+  :defer t
   ;; :init
   ;; (savehist-mode 1)
   :config

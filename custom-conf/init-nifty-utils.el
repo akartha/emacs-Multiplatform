@@ -882,7 +882,7 @@ and insert org image block for it"
     (kill-region (car url-bnds) (cdr url-bnds))
     (kill-whole-line)
     (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s"
+            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s\n"
             local-file-name url (concat directory local-file-name) ))
     ;; Message success to the minibuffer
     (org-display-inline-images)
@@ -950,7 +950,10 @@ and insert org image block for it"
         (directory-files dir t ".org$")))
 ;; Then run 
 ;; (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/")
-
+(define-key ak-map "7" '("Process nytimes articles into org-roam" . 
+                         (lambda ()
+                           (interactive)
+                           (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/"))))
 ;; From https://emacs.stackexchange.com/questions/69924/count-words-under-subtree-ignoring-the-properties-drawer-and-the-subheading?newreg=292bf50260404217b2b4fd90952855a5
 ;; (require 'cl-lib)
 ;; (require 'org-element)
