@@ -295,14 +295,25 @@
 (define-key global-map [remap narrow-to-region] #'logos-narrow-dwim)
 (define-key global-map [remap forward-page] #'logos-forward-page-dwim)
 (define-key global-map [remap backward-page] #'logos-backward-page-dwim)
-(define-key global-map (kbd "<f11>") #'logos-focus-mode)
+;; (define-key global-map (kbd "<f11>") #'logos-focus-mode)
+(define-key global-map (kbd "<f11>") #'("Toggle spacious-padding & logos-focus mode" . 
+                                        (lambda () 
+                                          (interactive)
+                                          (if (equal 
+                                               (default-value 'spacious-padding-mode) 
+                                               logos-focus-mode)
+                                              (progn
+                                                (logos-focus-mode 'toggle)
+                                                (spacious-padding-mode 'toggle))
+                                            (logos-focus-mode -1)
+                                            (spacious-padding-mode -1)))))
 
 
 (define-prefix-command 'ak-display-settings-keymap)
 (global-set-key (kbd "` d") 'ak-display-settings-keymap)
 
 (define-key ak-display-settings-keymap "f" '("Fontaine Presets" . fontaine-set-preset))
-(define-key ak-display-settings-keymap (kbd "<f8>") '("Spacious padding mode" . spacious-padding-mode))
+;; (define-key ak-display-settings-keymap (kbd "<f8>") '("Spacious padding mode" . spacious-padding-mode))
 (define-key ak-display-settings-keymap (kbd "<f9>") '("Consult theme" . consult-theme))
 
 
