@@ -258,13 +258,21 @@
 (use-package spacious-padding 
   :ensure t
   :config
+(if ak/my-pi-p
+    (setq spacious-padding-widths '( :internal-border-width 10
+                                     :header-line-width 4
+                                     :mode-line-width nil
+                                     :tab-width 4
+                                     :right-divider-width nil
+                                     :scroll-bar-width nil
+                                     :fringe-width 50))  
   (setq spacious-padding-widths '( :internal-border-width 45
                                    :header-line-width 4
                                    :mode-line-width nil
                                    :tab-width 4
                                    :right-divider-width 30
                                    :scroll-bar-width 8
-                                   :fringe-width 200))
+                                   :fringe-width 200)))
 
   ;; Read the doc string of `spacious-padding-subtle-mode-line' as it
   ;; is very flexible and provides several examples.
