@@ -478,9 +478,11 @@
   :ensure t
   :diminish
   :config
-  (which-key-setup-side-window-right-bottom) ;;prefer right side - but will go for bottom if there is not enough space
+  (if ak/my-pi-p
+      (which-key-setup-side-window-bottom)
+    (which-key-setup-side-window-right-bottom)) ;;prefer right side - but will go for bottom if there is not enough space
   (which-key-mode))
-
+  
 ;;;;;;;;;;;
 ;; CORFU ;;
 ;;;;;;;;;;;
