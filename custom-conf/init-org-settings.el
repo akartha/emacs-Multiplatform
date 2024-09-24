@@ -318,6 +318,7 @@
          ("C-c n c" . org-roam-capture)
          ("C-c n a" . org-roam-alias-add)
          ("C-c n t" . org-roam-tag-add)
+         ("C-c n r" . org-roam-tag-remove)
          ("C-c n o" . org-id-get-create)
          :map org-mode-map
          ("C-M-i" . completion-at-point)
