@@ -419,17 +419,23 @@ With PREFIX - load the latest xkcd cartoon"
 (if (> emacs-major-version 28)
     (keymap-set ak-map "z" 'scratch-buffer)
   (define-key ak-map "z" '("Switch to scratch buffer" . (lambda ()
-                                                          "Switch to scratch"
+                                                          "Switch to standard scratch"
                                                           (interactive)
                                                           (switch-to-buffer "*scratch*")))))
 
 ;; Switch to text scratch buffer
 ;;;###autoload
 (define-key ak-map "2" '("Switch to txt scratch" . (lambda ()
-                                                      "Switch to text scratch"
+                                                      "Switch to text scratch buffer"
                                                       (interactive)
-                                                      (switch-to-buffer(get-buffer-create "*scratch-text*")))))
-
+                                                      (switch-to-buffer(get-buffer-create "*scratch-text*"))
+                                                      (text-mode))))
+;; Switch to org scratch buffer
+(define-key ak-map "4" '("Switch to org scratch" . (lambda ()
+                                                      "Switch to org-mode scratch buffer"
+                                                      (interactive)
+                                                      (switch-to-buffer(get-buffer-create "*scratch-org*"))
+                                                      (org-mode))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Use avy to jump from cell to cell in orgmode table ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
