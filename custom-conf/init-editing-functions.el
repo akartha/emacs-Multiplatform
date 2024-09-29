@@ -215,5 +215,21 @@
   ;;           (add-hook hook #'jinx-mode)))
 
 
+;;from https://emacs.stackexchange.com/questions/3941/when-typing-automatically-transform-spc-spc-into-period-spc-spc
+;;I don't want to double space after period, so just a single space after the period 
+;;is fine.
+
+(defun freaky-space ()
+  (interactive)
+  (cond ((looking-back "\\(?:^\\|\\.\\)  +")
+         (insert " "))
+        ((eq this-command
+             last-command)
+         (backward-delete-char 1)
+         (insert ". "))
+        (t
+         (insert " "))))
+
+(define-key text-mode-map " " 'freaky-space)    
 
 (provide 'init-editing-functions)
