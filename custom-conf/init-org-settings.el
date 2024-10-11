@@ -320,6 +320,7 @@
          ("C-c n t" . org-roam-tag-add)
          ("C-c n r" . org-roam-tag-remove)
          ("C-c n o" . org-id-get-create)
+         ("C-c n r" . org-roam-tag-remove)
          :map org-mode-map
          ("C-M-i" . completion-at-point)
          :map ak-map
@@ -386,6 +387,8 @@
   :load-path "custom-conf/third-party/org-web-tools/"
   :ensure t
   :after org 
+  :hook (org-capture-before-finalize . ak/delete-image-base-64-data-lines)
+  
   :bind (:map ak-map
               ;; ("<f2>" . ak/get-url-title)
               ("<f2>" . ak/clip-web-page-title-and-search-org-roam)
@@ -403,6 +406,7 @@
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url))))
 
+;;;###autoload
   (cl-defun ak/clip-web-page-title-and-search-org-roam(&optional (url (org-web-tools--get-first-url)))
     "Parses web page's title from url in clipboard and searches org-roam"
     (interactive)
@@ -410,6 +414,7 @@
            (title (org-web-tools--html-title html)))
       (org-roam-node-find nil title)))
 
+;;;###autoload
 (defun ak/delete-image-base-64-data-lines ()
   "Deletes lines containing base-64 image data from the buffer."
  (interactive)
@@ -421,13 +426,14 @@
                            "\\[\\[data:image/gif;base64,[^]]*\\]\\]"
                            "^Copy link to cartoon$"
                            "^Link copied$"
+                           "^Article continues after advertisement$"
                            "^Shop$")))
       (dolist (kill-pattern kill-patterns)
 
         (goto-char (point-min))
         (while (re-search-forward kill-pattern nil t)
           (beginning-of-line)
-          (kill-line))))))
+          (delete-line))))))
 
 (defun ak/delete-repeated-lines ()
   "Deletes repeated junk lines in org-web articles"
@@ -443,7 +449,10 @@
         (goto-char (point-min))
         (while (re-search-forward kill-pattern nil t)
           (beginning-of-line)
-          (kill-line)))))))
+          (delete-line)))))))
+
+;; (add-hook 'org-capture-before-finalize-hook 'ak/delete-image-base-64-data-lines))
+;; (add-hook 'org-roam-capture 'ak/delete-image-base-64-data-lines))
 
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)

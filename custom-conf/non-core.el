@@ -229,7 +229,7 @@ Provides an embark action to capture urls in org-roam from url/org-link at point
   (let* ((html (org-web-tools--get-url url))
          (title (org-web-tools--html-title html)))
     (kill-new url)
-    (org-roam-node-find t title nil nil 
+    (org-roam-node-find nil title nil nil 
                         :templates 
                         '(("w" "web" plain "%?"
                            :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+category:web article\n#+filetags: web\n")
