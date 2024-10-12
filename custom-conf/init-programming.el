@@ -160,13 +160,16 @@
   (call-interactively 'eglot-code-action-organize-imports))
 
 (use-package go-ts-mode
-    :hook (go-ts-mode . (lambda ()
-                       ;; Using depth -10 will put this before eglot's
-                       ;; willSave notification so that the notification
-                       ;; reports the actual contents that will be
-                       ;; saved.
-                       (add-hook 'before-save-hook 'eglot-format-buffer -10 t)
-                       (add-hook 'before-save-hook 'ak/eglot-organize-imports nil t))))
+  :ensure t
+  :hook (go-ts-mode . (lambda ()
+                        ;; Using depth -10 will put this before eglot's
+                        ;; willSave notification so that the notification
+                        ;; reports the actual contents that will be
+                        ;; saved.
+                        (add-hook 'before-save-hook 'eglot-format-buffer -10 t)
+                        (add-hook 'before-save-hook 'ak/eglot-organize-imports nil t)))
+  :config 
+  (add-to-list 'org-src-lang-modes '("go" . go-ts)))
 
 
 
