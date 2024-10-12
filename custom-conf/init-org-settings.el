@@ -415,41 +415,26 @@
       (org-roam-node-find nil title)))
 
 ;;;###autoload
-(defun ak/delete-image-base-64-data-lines ()
-  "Deletes lines containing base-64 image data from the buffer."
- (interactive)
-  (save-excursion
-    (let ((kill-patterns '(;;"\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
-                           "^Advertisement$"
-                           "\\[\\[data:image/svg[^]]*\\]\\]"
-                           "\\[\\[data:image/png[^]]*\\]\\]"
-                           "\\[\\[data:image/gif;base64,[^]]*\\]\\]"
-                           "^Copy link to cartoon$"
-                           "^Link copied$"
-                           "^Article continues after advertisement$"
-                           "^Shop$")))
-      (dolist (kill-pattern kill-patterns)
-
-        (goto-char (point-min))
-        (while (re-search-forward kill-pattern nil t)
-          (beginning-of-line)
-          (delete-line))))))
-
-(defun ak/delete-repeated-lines ()
-  "Deletes repeated junk lines in org-web articles"
- (interactive)
-  (save-excursion
-    (let ((kill-patterns '(
-;;"\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
-                           "\\[\\[data:image/svg[^]]*\\]\\]"
-                           "\\[\\[data:image/png[^]]*\\]\\]"
-                           "\\[\\[data:image/gif;base64,[^]]*\\]\\]")))
-      (dolist (kill-pattern kill-patterns)
-
-        (goto-char (point-min))
-        (while (re-search-forward kill-pattern nil t)
-          (beginning-of-line)
-          (delete-line)))))))
+  (defun ak/delete-image-base-64-data-lines ()
+    "Deletes lines containing base-64 image data from the buffer."
+    (interactive)
+    (save-excursion
+      (let ((kill-patterns '(;;"\\[\\[data:image/svg\\+xml;base64,[^]]*\\]\\]"
+                             "^Advertisement$"
+                             "\\[\\[data:image[^]]*\\]\\]"
+                             "\\[\\[data:%20image[^]]*\\]\\]"
+                             ;; "\\[\\[data:image/svg[^]]*\\]\\]"
+                             ;; "\\[\\[data:image/png[^]]*\\]\\]"
+                             ;; "\\[\\[data:image/gif;base64,[^]]*\\]\\]"
+                             ;; "^Copy link to cartoon$"
+                             "^Link copied$"
+                             "^Article continues after advertisement$"
+                             "^Shop$")))
+        (dolist (kill-pattern kill-patterns)
+          (goto-char (point-min))
+          (while (re-search-forward kill-pattern nil t)
+            (beginning-of-line)
+            (delete-line)))))))
 
 ;; (add-hook 'org-capture-before-finalize-hook 'ak/delete-image-base-64-data-lines))
 ;; (add-hook 'org-roam-capture 'ak/delete-image-base-64-data-lines))
