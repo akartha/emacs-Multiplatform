@@ -305,7 +305,20 @@
 (define-key global-map [remap backward-page] #'logos-backward-page-dwim)
 
 
+;;Work in progress
+(defvar-local my-minibuffer-font-remap-cookie nil
+  "The current face remap of `my-minibuffer-set-font'.")
 
+(defface my-minibuffer-default
+  '((t :height 0.8))
+  "Face for the minibuffer.")
+
+(defun my-minibuffer-set-font ()
+  (setq-local my-minibuffer-font-remap-cookie
+              (face-remap-add-relative 'default 'my-minibuffer-default)))
+
+(add-hook 'minibuffer-mode-hook #'my-minibuffer-set-font)
+;;Work in progress 
 (defun ak/toggle-immersive-mode()
   "Toggle Immersive Mode
 Toggle Spacious padding mode, logos focus mode and 
