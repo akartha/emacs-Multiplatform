@@ -147,7 +147,7 @@
   :after vertico
   :bind (:map vertico-map
          ("M-i" . vertico-quick-insert)
-         ("'" . vertico-quick-exit)
+         ("'" . vertico-quick-jump)
          ("C-'" . vertico-quick-embark))
   :config
 ;;;###autoload

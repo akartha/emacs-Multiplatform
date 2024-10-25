@@ -426,7 +426,7 @@
                              ;; "\\[\\[data:image/svg[^]]*\\]\\]"
                              ;; "\\[\\[data:image/png[^]]*\\]\\]"
                              ;; "\\[\\[data:image/gif;base64,[^]]*\\]\\]"
-                             ;; "^Copy link to cartoon$"
+                             "^Copy link to cartoon$"
                              "^Link copied$"
                              "^Article continues after advertisement$"
                              "^Shop$")))
