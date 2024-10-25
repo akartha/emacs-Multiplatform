@@ -119,11 +119,14 @@ TODO - No error checking implemented yet"
   :init
   (ace-link-setup-default)
   ;; :commands (ak/ace-link-org-jump)
-  :bind(("C-c o" . ace-link-addr)
-        ("C-c L" . ak/ace-link-addr)
+  :bind(;; ("C-c o" . ace-link-addr)
+        ;; ("C-c L" . ak/ace-link-addr)
         :map org-mode-map 
-             ( "C-c o" . ace-link-org)
-             ( "C-c L" . ak/ace-link-org-jump))
+        ( "C-c o" . ace-link-org)
+        ( "C-c L" . ak/ace-link-org-jump)
+        :map avy-custom-keymap
+        ("u" . ak/ace-link-org-jump)
+        ("o" . ace-link-org))
   :config 
   (defun ak/ace-link-org-jump ()
     "Jump to a visible link in an `org-mode' buffer."
