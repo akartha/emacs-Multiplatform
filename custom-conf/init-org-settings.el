@@ -525,9 +525,27 @@ with image details."
     (goto-char (point-min))
     (org-set-property "AUTHOR" region))))
 
-(define-key ak-map "3" '("Org roam entry creation from heading" . (lambda() 
-                                                       (interactive)
-                                                       (org-id-get-create)
-                                                       (call-interactively 'org-set-property))))
+(defvar ak/org-roam-buffer-actions-alist '((?1 "Set Author\n" ak/set-author-property)
+                                           (?2 "Create Org-roam entry\n" (lambda() 
+                                                                         (interactive)
+                                                                         (org-id-get-create)
+                                                                         (call-interactively 'org-set-property)))
+                                           (?3 "Place Holder\n" (lambda () (message "I am a lone wolfpack") 'wolf)))
+  "List that associates numbers to common actions that can be taken on an org-roam buffer.")
+
+(defun ak/org-roam-buffer-actions-choose ()
+  "Choose action to take on org-roam buffer.
+Returns whatever the action returns."
+  (interactive)
+  (let ((choice (read-char-choice (mapconcat (lambda (item) (format "%c: %s" (car item) (cadr item))) ak/org-roam-buffer-actions-alist "; ")
+                  (mapcar #'car ak/org-roam-buffer-actions-alist))))
+    (funcall (nth 2 (assoc choice ak/org-roam-buffer-actions-alist)))))
+
+;; (define-key ak-map "3" '("Org roam entry creation from heading" . (lambda() 
+;;                                                        (interactive)
+;;                                                        (org-id-get-create)
+;;                                                        (call-interactively 'org-set-property))))
+
+(define-key ak-map "3" '("org-roam Buffer Actions" . ak/org-roam-buffer-actions-choose))
 
 (provide 'init-org-settings)
