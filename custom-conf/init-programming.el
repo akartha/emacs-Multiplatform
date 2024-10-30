@@ -160,7 +160,7 @@
   (call-interactively 'eglot-code-action-organize-imports))
 
 (use-package go-ts-mode
-  :ensure t
+  :ensure nil
   :hook (go-ts-mode . (lambda ()
                         ;; Using depth -10 will put this before eglot's
                         ;; willSave notification so that the notification

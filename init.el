@@ -54,8 +54,8 @@
 (setq package-archives '(("ELPA"  . "http://tromey.com/elpa/")
 			 ("gnu"   . "https://elpa.gnu.org/packages/")
 			 ("melpa" . "https://melpa.org/packages/")
-			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")
-			 ("org"   . "https://orgmode.org/elpa/")))
+			 ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
+			 ;; ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
