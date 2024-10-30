@@ -287,16 +287,20 @@
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags:")
       :unnarrowed t)
 
+     ("w" "test" plain "%?"
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+category:test\n#+filetags: web\n")
+      :unnarrowed t)
+
      ("w" "web" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+category:web article\n#+filetags: web\n")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+filetags: web\n")
       :unnarrowed t)
 
      ("f" "fiction" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+category: fiction\n#+filetags: fiction")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: fiction")
       :unnarrowed t)
 
      ("r" "recipe" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+category: recipe\n#+filetags: recipe")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: recipe")
       :unnarrowed t)
 
       ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
@@ -361,14 +365,14 @@
          (file+headline  "agenda/Schedule.org" "Add to Schedule")
           ;; (file+headline  ,(file-truename "agenda/Schedule.org") "Add to Schedule")
          "* Appointment %?\n SCHEDULED:%^T\n%i")
-        ("j" "Journal")
-        ("ja" "Journal - General" entry 
+        ;; ("j" "Journal")
+        ("j" "General Journal" entry 
          (file+headline "agenda/jrnl.org" "General")
          "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n %?")
-        ("jw" "Journal - Work" entry 
+        ("w" "Work Journal" entry 
          (file+headline "agenda/jrnl.org" "Work")
          "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n %?")
-        ("jp" "Journal - Private" entry 
+        ("p" "Private-Journal" entry 
          (file+headline "agenda/jrnl.org" "Private")
          "* %^{Capture}\n :PROPERTIES:\n :CAPTURED: %U\n :END: \n\n%?")))
 
