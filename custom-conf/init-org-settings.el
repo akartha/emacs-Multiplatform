@@ -287,7 +287,7 @@
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags:")
       :unnarrowed t)
 
-     ("w" "test" plain "%?"
+     ("s" "test" plain "%?"
       :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+category:test\n#+filetags: web\n")
       :unnarrowed t)
 

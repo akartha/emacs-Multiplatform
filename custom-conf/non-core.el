@@ -235,7 +235,7 @@ Provides an embark action to capture urls in org-roam from url/org-link at point
     (org-roam-node-find nil title nil nil 
                         :templates 
                         '(("w" "web" plain "%?"
-                           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+category:web article\n#+filetags: web\n")
+                           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+filetags: web\n")
                            :unnarrowed t)))))
 
 (with-eval-after-load 'embark
@@ -274,6 +274,7 @@ Also see `prot-window-delete-popup-frame'." command)
 
 (add-hook 'org-capture-after-finalize-hook #'prot-window-delete-popup-frame)
 
+(prot-window-define-with-popup-frame ak/clip-web-page-title-and-search-org-roam)
 ;; (declare-function tmr "tmr" (time &optional description acknowledgep))
 ;; (defvar tmr-timer-created-functions)
 

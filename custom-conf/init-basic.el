@@ -41,7 +41,6 @@
 ;; fonts that are larger than the system default (which would resize the frame).
 (setq frame-inhibit-implied-resize t)
 
-(savehist-mode 1)
 (when (display-graphic-p)
    (tool-bar-mode -1))
 ;; (tool-bar-mode -1)
@@ -144,8 +143,9 @@
 
 (use-package savehist
   :defer t
-  ;; :init
-  ;; (savehist-mode 1)
+  :init
+  (savehist-mode 1)
+
   :config
   (if (> emacs-major-version 28)
       (progn (add-to-list 'savehist-additional-variables 'register-alist) ;This doesn't work, but I havent lost hope yet
