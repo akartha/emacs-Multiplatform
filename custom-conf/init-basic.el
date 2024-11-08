@@ -229,4 +229,12 @@
   ;; To disable collection of benchmark data after init is done.
   (add-hook 'after-init-hook 'benchmark-init/deactivate))
 
+(use-package server
+  :ensure nil
+  :defer 1
+  :config 
+  (unless (server-running-p)
+    (server-start)))
+
+
 (provide 'init-basic)
