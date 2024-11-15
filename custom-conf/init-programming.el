@@ -39,7 +39,8 @@
   :hook (after-init . global-eldoc-mode)
   :config 
   (setq eldoc-documentation-strategy
-            'eldoc-documentation-compose-eagerly))
+            'eldoc-documentation-compose-eagerly)
+  (eldoc-add-command-completions "paredit-"))
 
 (use-package htmlize 
   :ensure t)
@@ -86,13 +87,14 @@
 (use-package eglot
   :defer t 
   :after (lsp-pyright)
-  :commands (eglot eglot-ensure)
+  :commands (eglot eglot-ensure eglot-rename eglot-format-buffer)
   :config
   (tooltip-mode 1)
   (add-to-list 'eglot-server-programs '(python-ts-mode . ("pyright-langserver" "--stdio")))
   (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
   ;; (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp")))
   (add-to-list 'eglot-server-programs '(go-ts-mode . ("gopls")))
+  ;; (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
   (add-to-list 'eglot-server-programs '(rust-ts-mode . ("rust-analyzer" )))
 
   (setq eglot-verbose t
@@ -111,9 +113,9 @@
                                                                      :jedi_completion (:include_params t :fuzzy t)
                                                                      :pylint (:enabled :json-false))))
              (:gopls .
-                     ((staticcheck . t)
+                     ((staticcheck . t) ;;requires go install honnef.co/go/tools/cmd/staticcheck@latest
                       (usePlaceholders . t)
-                      (gofumpt . t)
+                      (gofumpt . t) ;;requires go install mvdan.cc/gofumpt@latest
                       (hoverKind . "FullDocumentation")
                       (importShortcut . "Both")
                       (symbolScope . "all")
@@ -130,21 +132,26 @@
   (read-process-output-max (* 1024 1024))
   (eglot-sync-connect 0)
   (eglot-autoshutdown t)
+  (eglot-extend-to-xref t)
+  (eglot-report-progress nil)
   :hook ((python-ts-mode . eglot-ensure)
          (python-mode . eglot-ensure)
          (go-ts-mode . eglot-ensure)
          (rust-ts-mode . eglot-ensure))
   :bind (:map eglot-mode-map 
-              ("<f6>" . eglot-format-buffer)
+              ("<f6>" . (lambda ()
+                          (interactive)
+                          (call-interactively 'eglot-code-action-organize-imports)
+                          (eglot-format-buffer)))
               ("C-c a" . eglot-code-actions)
               ("C-c r" . eglot-rename)
               ("C-c d" . eldoc)
               ("<f5>" . recompile )))
 
-;;;###autoload
-(defun ak/eglot-format-buffer-on-save ()
-  (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
-(add-hook 'go-ts-mode-hook #'ak/eglot-format-buffer-on-save)
+;; ;;;###autoload
+;; (defun ak/eglot-format-buffer-on-save ()
+;;   (add-hook 'before-save-hook #'eglot-format-buffer -10 t))
+;; (add-hook 'go-ts-mode-hook #'ak/eglot-format-buffer-on-save)
 
 ;;Python pyright 
 (use-package lsp-pyright
@@ -156,23 +163,50 @@
 ;; GO-MODE ;;
 ;;;;;;;;;;;;;
 ;;;###autoload
-(defun ak/eglot-organize-imports ()
-  (call-interactively 'eglot-code-action-organize-imports))
+;; (defun ak/eglot-organize-imports ()
+;;   (call-interactively 'eglot-code-action-organize-imports))
 
 (use-package go-ts-mode
   :ensure nil
-  :hook (go-ts-mode . (lambda ()
-                        ;; Using depth -10 will put this before eglot's
-                        ;; willSave notification so that the notification
-                        ;; reports the actual contents that will be
-                        ;; saved.
-                        (add-hook 'before-save-hook 'eglot-format-buffer -10 t)
-                        (add-hook 'before-save-hook 'ak/eglot-organize-imports nil t)))
+  :init
+  (add-to-list 'auto-mode-alist '("\\.go\\'" . go-ts-mode))
+  (add-to-list 'auto-mode-alist '("/go\\.mod\\'" . go-mod-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(go-mode . go-ts-mode))
+  (add-to-list 'major-mode-remap-alist '(go-mode-mode . go-mod-ts-mode))
+  :hook 
+  ;; (go-ts-mode . (lambda ()
+  ;;                 ;; Using depth -10 will put this before eglot's
+  ;;                 ;; willSave notification so that the notification
+  ;;                 ;; reports the actual contents that will be
+  ;;                 ;; saved.
+  ;;                 (add-hook 'before-save-hook 'eglot-format-buffer -10 t)
+  ;;                 (add-hook 'before-save-hook 'ak/eglot-organize-imports nil t)))
+  ;; (go-ts-mode . lsp-deferred)
+  (go-ts-mode . go-format-on-save-mode)
   :config 
+ ;; go install golang.org/x/tools/cmd/goimports@latest
+  (reformatter-define go-format
+    :program "goimports"
+    :args '("/dev/stdin"))
+
   (add-to-list 'org-src-lang-modes '("go" . go-ts)))
 
+;; ;; go install github.com/golang/lint/golint@latest  
+;; (use-package golint
+;;   :ensure t)
+
+;; (use-package go-eldoc
+;;   :ensure t
+;;   :config
+;;   (go-eldoc-setup))
+
+;; (use-package gotest
+;;     :ensure t)
 
 
+;;  ;; go install golang.org/x/tools/cmd/gorename@latest
+;; (use-package go-rename
+;;     :ensure t)
 ;;;;;;;;;;;;;;;;;;;;
 ;; ;; ** flycheck ;;
 ;;;;;;;;;;;;;;;;;;;;
@@ -354,10 +388,6 @@
          ("RET" . sqlite-mode-extras-ret-dwim)))
 
 
-(use-package eldoc
-  :custom (eldoc-documentation-strategy #'eldoc-documentation-compose)
-  :hook (after-init . global-eldoc-mode)
-  :config (eldoc-add-command-completions "paredit-"))
 
 (use-package emmet-mode
   :ensure t
