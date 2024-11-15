@@ -5,7 +5,8 @@
 
 (require 'org)
 
-(defvar ak/my-org-file-location nil)
+(defvar ak/my-org-file-location nil
+"Location of the org-files on this machine")
 
 
 

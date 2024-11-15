@@ -1,9 +1,13 @@
 ;;; -*- lexical-binding: t; -*-
 
-(defvar ak/my-framework-p nil)
-(defvar ak/my-win-framework-p nil)
-(defvar ak/my-mac-p nil)
-(defvar ak/my-pi-p nil)
+(defvar ak/my-framework-p nil
+"Framework 13 manjaro install")
+(defvar ak/my-win-framework-p nil
+"Framework 13 windows dual boot")
+(defvar ak/my-mac-p nil
+"Macbook Pro M1")
+(defvar ak/my-pi-p nil
+"Either my Raspberry Pi 4 or the Clockworkpi uconsole")
 (defvar ak/my-package-list nil)
 
 (cond ((string=  (system-name) "arun-framework")
@@ -15,9 +19,12 @@
       ((or (string= (system-name) "usbpi") (string= (system-name) "pi-o-mine"))
        (setq ak/my-pi-p t)))
 
-(defvar ak/generic-windows-p (equal system-type 'windows-nt))
-(defvar ak/generic-linux-p (equal system-type 'gnu/linux))
-(defvar ak/generic-mac-p (equal system-type 'darwin))
+(defvar ak/generic-windows-p (equal system-type 'windows-nt)
+"Any windows machine")
+(defvar ak/generic-linux-p (equal system-type 'gnu/linux)
+"Any linux machine")
+(defvar ak/generic-mac-p (equal system-type 'darwin)
+"Any mac")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; need this for windows, as otherwise gpg doesnt understand

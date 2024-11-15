@@ -24,7 +24,10 @@
       electric-indent-mode nil ;;annoying when it tabs on text files. Maybe I should only enable for prog-mode
       sentence-end-double-space nil  ;; Sentence end need not be double spaced
       epg-pinentry-mode 'loopback
-      package-install-upgrade-built-in t)
+      package-install-upgrade-built-in t
+;; No need to keep duplicates in prompt history.
+      history-delete-duplicates t
+)
 
 (epa-file-enable)
 
@@ -151,11 +154,15 @@
       (progn (add-to-list 'savehist-additional-variables 'register-alist) ;This doesn't work, but I havent lost hope yet
              (add-to-list 'savehist-additional-variables '(search-ring . 100 ))
              (add-to-list 'savehist-additional-variables 'regexp-search-ring)
+             (add-to-list 'savehist-additional-variables 'last-kbd-macro)
+             (add-to-list 'savehist-additional-variables 'shell-command-history)
              (add-to-list 'savehist-additional-variables '(kill-ring . 100))) ;;dont want to go insane with the number of clipboard items saved.
     
     (add-to-list 'savehist-additional-variables 'register-alist)
     (add-to-list 'savehist-additional-variables 'search-ring )
     (add-to-list 'savehist-additional-variables 'regexp-search-ring)
+    (add-to-list 'savehist-additional-variables 'last-kbd-macro)   
+    (add-to-list 'savehist-additional-variables 'shell-command-history)    
     (add-to-list 'savehist-additional-variables 'kill-ring )))
 
 

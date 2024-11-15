@@ -621,7 +621,11 @@
 
   ;; `completion-at-point' is often bound to M-TAB.
   (setq tab-always-indent 'complete
-        tab-first-completion 'word-or-paren-or-punct))
+        tab-first-completion 'word-or-paren-or-punct)
+:custom
+  ;; Emacs 30 and newer: Disable Ispell completion function.
+  ;; Try `cape-dict' as an alternative.
+  (text-mode-ispell-word-completion nil))
 
 
 ;;;;;;;;;;;;;;;;
