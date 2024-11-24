@@ -191,7 +191,7 @@
 
   (add-to-list 'org-src-lang-modes '("go" . go-ts)))
 
-;; ;; go install github.com/golang/lint/golint@latest  
+;; ;; go install golang.org/x/lint/golint@latest  
 ;; (use-package golint
 ;;   :ensure t)
 
