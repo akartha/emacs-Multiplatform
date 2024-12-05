@@ -383,21 +383,59 @@
 ;;;;;;;;;;;
 
 (use-package dired
+  :ensure nil
   :init (if ak/my-mac-p 
             (setq insert-directory-program "gls" 
                   dired-use-ls-dired t))
   :custom  ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
             (dired-recursive-copies 'always)
             (dired-recursive-deletes 'always)
-            (dired-dwim-target t))
+            (dired-dwim-target t)
+            (dired-free-space nil))
   :commands (dired dired-jump)
   :bind (("C-x C-j" . dired-jump)
          ("C-x 4 C-j" . dired-jump-other-window)
          (:map dired-mode-map
-               ("<f6>" . crux-open-with)))
+               ("<f6>" . crux-open-with))))
+  ;; :config
+  ;; ;;disabling this as I was seeing delays when autorevert mode is on
+  ;; (setq dired-free-space nil))
+
+(use-package trashed
+  :ensure t
+  :commands (trashed)
   :config
-  ;;disabling this as I was seeing delays when autorevert mode is on
-  (setq dired-free-space nil))
+  (setq trashed-action-confirmer 'y-or-n-p)
+  (setq trashed-use-header-line t)
+  (setq trashed-sort-key '("Date deleted" . t))
+  (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
+
+(use-package dired-subtree
+  :ensure t
+  :after dired
+  :bind
+  ( :map dired-mode-map
+    ("<tab>" . dired-subtree-toggle)
+    ("TAB" . dired-subtree-toggle)
+    ("<backtab>" . dired-subtree-remove)
+    ("S-TAB" . dired-subtree-remove))
+  :config
+  (setq dired-subtree-use-backgrounds nil))
+
+(use-package nerd-icons
+  :ensure t)
+
+(use-package nerd-icons-completion
+  :ensure t
+  :after marginalia
+  :config
+  (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
+
+(use-package nerd-icons-corfu
+  :ensure t
+  :after corfu
+  :config
+  (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package nerd-icons-dired
   :ensure t
@@ -416,23 +454,23 @@
                                   ("avi" . "vlc")
                                   ("opus" . "mpv")))))
 
-(use-package dired-sidebar
-  :ensure t
-  :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-  :commands (dired-sidebar-toggle-sidebar)
-  :init
-  (add-hook 'dired-sidebar-mode-hook
-            (lambda ()
-              (unless (file-remote-p default-directory)
-                (auto-revert-mode))))
-  :config
-  (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-  (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
+;; (use-package dired-sidebar
+;;   :ensure t
+;;   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
+;;   :commands (dired-sidebar-toggle-sidebar)
+;;   :init
+;;   (add-hook 'dired-sidebar-mode-hook
+;;             (lambda ()
+;;               (unless (file-remote-p default-directory)
+;;                 (auto-revert-mode))))
+;;   :config
+;;   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
+;;   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
 
-  (setq dired-sidebar-subtree-line-prefix "__")
-  (setq dired-sidebar-theme 'nerd)
-  (setq dired-sidebar-use-term-integration t)
-  (setq dired-sidebar-use-custom-font t))
+;;   (setq dired-sidebar-subtree-line-prefix "__")
+;;   (setq dired-sidebar-theme 'nerd)
+;;   (setq dired-sidebar-use-term-integration t)
+;;   (setq dired-sidebar-use-custom-font t))
 
 
 ;; Async
@@ -501,7 +539,7 @@
   (corfu-min-width 70)        ;; have a comfortable display 
   (corfu-max-width corfu-min-width) ;; have that comfortable display be constant size
   (corfu-count 14)
-  (corfu-popupinfo-mode)
+  (corfu-popupinfo-delay '(1.25 . 0.5))
   :hook 
   (((prog-mode text-mode shell-mode eshell-mode minibuffer-setup) . corfu-mode)
   (prog-mode . corfu-popupinfo-mode)
@@ -509,6 +547,7 @@
   :bind
   ;; Another key binding can be used, such as S-SPC.
   (:map corfu-map 
+        ("<tab>" . corfu-complete)
         ("M-n" . corfu-next)
         ("M-p" . corfu-previous)
         ("M-SPC" . corfu-insert-separator)
@@ -517,7 +556,11 @@
         ("<return>" . corfu-insert)
         ("<escape>" . corfu-quit))
   :config
-      (add-to-list 'savehist-additional-variables 'corfu-history))
+  (with-eval-after-load 'savehist
+    (corfu-history-mode 1)
+    (add-to-list 'savehist-additional-variables 'corfu-history))
+      (corfu-popupinfo-mode 1))
+
 
   (use-package corfu-candidate-overlay
     :ensure t

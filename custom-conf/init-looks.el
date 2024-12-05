@@ -171,8 +171,8 @@
 (define-key global-map (kbd "C-c F") #'fontaine-set-preset)
 (define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
 
-(use-package all-the-icons
-  :ensure t)
+;; (use-package all-the-icons
+;;   :ensure t)
 
 
 (use-package lambda-line
@@ -204,11 +204,11 @@
     (setq mode-line-format (list "%_"))))
 
 
-(use-package all-the-icons-completion
-  :ensure t 
-  :after (marginalia all-the-icons)
-  :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
-  :init (all-the-icons-completion-mode))
+;; (use-package all-the-icons-completion
+;;   :ensure t 
+;;   :after (marginalia all-the-icons)
+;;   :hook (marginalia-mode . all-the-icons-completion-marginalia-setup)
+;;   :init (all-the-icons-completion-mode))
 
 ;; While changing buffers or workspaces, the first thing you do is
 ;; look for your cursor.  Every time you change buffers, the current
