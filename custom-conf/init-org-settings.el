@@ -8,7 +8,59 @@
 (defvar ak/my-org-file-location nil
 "Location of the org-files on this machine")
 
+(defface org-link-id
+  '((t :foreground "#00af00"
+       :weight bold
+       :underline t))
+  "Face for Org-Mode links starting with id:."
+  :group 'org-faces)
 
+(defface org-link-file
+  '((t :foreground "#aa00ee"
+       :weight bold
+       :underline t))
+  "Face for Org-Mode links starting with file:."
+  :group 'org-faces)
+
+(defface org-link-denote
+  '((t :foreground "#ffffff"
+       :weight bold
+       :underline t))
+  "Face for Org-Mode links starting with denote:."
+  :group 'org-faces)
+
+(defface org-link-roam
+  '((t :foreground "#afaf00"
+       :weight bold
+       :underline t))
+  "Face for Org-Mode links starting with roam:."
+  :group 'org-faces)
+
+(org-link-set-parameters
+ "id"
+ :face 'org-link-id)
+
+;; (org-link-set-parameters
+;;  "file"
+;;  :face 'org-link-file)
+
+(org-link-set-parameters
+ "denote"
+ :face 'org-link-denote)
+
+(org-link-set-parameters
+ "roam"
+ :face 'org-link-roam)
+
+;; (org-link-set-parameters
+;;  "file"
+;;  :face (lambda (path) (if (file-exists-p path) 'org-link-file 'org-warning)))
+
+(org-link-set-parameters  
+ "file"  
+ :face (lambda (path) 
+         (when (not (file-remote-p path))
+           (if (file-exists-p path) 'org-link-file 'org-warning))))
 
 (define-key global-map (kbd "C-c l") '("Org store link" . org-store-link))
 
@@ -26,6 +78,7 @@
           (js . t)
           (passthrough . t)
           (shell . t)
+          (lua . t)
           (latex . t)
           (dot . t)))
 

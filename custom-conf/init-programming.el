@@ -394,4 +394,7 @@
   :hook ((sgml-mode . emmet-mode)
          (css-mode . emmet-mode)))
 
+(use-package lua-mode
+  :ensure t)
+
 (provide 'init-programming)
