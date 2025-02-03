@@ -265,7 +265,7 @@
   :ensure t
   :mode (("\\.jq$" . jq-mode))
   :config 
-  (push '(jq . t) org-babel-load-languages))
+  (cl-pushnew '(jq . t) org-babel-load-languages))
 
 (with-eval-after-load "json-mode"
   (define-key json-mode-map (kbd "C-c C-j") #'jq-interactively))

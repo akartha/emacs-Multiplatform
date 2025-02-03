@@ -267,7 +267,8 @@
   :demand t
   :mode ("\\.org\\'" . org-mode)
   :config 
-  (add-to-list 'org-babel-load-languages '(restclient . t)))
+  (add-to-list 'org-babel-load-languages '(restclient . t))
+  (add-to-list 'org-babel-load-languages '(jq . t)))
 
 (use-package plantuml-mode
   :ensure t
@@ -307,7 +308,6 @@
   :config 
   ;; (cl-pushnew '(mermaid . t) org-babel-load-languages))
   (add-to-list 'org-babel-load-languages '(mermaid . t)))
-
 
 
 (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
@@ -559,6 +559,13 @@ with image details."
 
 ;; (use-package org-margin 
 ;;   :ensure (:type git :host github :repo "rougier/org-margin"))
+
+
+(use-package ox-hugo
+  :ensure t   
+  :pin melpa  ;`package-archives' should already have ("melpa" . "https://melpa.org/packages/")
+  :after ox)
+
 
 (defun ak/set-author-property()
   (interactive)
