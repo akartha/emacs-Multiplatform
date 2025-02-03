@@ -112,41 +112,55 @@
             (medium
              :default-height 175)
             (large
+             :default-family "Iosevka Comfy Wide" 
              :default-weight semilight
              :default-height 195
              :bold-weight extrabold)
             (code-demo
+             ;; :default-family "Iosevka Comfy Wide Fixed"
+             :default-family "Fira Code Retina"
+             :default-weight semilight
+             :default-height 205
+             :bold-weight extrabold)
+            (coding
+             ;; :default-family "Iosevka Comfy Wide Fixed"
+             :default-family "Fira Code Retina"
              :default-weight semilight
              :default-height 175
              :bold-weight extrabold)
             (presentation
+             :default-family "Iosevka Comfy Wide" 
              :default-weight semilight
              :default-height 220
              :bold-weight extrabold
              :line-spacing 10)
             (reading
-             :default-family "Noto Serif" 
+             :default-family "ETBembo" 
              ;; :default-weight bold
              :default-height 205
              :line-spacing 8)              ;this is in pixels
             (t
              ;; See the fontaine manual for the technicalities:
              ;; <https://protesilaos.com/emacs/fontaine>.
-             :default-family "Iosevka Comfy"
+             ;; :default-family "Iosevka Comfy"
+             :default-family "Iosevka Comfy Motion"
              :default-weight regular
              :default-height 100
-             :fixed-pitch-family nil ; falls back to :default-family
+             ;; :fixed-pitch-family nil ; falls back to :default-family
+             :fixed-pitch-family "Fira Code Retina"
              :fixed-pitch-weight nil ; falls back to :default-weight
              :fixed-pitch-height 1.0
              :fixed-pitch-serif-family nil ; falls back to :default-family
              :fixed-pitch-serif-weight nil ; falls back to :default-weight
              :fixed-pitch-serif-height 1.0
-             :variable-pitch-family "Iosevka Comfy Motion Duo"
+             ;; :variable-pitch-family "Iosevka Comfy Motion Duo"
+             :variable-pitch-family "ETBembo"
              :variable-pitch-weight nil
              :variable-pitch-height 1.0
              :bold-family nil ; use whatever the underlying face has
              :bold-weight bold
-             :italic-family "Iosevka Comfy Motion"
+             ;; :italic-family "Iosevka Comfy Motion"
+             :italic-family nil
              :italic-slant italic
              :line-spacing 5))))
 
