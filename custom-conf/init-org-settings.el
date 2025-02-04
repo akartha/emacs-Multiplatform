@@ -579,6 +579,116 @@ with image details."
     (org-set-property "AUTHOR" auth)))
 
 
+;; this is from 
+;; https://stackoverflow.com/questions/66574715/how-to-get-org-mode-file-title-and-other-file-level-properties-from-an-arbitra
+
+  
+(defun ak/get-keyword-key-value (kwd)
+  (let ((data (cadr kwd)))
+    (list (plist-get data :key)
+          (plist-get data :value))))
+
+(defun ak/org-current-buffer-get-title ()
+  (nth 1
+       (assoc "TITLE"
+              (org-element-map (org-element-parse-buffer 'greater-element)
+                  '(keyword)
+                #'ak/get-keyword-key-value))))
+
+
+(defun ak/org-current-buffer-get-author ()
+  (nth 1
+       (assoc "AUTHOR"
+              (org-element-map (org-element-parse-buffer 'greater-element)
+                  '(keyword)
+                #'ak/get-keyword-key-value))))
+
+(defun ak/org-file-get-title (file)
+  (with-current-buffer (find-file-noselect file)
+    (ak/org-current-buffer-get-title)))
+
+
+(defun ak/org-file-get-author (file)
+  (with-current-buffer (find-file-noselect file)
+    (ak/org-current-buffer-get-author)))
+
+
+;; Following is for a means to move separately generated org files
+;; For e.g. nytimes downloaded articles, into orgroam
+(defun ak/add-org-to-roam (f)
+  (save-excursion 
+    (find-file f)
+    (goto-char (point-min))
+    (org-id-get-create)
+    ;; (org-roam-tag-add '("nytimes"))
+    (org-set-property "AUTHOR" (ak/org-file-get-author f))
+    (write-file f)
+    (kill-buffer (current-buffer))))
+
+(defun ak/process-input-org-dir-for-roam (dir) 
+  (mapc 'ak/add-org-to-roam 
+        (directory-files dir t ".org$")))
+;; Then run 
+;; (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/")
+(define-key ak-map "7" '("Process nytimes articles into org-roam" . 
+                         (lambda ()
+                           (interactive)
+                           (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/"))))
+;; From https://emacs.stackexchange.com/questions/69924/count-words-under-subtree-ignoring-the-properties-drawer-and-the-subheading?newreg=292bf50260404217b2b4fd90952855a5
+;; (require 'cl-lib)
+;; (require 'org-element)
+
+(defun org-element-parse-headline (&optional granularity visible-only)
+  "Parse current headline.
+GRANULARITY and VISIBLE-ONLY are like the args of `org-element-parse-buffer'."
+  (let ((level (org-current-level)))
+    (org-element-map
+    (org-element-parse-buffer granularity visible-only)
+    'headline
+      (lambda (el)
+    (and
+     (eq (org-element-property :level el) level)
+     (<= (org-element-property :begin el) (point))
+     (<= (point) (org-element-property :end el))
+     el))
+      nil 'first-match 'no-recursion)))
+
+(cl-defun org+-count-words-of-heading (&key (worthy '(paragraph bold italic underline code footnote-reference link strike-through subscript superscript table table-row table-cell))
+                        (no-recursion nil))
+  "Count words in the section of the current heading.
+WORTHY is a list of things worthy to be counted. This list should at least include the symbols:
+paragraph, bold, italic, underline and strike-through. 
+If NO-RECURSION is non-nil don't count the words in subsections."
+  (interactive (and current-prefix-arg
+            (list :no-recursion t)))
+  (let ((word-count 0))
+    (org-element-map
+    (org-element-contents (org-element-parse-headline))
+    '(paragraph table)
+      (lambda (par)
+    (org-element-map
+        par
+        worthy
+        (lambda (el)
+          (cl-incf
+           word-count
+           (cl-loop
+        for txt in (org-element-contents el)
+        when (eq (org-element-type txt) 'plain-text)
+        sum
+        (with-temp-buffer
+          (insert txt)
+          (count-words (point-min) (point-max))))
+           ))))
+      nil nil (and no-recursion 'headline)
+      )
+      (when (called-interactively-p 'any)
+      (message "Word count in section: %d" word-count))
+    word-count))
+
+(define-key ak-map "c" '("Count words in section" . org+-count-words-of-heading))
+
+
 (defun ak/set-author-property-with-region(beg end)
   (interactive "r")
   (let ((region (buffer-substring beg end)))
@@ -588,10 +698,15 @@ with image details."
 
 (defvar ak/org-roam-buffer-actions-alist '((?1 "Set Author\n" ak/set-author-property)
                                            (?2 "Create Org-roam entry\n" (lambda() 
-                                                                         (interactive)
-                                                                         (org-id-get-create)
-                                                                         (call-interactively 'org-set-property)))
-                                           (?3 "Place Holder\n" (lambda () (message "I am a lone wolfpack") 'wolf)))
+                                                                           (interactive)
+                                                                           (org-id-get-create)
+                                                                           (call-interactively 'org-set-property)))
+                                           ;; (?3 "Place Holder\n" (lambda () (message "I am a lone wolfpack") 'wolf)))
+                                           (?3 "Clean base64 artefacts\n" ak/delete-image-base-64-data-lines)
+                                           ;; (?4 "Count words in section\n" org+-count-words-of-heading)
+                                           (?5 "Add nytimes articles to org-roam" (lambda ()
+                                                                                    (interactive)
+                                                                                    (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/"))))
   "List that associates numbers to common actions that can be taken on an org-roam buffer.")
 
 (defun ak/org-roam-buffer-actions-choose ()
