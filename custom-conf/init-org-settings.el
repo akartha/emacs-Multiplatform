@@ -338,7 +338,7 @@
   (org-roam-completion-everywhere t)
   (org-roam-capture-templates
    '(("d" "default" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags:")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags:\n#+DATE: %U\n")
       :unnarrowed t)
 
      ("s" "test" plain "%?"
@@ -346,15 +346,15 @@
       :unnarrowed t)
 
      ("w" "web" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+filetags: web\n")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+filetags: web\n#+DATE: %U\n")
       :unnarrowed t)
 
      ("f" "fiction" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: fiction")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: fiction\n#+DATE: %U\n")
       :unnarrowed t)
 
      ("r" "recipe" plain "%?"
-      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: recipe")
+      :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: recipe#+DATE: %U\n")
       :unnarrowed t)
 
       ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
@@ -695,6 +695,18 @@ If NO-RECURSION is non-nil don't count the words in subsections."
   (save-excursion
     (goto-char (point-min))
     (org-set-property "AUTHOR" region))))
+
+;;adapted from https://www.reddit.com/r/emacs/comments/ousics/date_conversion_error/
+;;;###autoload
+(defun ak/encode-time-string-intl-std (string)
+  (let* ((dt (parse-time-string string))
+     (dtt (if (car dt)
+          dt
+        (append '(0 0 0) (nthcdr 3 dt))))
+     )
+    (format-time-string "%Y-%m-%d %T" (apply #'encode-time dtt))))
+
+(defun ak/insert-date-special-tag
 
 (defvar ak/org-roam-buffer-actions-alist '((?1 "Set Author\n" ak/set-author-property)
                                            (?2 "Create Org-roam entry\n" (lambda() 
