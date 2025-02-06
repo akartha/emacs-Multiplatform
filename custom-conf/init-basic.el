@@ -27,6 +27,8 @@
       package-install-upgrade-built-in t
 ;; No need to keep duplicates in prompt history.
       history-delete-duplicates t
+ ;;this is needed so emacs doesnt do cute stuff when searching and replacing strings
+      case-replace nil
 )
 
 (epa-file-enable)
