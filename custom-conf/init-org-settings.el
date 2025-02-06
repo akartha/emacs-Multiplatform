@@ -706,7 +706,7 @@ If NO-RECURSION is non-nil don't count the words in subsections."
      )
     (format-time-string "%Y-%m-%d %T" (apply #'encode-time dtt))))
 
-(defun ak/insert-date-special-tag
+;; (defun ak/insert-date-special-tag
 
 (defvar ak/org-roam-buffer-actions-alist '((?1 "Set Author\n" ak/set-author-property)
                                            (?2 "Create Org-roam entry\n" (lambda() 
