@@ -358,7 +358,7 @@ toggle between presentation and regular fontaine presets"
         (spacious-padding-mode 'toggle)
         ;; (fontaine-toggle-preset)
         (if (equal (default-value 'spacious-padding-mode) t)
-            (fontaine-set-preset 'presentation)
+            (fontaine-set-preset 'reading)
           (fontaine-set-preset 'regular)))
     (fontaine-set-preset 'regular)
     (logos-focus-mode -1)
