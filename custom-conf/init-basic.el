@@ -3,21 +3,30 @@
 ;;(setq native-comp-async-report-warnings-errors nil)
 
 (setq-default indent-tabs-mode nil
-              tab-width 4)
+              tab-width 4
+              tab-always-indent nil)
+
+;; Can be activated with `display-line-numbers-mode'
+(setq-default display-line-numbers-width 3)
+(setq-default display-line-numbers-widen t)
 
 (setq inhibit-startup-message t ;Remove the startup screen
       use-dialog-box nil
       ring-bell-function 'ignore
       make-backup-files nil
-      auto-save-default t
+      ;; auto-save-default t
       global-auto-revert-non-file-buffers t ;; Revert Dired and other buffers
-      history-length t
+      ;; history-length t
+      history-length 300
+      ;; savehist-save-minibuffer-history t
       ;;Show the current line and column for your cursor.
       line-number-mode t
       column-number-mode t
       display-time-24hr-format t
       display-time-format "%H:%M - %d %B %Y"
-      scroll-conservatively 100
+      ;; scroll-conservatively 100
+      scroll-conservatively 10
+      scroll-step 1
       kill-ring-max 100
 ;;;    Indenting
       indent-line-function 'insert-tab
@@ -25,11 +34,15 @@
       sentence-end-double-space nil  ;; Sentence end need not be double spaced
       epg-pinentry-mode 'loopback
       package-install-upgrade-built-in t
-;; No need to keep duplicates in prompt history.
+      ;; No need to keep duplicates in prompt history.
       history-delete-duplicates t
- ;;this is needed so emacs doesnt do cute stuff when searching and replacing strings
+      ;;this is needed so emacs doesnt do cute stuff when searching and replacing strings
       case-replace nil
-)
+      ;; Remove duplicates from the kill ring to reduce clutter
+      kill-do-not-save-duplicates t
+      ;; By default, Emacs "updates" its ui more often than it needs to
+      idle-update-delay 1.0    
+      )
 
 (epa-file-enable)
 
@@ -52,14 +65,37 @@
 (menu-bar-mode -1)
 (if window-system (scroll-bar-mode -1))
 (global-auto-revert-mode 1)
+
+;; `recentf' is an Emacs package that maintains a list of recently
+;; accessed files, making it easier to reopen files you have worked on
 (recentf-mode 1)
+(setq recentf-max-saved-items 300) ; default is 20
+(setq recentf-max-menu-items 20)
+(setq recentf-auto-cleanup (if (daemonp) 300 'never))
+(add-to-list 'recentf-exclude "~/\.emacs\.d/xkcd/*")
+
+
 (save-place-mode t)     ;; Remember cursor position even after quitting file
 (display-time-mode 1)
 ;; (global-subword-mode 1) 
 (show-paren-mode 1) ;;Highlights matching parens when the cursor is just behind one of them.
+(setq show-paren-when-point-inside-paren t
+      show-paren-when-point-in-periphery t) 
 ;; Turn on transient-mark-mode
 (transient-mark-mode 1)
 (goto-address-mode 1)
+
+(blink-cursor-mode -1)
+;; Reduce rendering/line scan work by not rendering cursors or regions in
+;; non-focused windows.
+(setq-default cursor-in-non-selected-windows nil)
+(setq highlight-nonselected-windows nil)
+
+;; Avoid automatic frame resizing when adjusting settings.
+(setq global-text-scale-adjust-resizes-frames nil)
+
+;; Disable wrapping by default due to its performance cost.
+(setq-default truncate-lines t)
 
 ;;; Text mode and Auto Fill mode
 ; Set default Emacs mode to text-mode. In addition, turn on
@@ -69,6 +105,22 @@
 ;;(add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'text-mode-hook 'visual-line-mode)
 (add-hook 'text-mode-hook 'toggle-word-wrap)
+
+;; Continue wrapped lines at whitespace rather than breaking in the
+;; middle of a word.
+(setq-default word-wrap t)
+
+;; Enhance `apropos' and related functions to perform more extensive searches
+(setq apropos-do-all t)
+
+;; Fixes #11: Prevents help command completion from triggering autoload.
+;; (e.g., apropos-command, apropos-variable, apropos...)
+;; Loading additional files for completion can slow down help commands
+;; and may unintentionally execute initialization code from some libraries.
+(setq help-enable-completion-autoload nil)
+(setq help-enable-autoload nil)
+(setq help-enable-symbol-autoload nil)
+(setq help-window-select t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Scroll with cursor stationary ;;
@@ -128,7 +180,6 @@
   :config
   (exec-path-from-shell-initialize))
 
-(add-to-list 'recentf-exclude "~/\.emacs\.d/xkcd/*")
 
 
 (define-prefix-command 'ak-map)
@@ -145,6 +196,8 @@
 (define-key ak-map (kbd "<left>")  '("Previous Buffer" . previous-buffer))
 (define-key ak-map (kbd "<right>")  '("Next Buffer" . next-buffer))
 (define-key ak-map (kbd "<up>")  '("Switch to Buffer" . consult-buffer))
+
+(define-key ak-map (kbd "b")  '("Buffer Back" . mode-line-other-buffer))
 
 (use-package savehist
   :defer t

@@ -389,7 +389,9 @@
                   dired-use-ls-dired t))
   :custom  ((dired-listing-switches "-agho --group-directories-first --time-style=long-iso")
             (dired-recursive-copies 'always)
-            (dired-recursive-deletes 'always)
+            (dired-recursive-deletes 'top)
+            (dired-create-destination-dirs 'ask)
+            (dired-clean-confirm-killing-deleted-buffers nil) ;;;; Disable the prompt about killing the Dired buffer for a deleted directory.
             (dired-dwim-target t)
             (dired-free-space nil))
   :commands (dired dired-jump)

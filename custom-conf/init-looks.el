@@ -78,6 +78,11 @@
              :default-weight semilight
              :default-height 235
              :line-spacing 15)              ;this is in pixels
+            (immersive-writing
+             :default-family "Iosevka Comfy Wide Fixed" 
+             :default-weight semilight
+             :default-height 235
+             :line-spacing 13)              ;this is in pixels
             (t
              ;; See the fontaine manual for the technicalities:
              ;; <https://protesilaos.com/emacs/fontaine>.
@@ -137,8 +142,13 @@
             (reading
              :default-family "ETBembo" 
              ;; :default-weight bold
-             :default-height 205
+             :default-height 225
              :line-spacing 8)              ;this is in pixels
+            (immersive-writing
+             :default-family "ETBembo" 
+             ;; :default-weight bold
+             :default-height 225
+             :line-spacing 15)              ;this is in pixels
             (t
              ;; See the fontaine manual for the technicalities:
              ;; <https://protesilaos.com/emacs/fontaine>.
@@ -251,6 +261,8 @@
 (use-package rainbow-delimiters
   :ensure t
   :diminish
+  :custom 
+  (ainbow-delimiters-max-face-count 5)
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 

@@ -130,7 +130,7 @@
                                :diagnostics ( :disabled ["unresolved-proc-macro"
                                                          "unresolved-macro-call"])))))
   (read-process-output-max (* 1024 1024))
-  (eglot-sync-connect 0)
+  (eglot-sync-connect 1)
   (eglot-autoshutdown t)
   (eglot-extend-to-xref t)
   (eglot-report-progress nil)
