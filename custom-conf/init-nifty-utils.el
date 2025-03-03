@@ -217,6 +217,9 @@ With PREFIX, prompt for replacement string"
 (use-package xkcd
   :if window-system 
   :ensure t
+  :after dashboard 
+  :bind (:map dashboard-mode-map
+              ("X" . ak/reload-xkcd))
   :config 
 ;;;###autoload
   (defun ak/reload-xkcd (arg)
@@ -238,9 +241,9 @@ With PREFIX - load the latest xkcd cartoon"
             (setq dashboard-startup-banner last-xkcd-png
                   dashboard-banner-logo-title rand-id-xkcd-url
                   dashboard-init-info xkcd-alt))))
-    (revert-buffer))
+    (revert-buffer)))
 
-  (define-key dashboard-mode-map "X" '("Reload xkcd dashboard" . ak/reload-xkcd)))
+  ;; (define-key dashboard-mode-map "X" '("Reload xkcd dashboard" . ak/reload-xkcd)))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

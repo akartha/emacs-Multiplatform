@@ -486,29 +486,52 @@
 
 (use-package dashboard
   :ensure t
-  :custom (visual-line-mode t)
+  :custom
+  (dashboard-banner-logo-title "What do we feel like doing today?")
+  (initial-buffer-choice 'dashboard-open)
+  ;; (initial-buffer-choice nil)
+  (dashboard-items '((recents  . 5)
+                     (agenda . 10)
+                     (bookmarks  . 10)
+                     (registers . 5)
+                     (projects  . 10)))
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-heading-icons t)
+  ;; (dashboard-center-content t)
+  (dashboard-set-file-icons t)
+  (dashboard-set-navigator nil)
+  (dashboard-week-agenda t)
+  (dashboard-startupify-list '(dashboard-insert-banner
+                               ;; dashboard-insert-newline
+                               dashboard-insert-banner-title
+                               ;; dashboard-insert-newline
+                               dashboard-insert-navigator
+                               ;; dashboard-insert-newline
+                               dashboard-insert-init-info
+                               dashboard-insert-items
+                               dashboard-insert-newline
+                               dashboard-insert-footer))
+
   :config
+  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
   (dashboard-setup-startup-hook)
-  (setq dashboard-items '((recents  . 5)
-                          (agenda . 10)
-                          (bookmarks  . 10)
-                          (registers . 5)
-                          (projects  . 10)))
-  (setq dashboard-set-heading-icons t
-        dashboard-center-content t
-        dashboard-set-file-icons t
-        dashboard-set-navigator nil
-        dashboard-week-agenda t)
+
+  ;; (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
+  (setq dashboard-center-content t
+        dashboard-vertically-center-content t)
+
   (if (executable-find "fortune")
       ;; (or ak/my-framework-p ak/my-mac-p) 
       (setq dashboard-footer-messages (list (shell-command-to-string "fortune"))))
-
+  
   (add-hook 'dashboard-mode-hook (lambda ()
                                    (visual-line-mode 1)))
+  ;; (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  ;; (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+
   :bind (:map ak-map
-              ("1" . (lambda ()
-                       (interactive)
-                       (switch-to-buffer "*dashboard*")))))
+              ("1" . dashboard-open)))
 
  ;;;;;;;;;;;;;;;;;;
  ;; ** Which-Key ;;
