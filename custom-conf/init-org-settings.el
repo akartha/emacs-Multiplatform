@@ -5,9 +5,6 @@
 
 (require 'org)
 
-(defvar ak/my-org-file-location nil
-"Location of the org-files on this machine")
-
 (defface org-link-id
   '((t :foreground "#00af00"
        :weight bold

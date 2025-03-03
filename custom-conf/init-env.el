@@ -10,6 +10,9 @@
 "Either my Raspberry Pi 4 or the Clockworkpi uconsole")
 (defvar ak/my-package-list nil)
 
+(defvar ak/my-org-file-location nil
+"Location of the org-files on this machine")
+
 (cond ((string=  (system-name) "arun-framework")
        (setq ak/my-framework-p t))
       ((string=  (system-name) "FRAMEWORKWIN")
