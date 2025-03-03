@@ -108,77 +108,6 @@
 ;; converts selected text in clipboard to html, and then uses pandoc to convert it to org mode            ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;###autoload
-(defun ak/insert-org-from-html-clipboard ()
-  "Converts selected text in system clipboard to html, 
-and then uses pandoc to convert it to org mode"
-  (interactive)
-  (if (not (executable-find "pandoc")) 
-      (error "pandoc executable not found"))
-  (let* ((pandoc-command 
-          "pandoc -f html -t org --wrap=none")
-       (linux-clip-as-html-command 
-        "xclip -select clipboard -target text/html -o")
-       (mac-clip-as-html-command 
-        "osascript -e 'the clipboard as \"HTML\"' | perl -ne 'print chr foreach unpack(\"C*\",pack(\"H*\",substr($_,11,-3)))'")
-       (windows-clip-as-html-command 
-        "powershell -command Get-Clipboard -Format Text -TextFormatType Html"))
-    (cond 
-     (ak/generic-windows-p 
-      (shell-command (concat windows-clip-as-html-command " | " pandoc-command) 1))
-     (ak/generic-mac-p 
-      (shell-command (concat mac-clip-as-html-command " | " pandoc-command) 1))
-     (t 
-      (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
-
-;;;###autoload
-(defun ak/export-org-to-clipboard-as-rtf ()
-  "Export org buffer to HTML, and copy it to the clipboard as rtf.
-Requires pandoc"
-  (interactive)
-  (save-window-excursion
-    (let* ((pandoc-command "pandoc --embed-resource --standalone --from=html --to=rtf")
-           (rtf-clip-command nil)
-           (org-export-show-temporary-export-buffer nil)
-           (buf "*Org HTML Export*")
-           (html nil))
-      (org-html-export-as-html)
-      (setq html (with-current-buffer buf (buffer-string)))
-           ;;  (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
-           ;; (html (with-current-buffer buf (buffer-string))))
-      (cond
-       (ak/generic-mac-p 
-        (if (not (executable-find "pandoc")) 
-            (error "pandoc executable not found"))
-        (setq rtf-clip-command "pbcopy --Prefer rtf")
-        (with-current-buffer buf
-          (shell-command-on-region
-           (point-min)
-           (point-max)
-           (concat pandoc-command "|" rtf-clip-command))))
-       (ak/generic-windows-p
-        (if (not (executable-find "pandoc")) 
-            (error "pandoc executable not found"))
-        (setq rtf-clip-command "powershell -command Set-Clipboard -AsHtml")
-        (with-current-buffer buf
-          (shell-command-on-region
-           (point-min)
-           (point-max)
-           (concat pandoc-command "|" rtf-clip-command))))
-       (t ;;;generic linux station. requires xclip. 
-        (if (not (executable-find "xclip")) 
-            (error "xclip executable not found. Linux requires it!"))
-        (setq rtf-clip-command "xclip -verbose -i \"%f\" -t text/html -selection clipboard")
-        (let* ((tmpfile (make-temp-file "org-rtf-clip-" nil ".html" html))
-               (proc (apply 
-                      'start-process "org-rtf-clip" "*org-rtf-clip*" 
-                      (split-string-and-unquote
-                       (format-spec rtf-clip-command
-                                    `((?f . ,tmpfile))) " "))))
-          (set-process-query-on-exit-flag proc nil))))
-      (kill-buffer buf))))
-
-
 
 ;; (define-key ak-map (kbd "<f2>") 'ak/insert-org-from-html-clipboard)
 (define-key ak-map (kbd "<f4>") '("Insert clipboard as org" . 
@@ -187,12 +116,12 @@ Requires pandoc"
                                     (ak/insert-org-from-html-clipboard)
                                     (org-web-tools--clean-pandoc-output))))
 
-(define-key ak-map (kbd "<f5>") '("Clean pandoc vestiges from buffer" . 
-                                  (lambda () 
-                                    (interactive)
-                                    (org-web-tools--clean-pandoc-output))))
+;; (define-key ak-map (kbd "<f5>") '("Clean pandoc vestiges from buffer" . 
+;;                                   (lambda () 
+;;                                     (interactive)
+;;                                     (org-web-tools--clean-pandoc-output))))
 
-(define-key ak-map (kbd "<f12>") '("Copy Org as Rich Text" . ak/export-org-to-clipboard-as-rtf))
+;; (define-key ak-map (kbd "<f12>") '("Copy Org as Rich Text" . ak/export-org-to-clipboard-as-rtf))
 
 
 (defun ak/search-replace-with-region (beg end prefix)

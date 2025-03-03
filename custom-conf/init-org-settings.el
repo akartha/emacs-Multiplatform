@@ -706,19 +706,100 @@ If NO-RECURSION is non-nil don't count the words in subsections."
      )
     (format-time-string "%Y-%m-%d %T" (apply #'encode-time dtt))))
 
-;; (defun ak/insert-date-special-tag
+
+;;;###autoload
+(defun ak/insert-org-from-html-clipboard ()
+  "Converts selected text in system clipboard to html, 
+and then uses pandoc to convert it to org mode"
+  (interactive)
+  (if (not (executable-find "pandoc")) 
+      (error "pandoc executable not found"))
+  (let* ((pandoc-command 
+          "pandoc -f html -t org --wrap=none")
+       (linux-clip-as-html-command 
+        "xclip -select clipboard -target text/html -o")
+       (mac-clip-as-html-command 
+        "osascript -e 'the clipboard as \"HTML\"' | perl -ne 'print chr foreach unpack(\"C*\",pack(\"H*\",substr($_,11,-3)))'")
+       (windows-clip-as-html-command 
+        "powershell -command Get-Clipboard -Format Text -TextFormatType Html"))
+    (cond 
+     (ak/generic-windows-p 
+      (shell-command (concat windows-clip-as-html-command " | " pandoc-command) 1))
+     (ak/generic-mac-p 
+      (shell-command (concat mac-clip-as-html-command " | " pandoc-command) 1))
+     (t 
+      (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
+
+
+
+;;;###autoload
+(defun ak/export-org-to-clipboard-as-rtf ()
+  "Export org buffer to HTML, and copy it to the clipboard as rtf.
+Requires pandoc"
+  (interactive)
+  (save-window-excursion
+    (let* ((pandoc-command "pandoc --embed-resource --standalone --from=html --to=rtf")
+           (rtf-clip-command nil)
+           (org-export-show-temporary-export-buffer nil)
+           (buf "*Org HTML Export*")
+           (html nil))
+      (org-html-export-as-html)
+      (setq html (with-current-buffer buf (buffer-string)))
+           ;;  (buf (org-export-to-buffer 'html "*Formatted Copy*" nil nil t t))
+           ;; (html (with-current-buffer buf (buffer-string))))
+      (cond
+       (ak/generic-mac-p 
+        (if (not (executable-find "pandoc")) 
+            (error "pandoc executable not found"))
+        (setq rtf-clip-command "pbcopy --Prefer rtf")
+        (with-current-buffer buf
+          (shell-command-on-region
+           (point-min)
+           (point-max)
+           (concat pandoc-command "|" rtf-clip-command))))
+       (ak/generic-windows-p
+        (if (not (executable-find "pandoc")) 
+            (error "pandoc executable not found"))
+        (setq rtf-clip-command "powershell -command Set-Clipboard -AsHtml")
+        (with-current-buffer buf
+          (shell-command-on-region
+           (point-min)
+           (point-max)
+           (concat pandoc-command "|" rtf-clip-command))))
+       (t ;;;generic linux station. requires xclip. 
+        (if (not (executable-find "xclip")) 
+            (error "xclip executable not found. Linux requires it!"))
+        (setq rtf-clip-command "xclip -verbose -i \"%f\" -t text/html -selection clipboard")
+        (let* ((tmpfile (make-temp-file "org-rtf-clip-" nil ".html" html))
+               (proc (apply 
+                      'start-process "org-rtf-clip" "*org-rtf-clip*" 
+                      (split-string-and-unquote
+                       (format-spec rtf-clip-command
+                                    `((?f . ,tmpfile))) " "))))
+          (set-process-query-on-exit-flag proc nil))))
+      (kill-buffer buf))))
 
 (defvar ak/org-roam-buffer-actions-alist '((?1 "Set Author\n" ak/set-author-property)
-                                           (?2 "Create Org-roam entry\n" (lambda() 
-                                                                           (interactive)
-                                                                           (org-id-get-create)
-                                                                           (call-interactively 'org-set-property)))
-                                           ;; (?3 "Place Holder\n" (lambda () (message "I am a lone wolfpack") 'wolf)))
-                                           (?3 "Clean base64 artefacts\n" ak/delete-image-base-64-data-lines)
-                                           ;; (?4 "Count words in section\n" org+-count-words-of-heading)
-                                           (?5 "Add nytimes articles to org-roam" (lambda ()
-                                                                                    (interactive)
-                                                                                    (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/"))))
+                                           (?2 "Create Org-roam entry\n" 
+                                               (lambda() 
+                                                 (interactive)
+                                                 (org-id-get-create)
+                                                 (call-interactively 'org-set-property)))
+                                           (?3 "Copy Org as Rich Text\n"  ak/export-org-to-clipboard-as-rtf)
+                                           (?4 "Insert clipboard as org\n" 
+                                               (lambda () 
+                                                 (interactive)
+                                                 (ak/insert-org-from-html-clipboard)
+                                                 (org-web-tools--clean-pandoc-output)))
+                                           (?5 "Clean base64 artefacts\n" ak/delete-image-base-64-data-lines)
+                                           (?6 "Clean pandoc vestiges from buffer\n" 
+                                               (lambda () 
+                                                 (interactive)
+                                                 (org-web-tools--clean-pandoc-output)))
+                                           (?9 "Add nytimes articles to org-roam" 
+                                               (lambda ()
+                                                 (interactive)
+                                                 (ak/process-input-org-dir-for-roam "~/Dropbox/org-files/nytimes/"))))
   "List that associates numbers to common actions that can be taken on an org-roam buffer.")
 
 (defun ak/org-roam-buffer-actions-choose ()
