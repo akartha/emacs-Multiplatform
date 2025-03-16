@@ -225,23 +225,6 @@ If LINK is specified, use that instead."
 )
 
 
-(defun ak/embark-clip-web-page-title-and-search-org-roam (url)
-  "Parses web page's title from url and searches org-roam.
-Provides an embark action to capture urls in org-roam from url/org-link at point"
-  ;; (interactive )
-  (let* ((html (org-web-tools--get-url url))
-         (title (org-web-tools--html-title html)))
-    (kill-new url)
-    (org-roam-node-find nil title nil nil 
-                        :templates 
-                        '(("w" "web" plain "%?"
-                           :if-new (file+head "%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+filetags: web\n")
-                           :unnarrowed t)))))
-
-(with-eval-after-load 'embark
-  (define-key embark-url-map (kbd "<f2>") #'ak/embark-clip-web-page-title-and-search-org-roam)
-  (define-key embark-org-link-map (kbd "<f2>") #'ak/embark-clip-web-page-title-and-search-org-roam))
-
 ;;;; Run commands in a popup frame
 ;;;;https://protesilaos.com/codelog/2024-09-19-emacs-command-popup-frame-emacsclient/
 
@@ -294,6 +277,24 @@ Also see `prot-window-delete-popup-frame'." command)
   (prot-window-define-with-nonx-popup-frame ak/clip-web-page-title-and-search-org-roam)
   (prot-window-define-with-nonx-popup-frame org-capture))
   
+
+
+;;From https://sachachua.com/blog/2025/03/getting-an-org-link-url-from-a-string-debugging-regex-groups/
+;;use something like below to debug regex matching
+  ;;(let ((text "blah [[https://example.com][example]] blah blah"))
+  ;; (when (string-match org-link-any-re text)
+  ;;   (pp-to-string (my-match-groups text))))
+(defun my-match-groups (&optional object)
+  "Return the matching groups, good for debugging regexps."
+  (seq-map-indexed (lambda (entry i)
+                     (list i entry
+                           (and (car entry)
+                                (if object
+                                    (substring object (car entry) (cadr entry))
+                                  (buffer-substring (car entry) (cadr entry))))))
+                   (seq-partition
+                    (match-data t)
+                    2)))
 
 (provide 'non-core)
 

@@ -1,9 +1,6 @@
 ;;; -*- lexical-binding: t; -*-
 
-;; (require 'xkcd)
 (require 'url)
-;; (require 'avy)
-;; (require 'hydra)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; ** Improved kill-word ;;
@@ -72,26 +69,6 @@
   (message "Copied current line"))
 
 (define-key ak-map "l" '("Copy line" . ak/copy-whole-line))
-
-;; (defun ak/copy-lines (n)
-;;   "Copies a lines without regard for cursor position."
-;;   (interactive "*p")
-;;   (save-excursion
-;;     (pos-bol)
-;;     (kill-line (or n 1))))
-    
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ** Kill a line 
-;; And this quickly deletes a line
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  (global-set-key (kbd "C-c l k") 'kill-whole-line)
-;; (define-key ak-map "L" (lambda ()
-;;                           (interactive)
-;;                           (kill-whole-line)
-;;                           (message "Killed whole line")))
-;; (define-key ak-map "L" '("Kill line" . kill-whole-line))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Insert date at point. With prefix, insert time-stamp too  ;;
@@ -404,42 +381,6 @@ PREFIX, specify word to search"
   (if arg
     (dictionary-search nil)
       (dictionary-lookup-definition)))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Replace garbage in word and other copy and paste  ;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (defun ak/replace-garbage ()
-;; "Replace non-rendering MS and other garbage characters with latin1 equivalents."
-;; (interactive)
-;; (save-excursion             ;save the current point
-;; (replace-string "\221" "`" nil (point-min) (point-max))
-;; (replace-string "\222" "'" nil (point-min) (point-max))
-;; (replace-string "\226" "-" nil (point-min) (point-max))
-;; (replace-string "\227" "--" nil (point-min) (point-max))
-;; (replace-string "\223" "(" nil (point-min) (point-max))
-;; (replace-string "\224" ")" nil (point-min) (point-max))
-;; (replace-string "\205" "..." nil (point-min) (point-max))
-;; (replace-string "\225" "-" nil (point-min) (point-max))
-;; (replace-string "\344" "" nil (point-min) (point-max))
-;; (replace-string "\374" "" nil (point-min) (point-max))
-;; (replace-string "\337" "" nil (point-min) (point-max))
-;; (replace-string "\366" "" nil (point-min) (point-max))
-;; (replace-string "\247" "***" nil (point-min) (point-max))
-;; (replace-string "\267" "****" nil (point-min) (point-max))
-;; (replace-string "\351" "é" nil (point-min) (point-max))
-;; (replace-string "\347" "ç" nil (point-min) (point-max))
-;; (replace-string "\352" "ê" nil (point-min) (point-max))
-;; (replace-string "\342" "â" nil (point-min) (point-max))
-;; (replace-string "\307" "Ç" nil (point-min) (point-max))
-;; (replace-string "\340" "à" nil (point-min) (point-max))
-;; (replace-string "\340" "à" nil (point-min) (point-max))
-;; (replace-string "\364" "ô" nil (point-min) (point-max))
-;; (replace-string "\353" "ë" nil (point-min) (point-max))
-;; (replace-string "\243" "£" nil (point-min) (point-max))
-;; ));end replace-garbage-characters
-;; ;bind-key replace-garbage-characters
-;; (define-key  ak-map "R"  '("Replace text garbage" . ak/replace-garbage))
-
 
 (use-package hydra
   :ensure t
@@ -763,6 +704,7 @@ Version 2016-07-28"
               (message "%s available at %s" binary loc))
           (message "%s is not on path or is not installed" binary))))))
 
+;;;###autoload
 (defun ak/download-url-at-point ()
   "Place point inside a url and this will download the url 
 to the current directory in the '_downloads' folder"
@@ -774,43 +716,6 @@ to the current directory in the '_downloads' folder"
          (local-file-name 
           (read-from-minibuffer "Enter filename: ")))
     (ak/download-file url directory local-file-name)))
-
-(defun ak/download-image-at-point-and-insert-org-link ()
-  "Download the image in an org article to '_downloads' folder
-and insert org image block for it"
-  (interactive)
-  (let* ((url (thing-at-point-url-at-point))
-         (url-bnds (bounds-of-thing-at-point 'url))
-         (directory "_downloads/")
-         (local-file-name (read-from-minibuffer "Enter File Name:" (buffer-name))))
-    (kill-region (car url-bnds) (cdr url-bnds))
-    (kill-whole-line 0)
-    (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s \n"
-            local-file-name url (concat directory local-file-name) ))
-    ;; Message success to the minibuffer
-    (org-display-inline-images)
-    (ak/download-file url directory local-file-name)))
-
-
-(defun ak/embark-download-image-at-point-and-insert-org-link (url )
-  "Act on image at point, download  to '_downloads' folder
-and insert org image block for it"
-  ;; (interactive)
-  (let* ((url-bnds (bounds-of-thing-at-point 'url))
-         (directory (format "_downloads/%s/" (nth 1 (string-split (buffer-name) "-" t)) "/"))
-         (local-file-name (read-from-minibuffer "Enter File Name:" (last (string-split url "/" t) ))))
-    (kill-region (car url-bnds) (cdr url-bnds))
-    (kill-whole-line)
-    (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s\n"
-            local-file-name url (concat directory local-file-name) ))
-    ;; Message success to the minibuffer
-    (ak/download-file url directory local-file-name)
-    (org-display-inline-images)))
-
-(with-eval-after-load 'embark
-  (define-key embark-org-link-map (kbd "<f12>") #'ak/embark-download-image-at-point-and-insert-org-link))
 
 
 (use-package easy-kill
