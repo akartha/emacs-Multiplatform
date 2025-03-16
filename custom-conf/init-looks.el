@@ -4,12 +4,6 @@
 (add-to-list 'default-frame-alist '(mouse-color . "#FF8800"))
 (add-to-list 'default-frame-alist '(cursor-color . "#FF0000"))
 
-;; (use-package modus-themes
-;;   ;; :straight t
-;;   :custom
-;;   (setq modus-themes-org-blocks 'tinted-background)
-;;   :init
-;;   (load-theme 'modus-vivendi-tinted t)) ;;other themes - modus-vivendi, modus-operandi, modus-operandi-tinted/deuteranopia, etc.
 (use-package ef-themes
   :ensure t 
   :init
@@ -27,19 +21,11 @@
 ;;                      ef-deuteranopia-light  
 ;;                      ef-light  
 
-;; (use-package ef-themes
-;;   ;; :straight t
-;;   ;; :custom
-;;   ;; (setq modus-themes-org-blocks 'tinted-background)
-;;   :init
-;;   (load-theme 'ef-autumn t))
-
 (use-package fontaine 
   :ensure t
   :config 
 
-
-  (setq fontaine-latest-state-file
+(setq fontaine-latest-state-file
         (locate-user-emacs-file "fontaine-latest-state.eld"))
 
   ;; Iosevka Comfy            == monospaced, supports ligatures
@@ -49,7 +35,7 @@
   ;; Iosevka Comfy Wide Fixed == like Iosevka Comfy Fixed, but wider
   ;; Iosevka Comfy Motion     == monospaced, supports ligatures, fancier glyphs
   ;; Iosevka Comfy Motion Duo == as above, but quasi-proportional
-  (when (or ak/my-framework-p ak/my-win-framework-p ak/my-pi-p)
+  (when (or ak/my-framework-p ak/my-win-framework-p)
     (setq fontaine-presets
           '((tiny
              :default-family "Iosevka Comfy Wide Fixed"
@@ -78,6 +64,61 @@
              :default-weight semilight
              :default-height 235
              :line-spacing 15)              ;this is in pixels
+            (immersive-writing
+             :default-family "Iosevka Comfy Wide Fixed" 
+             :default-weight semilight
+             :default-height 235
+             :line-spacing 13)              ;this is in pixels
+            (t
+             ;; See the fontaine manual for the technicalities:
+             ;; <https://protesilaos.com/emacs/fontaine>.
+             :default-family "Iosevka Comfy"
+             :default-weight regular
+             :default-height 100
+             :fixed-pitch-family nil ; falls back to :default-family
+             :fixed-pitch-weight nil ; falls back to :default-weight
+             :fixed-pitch-height 1.0
+             :fixed-pitch-serif-family nil ; falls back to :default-family
+             :fixed-pitch-serif-weight nil ; falls back to :default-weight
+             :fixed-pitch-serif-height 1.0
+             :variable-pitch-family "Iosevka Comfy Motion Duo"
+             :variable-pitch-weight nil
+             :variable-pitch-height 1.3
+             :bold-family nil ; use whatever the underlying face has
+             :bold-weight bold
+             :italic-family "Iosevka Comfy Motion"
+             :italic-slant italic
+             :line-spacing 3))))
+  
+(when ak/my-pi-p
+    (setq fontaine-presets
+          '((tiny
+             :default-family "Iosevka Comfy Wide Fixed"
+             :default-height 90)
+            (small
+             :default-family "Iosevka Comfy Fixed"
+             :default-height 110)
+            (regular
+             :default-height 140)
+            (medium
+             :default-height 155)
+            (large
+             :default-weight semilight
+             :default-height 170
+             :bold-weight extrabold)
+            (code-demo
+             :default-weight semilight
+             :default-height 185
+             :bold-weight extrabold)
+            (presentation
+             :default-weight semilight
+             :default-height 300
+             :bold-weight extrabold)
+            (reading
+             :default-family "Iosevka Comfy Motion Duo" 
+             :default-weight semilight
+             :default-height 335
+             :line-spacing 19)              ;this is in pixels
             (immersive-writing
              :default-family "Iosevka Comfy Wide Fixed" 
              :default-weight semilight
@@ -285,13 +326,14 @@
   :ensure t
   :config
 (if ak/my-pi-p
-    (setq spacious-padding-widths '( :internal-border-width 10
+    (setq spacious-padding-widths '( :internal-border-width 2
                                      :header-line-width 4
                                      :mode-line-width nil
                                      :tab-width 4
-                                     :right-divider-width nil
+                                     :right-divider-width 1
                                      :scroll-bar-width nil
-                                     :fringe-width 50))  
+                                     :left-fringe-width 1
+                                     :fringe-width 20))  
   (setq spacious-padding-widths '( :internal-border-width 45
                                    :header-line-width 4
                                    :mode-line-width nil
