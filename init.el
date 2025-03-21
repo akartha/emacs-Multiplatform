@@ -12,11 +12,13 @@
 
 (require 'init-env)
 
-(unless ak/generic-windows-p
-  (require 'elpaca-bootstrap)
+;; (unless ak/generic-windows-p
+;;   (require 'elpaca-bootstrap)
 
-  (elpaca elpaca-use-package
-    (elpaca-use-package-mode)))
+(require 'elpaca-bootstrap)
+
+(elpaca elpaca-use-package
+  (elpaca-use-package-mode))
 
   ;; (elpaca-wait)
 ;; (elpaca-process-queues))
@@ -29,8 +31,8 @@
 			 ;; ("org"   . "https://orgmode.org/elpa/")))
 (package-initialize)
 
-;; (if ak/generic-windows-p
-;;     (elpaca-no-symlink-mode))
+(if ak/generic-windows-p
+    (elpaca-no-symlink-mode))
 
 (require 'init-basic)
 
