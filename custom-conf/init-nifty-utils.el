@@ -717,12 +717,17 @@ to the current directory in the '_downloads' folder"
           (read-from-minibuffer "Enter filename: ")))
     (ak/download-file url directory local-file-name)))
 
-
-(use-package easy-kill
-  :ensure t
-  :bind ("C-=" . easy-mark)
-  :config
-  (global-set-key [remap kill-ring-save] 'easy-kill))
-
+(defun ak/ssh-copy-pub-key ()
+  "Select a .pub key from ~/.ssh/ and copy its contents to the kill ring."
+  (interactive)
+  (let* ((ssh-dir (expand-file-name "~/.ssh/"))
+         (keys (when (file-exists-p ssh-dir)
+                 (directory-files ssh-dir t "\\.pub$")))
+         (key-name (completing-read "Select SSH public key: " keys nil t)))
+    (when key-name
+      (with-temp-buffer
+        (insert-file-contents key-name)
+        (kill-new (buffer-string)))
+      (message "Copied %s to kill ring" key-name))))
 
 (provide 'init-nifty-utils)

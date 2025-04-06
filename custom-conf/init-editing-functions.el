@@ -215,6 +215,13 @@
   ;;           (add-hook hook #'jinx-mode)))
 
 
+(use-package easy-kill
+  :ensure t
+  :bind ("C-=" . easy-mark)
+  :config
+  (global-set-key [remap kill-ring-save] 'easy-kill))
+
+
 ;;from https://emacs.stackexchange.com/questions/3941/when-typing-automatically-transform-spc-spc-into-period-spc-spc
 ;;I don't want to double space after period, so just a single space after the period 
 ;;is fine.
