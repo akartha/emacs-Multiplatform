@@ -45,6 +45,8 @@
 
 (require 'init-org-settings)
 
+(require 'org-roam-settings)
+
 (require 'non-core)
 
 (require 'init-nifty-utils)
