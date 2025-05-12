@@ -85,19 +85,13 @@
   (condition-case err
       (org-next-item)
     (error (org-next-visible-heading 1))))
-;; (define-key org-mode-map (kbd "C-c C-n") #'ag/next-entry-or-next-visible-header)
 
 (defun ak/previous-entry-or-previous-visible-header ()
   (interactive)
   (condition-case err
       (org-previous-item)
     (error (org-previous-visible-heading 1))))
-;; (define-key org-mode-map (kbd "C-c C-p") #'ag/previous-entry-or-previous-visible-header)
-
-
-;; (define-key ak-map "p" '("Previous heading" . org-previous-visible-heading))
-;; (define-key ak-map "P" '("Next heading" . org-next-visible-heading))
-                  
+        
 (define-key ak-map "p" '("Previous item/heading" . ak/previous-entry-or-previous-visible-header))
 (define-key ak-map "n" '("Next item/heading" . ak/next-entry-or-next-visible-header))    
 (define-key org-mode-map (kbd "M-]") '("Next org item" . org-forward-element))
@@ -306,6 +300,14 @@
   ;; (cl-pushnew '(mermaid . t) org-babel-load-languages))
   (add-to-list 'org-babel-load-languages '(mermaid . t)))
 
+
+(use-package ob-duckdb
+  :ensure (:type git :host github :repo "gggion/ob-duckdb")
+  :after org
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages
+   (append org-babel-load-languages '((duckdb . t)))))
 
 (org-babel-do-load-languages 'org-babel-load-languages org-babel-load-languages)
 

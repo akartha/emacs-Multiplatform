@@ -3,6 +3,7 @@
 
 (use-package org-roam
   :ensure t 
+  :defer t
   ;; :after org-web-tools
   :init
   ;; (declare-function org-web-tools--get-url "org-web-tools")

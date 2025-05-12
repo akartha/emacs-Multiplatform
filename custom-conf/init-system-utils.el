@@ -9,25 +9,27 @@
 
 (use-package vertico
   :ensure (:files (:defaults "extensions/*"))
+  :defer t
   :init
   (vertico-mode 1)
-  ;; Different scroll margin
-  (setq vertico-scroll-margin 1)
-  ;; Show more candidates
-  (setq vertico-count 10)
-  ;; Grow and shrink the Vertico minibuffer
-  (setq vertico-resize t)
-  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
   :custom
-  (setq vertico-cycle t)
+  ;; Different scroll margin
+  (vertico-scroll-margin 1)
+  ;; Show more candidates
+  (vertico-count 10)
+  ;; Grow and shrink the Vertico minibuffer
+  (vertico-resize t)
+  ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+  (vertico-cycle t)
   :commands
   vertico-mode
-  :after minibuffer 
+  ;; :after minibuffer 
+  ;; :hook (minibuffer-setup . vertico-mode)
   :bind (("C-x /" . vertico-suspend)
          (:map vertico-map
               ("M-RET"   . nil)
               ("M-s"     . nil)
-              ("<tab>"     . vertico-insert)
+              ("<tab>"   . vertico-insert)
               ("C-M-n"   . vertico-next-group)
               ("C-M-p"   . vertico-previous-group)
               ("C-j"     . (lambda () (interactive)
@@ -45,7 +47,7 @@
   :init
   ;; Add prompt indicator to `completing-read-multiple'.
   ;; We display [CRM<separator>], e.g., [CRM,] if the separator is a comma.
-  ;;;###autoload
+;;;###autoload
   (defun crm-indicator (args)
     (cons (format "[CRM%s] %s"
                   (replace-regexp-in-string
@@ -85,53 +87,52 @@
               ("M-G" . vertico-multiform-grid)
               ("C-M-l" . embark-export))
   :init (vertico-multiform-mode 1)
-  :config
-  (setq vertico-multiform-categories
-         '((file reverse indexed)
-           (project-file grid)
-           (imenu buffer)
-           (consult-location buffer indexed)
-           (consult-grep buffer indexed)
-           (consult-ripgrep buffer indexed)
-           (minor-mode reverse)
-           (xref-location reverse)
-           (history reverse)
-           (url reverse)
-           (consult-info buffer)
-           (kill-ring reverse indexed)
-           (consult-compile-error reverse)
-           (buffer reverse indexed)
-           (org-roam-node reverse indexed)
-           (t grid indexed)))
-   (setq vertico-multiform-commands
-         '(;;(jinx-correct reverse indexed)
-           (jinx grid (vertico-grid-annotate . 20))
-           (tab-bookmark-open reverse)
-           (dired-goto-file grid indexed)
-           (load-theme grid reverse)
-           (org-refile reverse)
-           (org-agenda-refile reverse)
-           (org-capture-refile reverse)
-           (execute-extended-command reverse indexed)
-           (dired-goto-file grid)
-           (consult-project-buffer grid)
-           (consult-dir-maybe reverse)
-           (consult-dir reverse)
-           (consult-flymake reverse)
-           (consult-history reverse)
-           (consult-completion-in-region reverse)
-           (consult-recoll reverse)
-           (consult-line buffer)
-           (completion-at-point reverse)
-           (org-roam-node-find (vertico-sort-function . vertico-sort-history-alpha) reverse)
-           (embark-completing-read-prompter reverse)
-           (embark-act-with-completing-read reverse)
-           (embark-prefix-help-command reverse)
-           (embark-bindings reverse)
-           (consult-org-heading reverse)
-           (embark-find-definition reverse)
-           (xref-find-definitions reverse)
-           (tmm-menubar reverse))))
+  :custom
+  (vertico-multiform-categories '((file reverse indexed)
+                                  (project-file grid)
+                                  (imenu buffer)
+                                  (consult-location buffer indexed)
+                                  (consult-grep buffer indexed)
+                                  (consult-ripgrep buffer indexed)
+                                  (minor-mode reverse)
+                                  (xref-location reverse)
+                                  (history reverse)
+                                  (url reverse)
+                                  (consult-info buffer)
+                                  (kill-ring reverse indexed)
+                                  (consult-compile-error reverse)
+                                  (buffer reverse indexed)
+                                  (org-roam-node reverse indexed)
+                                  (t grid indexed)))
+  (vertico-multiform-commands '(;;(jinx-correct reverse indexed)
+                                (jinx grid (vertico-grid-annotate . 20))
+                                (tab-bookmark-open reverse)
+                                (dired-goto-file grid indexed)
+                                (load-theme grid reverse)
+                                (org-refile reverse)
+                                (org-agenda-refile reverse)
+                                (org-capture-refile reverse)
+                                (execute-extended-command reverse indexed)
+                                (dired-goto-file grid)
+                                (consult-project-buffer grid)
+                                (consult-dir-maybe reverse)
+                                (consult-dir reverse)
+                                (consult-flymake reverse)
+                                (consult-history reverse)
+                                (consult-completion-in-region reverse)
+                                (consult-recoll reverse)
+                                (consult-line buffer)
+                                (completion-at-point reverse)
+                                (org-roam-node-find 
+                                 (vertico-sort-function . vertico-sort-history-alpha) reverse)
+                                (embark-completing-read-prompter reverse)
+                                (embark-act-with-completing-read reverse)
+                                (embark-prefix-help-command reverse)
+                                (embark-bindings reverse)
+                                (consult-org-heading reverse)
+                                (embark-find-definition reverse)
+                                (xref-find-definitions reverse)
+                                (tmm-menubar reverse))))
 
 (use-package vertico-unobtrusive
   :after vertico-flat)
@@ -425,27 +426,32 @@
   (setq dired-subtree-use-backgrounds nil))
 
 (use-package nerd-icons
-  :ensure t)
+  :ensure t
+  :defer t)
 
 (use-package nerd-icons-completion
   :ensure t
+  :defer t
   :after marginalia
   :config
   (add-hook 'marginalia-mode-hook #'nerd-icons-completion-marginalia-setup))
 
 (use-package nerd-icons-corfu
   :ensure t
+  :defer t
   :after corfu
   :config
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package nerd-icons-dired
   :ensure t
+  :defer t
   :hook
   (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-open
   :ensure t
+  :defer t
   :config
   (when ak/my-framework-p
     (setq dired-open-extensions '(("png" . "feh")
@@ -478,6 +484,7 @@
 ;; Async
 (use-package async
   :ensure t
+  :defer t
   :init (dired-async-mode 1))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -486,6 +493,7 @@
 
 (use-package dashboard
   :ensure t
+  :defer t
   :custom
   (dashboard-banner-logo-title "What do we feel like doing today?")
   (initial-buffer-choice 'dashboard-open)
@@ -511,22 +519,25 @@
                                dashboard-insert-items
                                dashboard-insert-newline
                                dashboard-insert-footer))
-
+  (dashboard-center-content t)
+  (dashboard-vertically-center-content t)
+  :hook ((elpaca-after-init . dashboard-insert-startupify-lists)
+         (elpaca-after-init . dashboard-initialize))
   :config
-  (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
-  (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
+  ;; (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
+  ;; (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
   (dashboard-setup-startup-hook)
 
   ;; (setq initial-buffer-choice (lambda () (get-buffer-create dashboard-buffer-name))
-  (setq dashboard-center-content t
-        dashboard-vertically-center-content t)
+  ;; (setq dashboard-center-content t
+  ;;       dashboard-vertically-center-content t)
 
   (if (executable-find "fortune")
       ;; (or ak/my-framework-p ak/my-mac-p) 
       (setq dashboard-footer-messages (list (shell-command-to-string "fortune"))))
   
-  (add-hook 'dashboard-mode-hook (lambda ()
-                                   (visual-line-mode 1)))
+  ;; (add-hook 'dashboard-mode-hook (lambda ()
+  ;;                                  (visual-line-mode 1)))
   ;; (add-hook 'elpaca-after-init-hook #'dashboard-insert-startupify-lists)
   ;; (add-hook 'elpaca-after-init-hook #'dashboard-initialize)
 
@@ -539,6 +550,7 @@
 
 (use-package which-key
   :ensure t
+  :defer t
   :diminish
   :config
   (if ak/my-pi-p
@@ -551,6 +563,7 @@
 ;;;;;;;;;;;
 (use-package corfu
   :ensure t
+  :defer t
   ;; Optional customizations
   ;; :after eglot 
   :custom
@@ -567,8 +580,8 @@
   (corfu-popupinfo-delay '(1.25 . 0.5))
   :hook 
   (((prog-mode text-mode shell-mode eshell-mode minibuffer-setup) . corfu-mode)
-  (prog-mode . corfu-popupinfo-mode)
-  ((prog-mode minibuffer-setup) . corfu-history-mode))
+   (prog-mode . corfu-popupinfo-mode)
+   ((prog-mode minibuffer-setup) . corfu-history-mode))
   :bind
   ;; Another key binding can be used, such as S-SPC.
   (:map corfu-map 
@@ -583,8 +596,7 @@
   :config
   (with-eval-after-load 'savehist
     (corfu-history-mode 1)
-    (add-to-list 'savehist-additional-variables 'corfu-history))
-      (corfu-popupinfo-mode 1))
+    (add-to-list 'savehist-additional-variables 'corfu-history)))
 
 
   (use-package corfu-candidate-overlay
@@ -641,45 +653,55 @@
   (add-to-list 'completion-at-point-functions #'cape-dabbrev) ;;Complete word from current buffers
   (add-to-list 'completion-at-point-functions #'cape-dict)
   (add-to-list 'completion-at-point-functions #'cape-file)
-  ;; (add-to-list 'completion-at-point-functions #'cape-elisp-block)
   ;; :hook (prog-mode . cape-mode))
   ;; (add-to-list 'completion-at-point-functions #'cape-file) ;;;; Complete file name
   (add-to-list 'completion-at-point-functions #'cape-elisp-block) ;;;; `cape-elisp-block': Complete Elisp in Org or Markdown code block.
 
 
   (advice-add 'eglot-completion-at-point :around #'cape-wrap-buster))
-  ;; (add-to-list 'completion-at-point-functions #'cape-history) ;;;; `cape-history': Complete from Eshell, Comint or minibuffer history
-  ;;(add-to-list 'completion-at-point-functions #'cape-tex) 
-  ;; (add-to-list 'completion-at-point-functions #'cape-sgml)
-  ;; (add-to-list 'completion-at-point-functions #'cape-rfc1345)
-  ;; (add-to-list 'completion-at-point-functions #'cape-abbrev)
-  ;; (add-to-list 'completion-at-point-functions #'cape-symbol))
-;;(add-to-list 'completion-at-point-functions #'cape-line)
-
+ 
 ;;;;;;;;;;;;
 ;; Popper ;;
 ;;;;;;;;;;;;
 (use-package popper
   :ensure t
+  ;; :after minibuffer
+  :defer t
   :bind (("C-`"   . popper-toggle)
          ("M-`"   . popper-cycle)
          ("C-M-`" . popper-toggle-type))
+  :custom
+  (popper-reference-buffers '("\\*Messages\\*"
+                              "[Oo]utput\\*$"
+                              "\\*Async Shell Command\\*"
+                              "^\\*Backtrace\\*"
+                              "\\*Completions\\*"
+                              "^\\*ielm\\*"
+                              "^Calc:"
+                              ("\\*Async Shell Command\\*" . hide)
+                              ("^\\*Warnings\\*$" . hide)
+                              ("^\\*Compile-Log\\*$" . hide)
+                              help-mode
+                              compilation-mode))
   :init
-  (setq popper-reference-buffers
-        '("\\*Messages\\*"
-          "[Oo]utput\\*$"
-          "\\*Async Shell Command\\*"
-          "^\\*Backtrace\\*"
-          "\\*Completions\\*"
-          "^\\*ielm\\*"
-          "^Calc:"
-          ("\\*Async Shell Command\\*" . hide)
-          ("^\\*Warnings\\*$" . hide)
-          ("^\\*Compile-Log\\*$" . hide)
-          help-mode
-          compilation-mode))
+  ;; (setq popper-reference-buffers
+  ;;       '("\\*Messages\\*"
+  ;;         "[Oo]utput\\*$"
+  ;;         "\\*Async Shell Command\\*"
+  ;;         "^\\*Backtrace\\*"
+  ;;         "\\*Completions\\*"
+  ;;         "^\\*ielm\\*"
+  ;;         "^Calc:"
+  ;;         ("\\*Async Shell Command\\*" . hide)
+  ;;         ("^\\*Warnings\\*$" . hide)
+  ;;         ("^\\*Compile-Log\\*$" . hide)
+  ;;         help-mode
+  ;;         compilation-mode))
   (popper-mode +1)
   (popper-echo-mode +1))                ; For echo area hints
+  ;; :hook (after-init . popper-mode)
+  ;; (after-init . popper-echo-mode))
+
 
 ;; A few more useful configurations...
 (use-package emacs
@@ -705,24 +727,43 @@
   :bind
   ("C-x o" . ace-window)
   ("M-o" . other-window)
+  :custom
+  (aw-dispatch-always t)
+  (aw-scope 'global)
+  (aw-background nil)
+  (aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+  (aw-dispatch-alist '((?k aw-delete-window "Delete Window")
+                       (?m aw-swap-window "Swap Windows")
+                       (?M aw-move-window "Move Window")
+                       (?c aw-copy-window "Copy Window")
+                       (?j aw-switch-buffer-in-window "Select Buffer")
+                       (?\t aw-flip-window)
+                       (?b aw-switch-buffer-other-window "Switch Buffer Other Window")
+                       (?c aw-split-window-fair "Split Fair Window")
+                       (?s aw-split-window-vert "Split Vert Window")
+                       (?v aw-split-window-horz "Split Horz Window")
+                       (?o delete-other-windows "Delete Other Windows")
+                       (?? aw-show-dispatch-help)))
   :config
-  (setq aw-dispatch-always t
-        aw-scope 'global
-        aw-background nil
-        aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
-  (setq aw-dispatch-alist
-        '((?k aw-delete-window "Delete Window")
-          (?m aw-swap-window "Swap Windows")
-          (?M aw-move-window "Move Window")
-          (?c aw-copy-window "Copy Window")
-          (?j aw-switch-buffer-in-window "Select Buffer")
-          (?\t aw-flip-window)
-          (?b aw-switch-buffer-other-window "Switch Buffer Other Window")
-          (?c aw-split-window-fair "Split Fair Window")
-          (?s aw-split-window-vert "Split Vert Window")
-          (?v aw-split-window-horz "Split Horz Window")
-          (?o delete-other-windows "Delete Other Windows")
-          (?? aw-show-dispatch-help)))
+  ;; (setq aw-dispatch-always t
+  ;;       aw-scope 'global
+  ;;       aw-background nil
+  ;;       aw-keys '(?1 ?2 ?3 ?4 ?5 ?6 ?7 ?8 ?9))
+  ;; (setq aw-dispatch-alist
+  ;;       '((?k aw-delete-window "Delete Window")
+  ;;         (?m aw-swap-window "Swap Windows")
+  ;;         (?M aw-move-window "Move Window")
+  ;;         (?c aw-copy-window "Copy Window")
+  ;;         (?j aw-switch-buffer-in-window "Select Buffer")
+  ;;         (?\t aw-flip-window)
+  ;;         (?b aw-switch-buffer-other-window "Switch Buffer Other Window")
+  ;;         (?c aw-split-window-fair "Split Fair Window")
+  ;;         (?s aw-split-window-vert "Split Vert Window")
+  ;;         (?v aw-split-window-horz "Split Horz Window")
+  ;;         (?o delete-other-windows "Delete Other Windows")
+  ;;         (?? aw-show-dispatch-help)))
+
+;;;###autoload
   (defun my/other-window-prev (&optional arg all-frames)
     (interactive "p")
     (other-window (if arg (- arg) -1) all-frames)))

@@ -77,17 +77,21 @@ Does not work with mac- so I have a package for that"
         ak/generic-mac-p)
         (set-exec-path-from-shell-PATH))
 
-;; Below, with tweaks, is from https://www.masteringemacs.org/article/maximizing-emacs-startup
-;;;###autoload
-(defun ak/maximize-frame ()
-  "Maximizes the active frame in Windows"
-  (interactive)
-  ;; Send a `WM_SYSCOMMAND' message to the active frame with the
-  ;; `SC_MAXIMIZE' parameter.
-  (if ak/generic-windows-p
-      (w32-send-sys-command 61488)))
+;; ;; Below, with tweaks, is from https://www.masteringemacs.org/article/maximizing-emacs-startup
+;; ;;;###autoload
+;; (defun ak/maximize-frame ()
+;;   "Maximizes the active frame in Windows"
+;;   (interactive)
+;;   ;; Send a `WM_SYSCOMMAND' message to the active frame with the
+;;   ;; `SC_MAXIMIZE' parameter.
+;;   (if ak/generic-windows-p
+;;       (w32-send-sys-command 61488)))
 
-(add-hook 'window-setup-hook 'ak/maximize-frame t)
+;; (add-hook 'window-setup-hook 'ak/maximize-frame t)
+(add-hook 'window-setup-hook 'toggle-frame-maximized t)
+
+;; (add-hook 'window-size-change-functions
+;;             #'frame-hide-title-bar-when-maximized)
 
 (cond (ak/my-framework-p
        (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))

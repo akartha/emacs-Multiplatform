@@ -234,7 +234,7 @@
 ;;
 ;;     (info "(elisp) Key Binding Conventions")
 (define-key global-map (kbd "C-c F") #'fontaine-set-preset)
-(define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
+;; (define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
 
 ;; (use-package all-the-icons
 ;;   :ensure t)
@@ -293,6 +293,7 @@
 
 (use-package rainbow-mode
   :ensure t
+  :defer t
   :diminish
   :init
   (add-hook 'prog-mode-hook 'rainbow-mode))
@@ -302,8 +303,9 @@
 (use-package rainbow-delimiters
   :ensure t
   :diminish
+  :defer t
   :custom 
-  (ainbow-delimiters-max-face-count 5)
+  (rainbow-delimiters-max-face-count 5)
   :init
   (add-hook 'prog-mode-hook #'rainbow-delimiters-mode))
 
@@ -324,6 +326,7 @@
 
 (use-package spacious-padding 
   :ensure t
+  :defer t
   :config
 (if ak/my-pi-p
     (setq spacious-padding-widths '( :internal-border-width 2
@@ -350,6 +353,7 @@
 
 (use-package logos
   :ensure t
+  ;; :defer t
   :config 
 ;; If you want to use outlines instead of page breaks (the ^L):
   (setq logos-outlines-are-pages t
@@ -415,5 +419,7 @@ toggle between presentation and regular fontaine presets"
 
 (define-key global-map (kbd "<f11>") '("Toggle Immersive Mode" . ak/toggle-immersive-mode))
 (define-key ak-display-settings-keymap "i" '("Toggle Immersive Mode" . ak/toggle-immersive-mode))
+
+(define-key ak-display-settings-keymap "z" '("Toggle full screen" . toggle-frame-fullscreen))
 
 (provide 'init-looks)
