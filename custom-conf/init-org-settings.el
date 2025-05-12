@@ -445,18 +445,23 @@ with image details."
           "pngpaste %s.png")
          (windows-shell-clip-command 
           "powershell -command \"Add-Type -AssemblyName System.Windows.Forms;if ($([System.Windows.Forms.Clipboard]::ContainsImage())) {$image = [System.Windows.Forms.Clipboard]::GetImage();[System.Drawing.Bitmap]$image.Save('%s.png',[System.Drawing.Imaging.ImageFormat]::Png); Write-Output 'Clipboard Content Saved As File'} else {Write-Output 'Clipboard Does Not Contain Image Data'}\""))
-    (make-directory (concat default-directory directory) t)
+    ;; (make-directory (concat default-directory directory) t)
+    (make-directory (file-name-concat (directory-file-name default-directory) directory) t)
     (cond ((or ak/my-framework-p ak/my-pi-p)
-           (shell-command (format linux-shell-clip-command (shell-quote-argument (concat default-directory  directory "/" filename )))))
+           ;; (shell-command (format linux-shell-clip-command (shell-quote-argument (concat default-directory  directory "/" filename )))))
+           (shell-command (format linux-shell-clip-command (shell-quote-argument (file-name-concat (directory-file-name default-directory) directory  filename )))))
           (ak/generic-windows-p
-           (shell-command (format windows-shell-clip-command (shell-quote-argument (concat default-directory  directory "/"  filename)))))
+           ;; (shell-command (format windows-shell-clip-command (shell-quote-argument (concat default-directory  directory "/"  filename)))))
+           (shell-command (format windows-shell-clip-command (shell-quote-argument (file-name-concat (directory-file-name default-directory) directory filename)))))
           (ak/my-mac-p
-           (shell-command (format mac-shell-clip-command (shell-quote-argument (concat default-directory  directory "/" filename))))))
+           ;; (shell-command (format mac-shell-clip-command (shell-quote-argument (concat default-directory  directory "/" filename))))))
+           (shell-command (format mac-shell-clip-command (shell-quote-argument (file-name-concat (directory-file-name default-directory) directory filename))))))
     ;; Insert formatted link at point
     (save-excursion 
       (insert(format 
               "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+attr_html: :width 750px \n#+attr_latex: :width 0.4\\textwidth \n[[file:%s.png]]"
-              caption caption (concat directory "/" filename))))
+              ;; caption caption (concat directory "/" filename))))
+              caption caption (file-name-concat (directory-file-name directory) filename))))
     ;; Message success to the minibuffer
     (message "saved to %s as %s.png" directory filename))
   (org-display-inline-images))
