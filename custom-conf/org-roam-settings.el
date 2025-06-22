@@ -14,11 +14,12 @@
          (ak/my-pi-p ;;not as wide a display
           (concat "${title:60} "
                   (propertize "${author:25}" 'face 'org-meta-line)
+                  (propertize "${site:10}" 'face 'org-tag)
                   (propertize "${tags:20}" 'face 'org-tag)))
          (t 
           (concat "${title:85} "
                   (propertize "${author:25} " 'face 'org-meta-line)
-                  ;; (propertize "${category:20}" 'face 'org-tag)
+                  (propertize "${site:20}" 'face 'org-tag)
                   (propertize "${tags:30}" 'face 'org-tag)))))
   :custom
   ;; (org-roam-database-connector 'sqlite-builtin)
@@ -45,21 +46,21 @@
       :target (file+head "recipes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: recipe\n#+DATE: %U\n")
       :unnarrowed t)
 
-      ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
-       :target (file+head "personal/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Book\n#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"~/.emacs.d/custom-css/org-email-head.css\" />\n#+OPTIONS: toc:nil num:nil")
-       :unnarrowed t)
+     ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
+      :target (file+head "personal/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Book\n#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"~/.emacs.d/custom-css/org-email-head.css\" />\n#+OPTIONS: toc:nil num:nil")
+      :unnarrowed t)
 
-      ("t" "tech notes" plain "%?"
-       :target (file+head "tech-notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: tech\n#+DATE: %U\n")
-       :unnarrowed t)
+     ("t" "tech notes" plain "%?"
+      :target (file+head "tech-notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: tech\n#+DATE: %U\n")
+      :unnarrowed t)
 
-      ("p" "project" plain "\n* Goals\n\n%?\n\n* Tasks\n\n** TODO Add Initial Tasks\n\n* Dates\n\n"
-       :target (file+head "work/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project\n#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"~/.emacs.d/custom-css/org-email-head.css\" />\n#+OPTIONS: toc:nil num:nil")
-       :unnarrowed t)
+     ("p" "project" plain "\n* Goals\n\n%?\n\n* Tasks\n\n** TODO Add Initial Tasks\n\n* Dates\n\n"
+      :target (file+head "work/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+filetags: Project\n#+HTML_HEAD: <link rel=\"stylesheet\" type=\"text/css\" href=\"~/.emacs.d/custom-css/org-email-head.css\" />\n#+OPTIONS: toc:nil num:nil")
+      :unnarrowed t)
 
-      ("n" "random notes" plain "\n* Thought\n\n%?\n\n** Context\n\n** Prompted By\n\n"
-       :target (file+head "personal/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: Musings\n")
-       :unnarrowed t)))
+     ("n" "random notes" plain "\n* Thought\n\n%?\n\n** Context\n\n** Prompted By\n\n"
+      :target (file+head "personal/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: Musings\n")
+      :unnarrowed t)))
 
   :bind (("C-c n l" . org-roam-buffer-toggle)
          ("C-c n f" . org-roam-node-find)
@@ -86,7 +87,11 @@
   (org-roam-db-autosync-mode)
   (cl-defmethod org-roam-node-author ((node org-roam-node))
     "Return the currently set author for the NODE."
-    (cdr (assoc-string "AUTHOR" (org-roam-node-properties node)))))
+    (cdr (assoc-string "AUTHOR" (org-roam-node-properties node))))
+
+  (cl-defmethod org-roam-node-site ((node org-roam-node))
+    "Return the currently set site value for the NODE."
+    (cdr (assoc-string "SITE" (org-roam-node-properties node)))))
 
 ;; (with-eval-after-load 'org-web-tools
   (defun ak/embark-clip-web-page-title-and-search-org-roam (url)

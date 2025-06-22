@@ -4,6 +4,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'org)
+(require 'url-parse)
 
 (defface org-link-id
   '((t :foreground "#00af00"
@@ -354,8 +355,8 @@
   :ensure t
   :after org 
   :commands (org-web-tools--get-url org-web-tools--get-first-url)
-  :hook (org-capture-before-finalize . ak/delete-image-base-64-data-lines)
-  
+  :hook ((org-capture-before-finalize . ak/delete-image-base-64-data-lines)
+         (org-capture-before-finalize . ak/org-extract-top-level-domain-into-property-drawer))
   :bind (:map ak-map
               ;; ("<f2>" . ak/get-url-title)
               ;; ("<f2>" . ak/clip-web-page-title-and-search-org-roam)
@@ -372,15 +373,6 @@
     (let* ((html (org-web-tools--get-url url))
            (title (org-web-tools--html-title html)))
       (if title (insert title) (insert url))))
-
-;; ;;;###autoload
-;;   (with-eval-after-load 'org-roam 
-;;     (cl-defun ak/clip-web-page-title-and-search-org-roam(&optional (url (org-web-tools--get-first-url)))
-;;       "Parses web page's title from url in clipboard and searches org-roam"
-;;       (interactive)
-;;       (let* ((html (org-web-tools--get-url url))
-;;              (title (org-web-tools--html-title html)))
-;;         (org-roam-node-find nil title))))
 
 ;;;###autoload
   (defun ak/delete-image-base-64-data-lines ()
@@ -402,7 +394,48 @@
           (goto-char (point-min))
           (while (re-search-forward kill-pattern nil t)
             (beginning-of-line)
-            (delete-line)))))))
+            (delete-line))))))
+
+;;;###autoload
+(defun ak/org-set-document-property (property value)
+  "Set a document-level PROPERTY to VALUE inside the property drawer.
+If the drawer or property does not exist, create them.
+Does not overwrite existing properties."
+  (save-excursion
+    (goto-char (point-min))
+    (if (re-search-forward "^:PROPERTIES:" nil t)
+        (let ((drawer-end (save-excursion (re-search-forward "^:END:" nil t))))
+          ;; Check if property already exists
+          (if (save-excursion
+                (re-search-forward (format "^:%s: " (upcase property)) drawer-end t))
+              (message "Property :%s: already exists, skipping." (upcase property))
+            ;; Insert property before :END:
+            (re-search-forward "^:END:" nil t)
+            (beginning-of-line)
+            (insert (format ":%s: %s\n" (upcase property) value))
+            (message "Inserted :%s: property with value: %s" (upcase property) value)))
+      ;; No property drawer — create one
+      (goto-char (point-min))
+      (forward-line)
+      (insert ":PROPERTIES:\n")
+      (insert (format ":%s: %s\n" (upcase property) value))
+      (insert ":END:\n")
+      (message "Created property drawer with :%s: %s" (upcase property) value))))
+
+
+;;;###autoload
+(defun ak/org-extract-top-level-domain-into-property-drawer ()
+"Extract domain from the first top-level headline link and store it in the :SITE: document-level property."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^\\* .*?\\[\\[\\(https?://[^]]+\\)\\]\\[.*?\\]\\]" nil t)
+      (let* ((url-str (match-string 1))
+             (parsed-url (url-generic-parse-url url-str))
+             (domain (url-host parsed-url)))
+        (when domain
+          ;; (org-set-property "SITE" domain)))))))
+          (ak/org-set-document-property "SITE" domain)))))))
 
 ;; (add-hook 'org-capture-before-finalize-hook 'ak/delete-image-base-64-data-lines))
 ;; (add-hook 'org-roam-capture 'ak/delete-image-base-64-data-lines))
@@ -658,7 +691,8 @@ and insert org image block for it"
     (kill-whole-line 0)
     (insert(format 
             "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s \n"
-            local-file-name url (concat directory local-file-name) ))
+            ;; local-file-name url (concat directory local-file-name) ))
+            local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))
     ;; Message success to the minibuffer
     (org-display-inline-images)
     (ak/download-file url directory local-file-name)))
@@ -675,7 +709,8 @@ and insert org image block for it"
     (kill-whole-line)
     (insert(format 
             "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s\n"
-            local-file-name url (concat directory local-file-name) ))
+            ;; local-file-name url (concat directory local-file-name) ))
+            local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))
     ;; Message success to the minibuffer
     (ak/download-file url directory local-file-name)
     (org-display-inline-images)))
