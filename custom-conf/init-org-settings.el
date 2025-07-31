@@ -690,7 +690,7 @@ and insert org image block for it"
     (kill-region (car url-bnds) (cdr url-bnds))
     (kill-whole-line 0)
     (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s \n"
+            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \n[[file:%s]] \n"
             ;; local-file-name url (concat directory local-file-name) ))
             local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))
     ;; Message success to the minibuffer
@@ -708,12 +708,11 @@ and insert org image block for it"
     (kill-region (car url-bnds) (cdr url-bnds))
     (kill-whole-line)
     (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \nfile:%s\n"
+            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \n[[file:%s]]\n"
             ;; local-file-name url (concat directory local-file-name) ))
             local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))
     ;; Message success to the minibuffer
-    (ak/download-file url directory local-file-name)
-    (org-display-inline-images)))
+    (ak/download-file url directory local-file-name)))
 
 (with-eval-after-load 'embark
   (define-key embark-org-link-map (kbd "<f12>") #'ak/embark-download-image-at-point-and-insert-org-link))
