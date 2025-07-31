@@ -76,9 +76,9 @@ TODO - No error checking implemented yet"
           ("http://feeds.bbci.co.uk/news/rss.xml" news world)
           ("http://feeds.bbci.co.uk/news/world/rss.xml" news world)
           ("https://sachachua.com/blog/category/emacs-news/feed/" tech emacs)
-          ("https://www.thehindu.com/news/feeder/default.rss" news India)
-          ("https://www.newindianexpress.com/States/Kerala/rssfeed/?id=178&getXmlFeed=true" news India Kerala)
-          ("https://www.newindianexpress.com/Cities/Bengaluru/rssfeed/?id=182&getXmlFeed=true" news India Bangalore))))
+          ;; ("https://www.thehindu.com/news/feeder/default.rss" news India)
+          ("https://www.newindianexpress.com/States/Kerala/rssfeed/?id=178&getXmlFeed=true" news India Kerala))))
+          ;; ("https://www.newindianexpress.com/Cities/Bengaluru/rssfeed/?id=182&getXmlFeed=true" news India Bangalore))))
 
 (use-package dwim-shell-command
   :ensure t 
