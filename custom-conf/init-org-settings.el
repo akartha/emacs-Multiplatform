@@ -795,6 +795,10 @@ Requires pandoc"
                                                (lambda () 
                                                  (interactive)
                                                  (org-web-tools--clean-pandoc-output)))
+                                           (?7 "Assign parent url to site property\n" 
+                                               (lambda () 
+                                                 (interactive)
+                                                 (ak/org-extract-top-level-domain-into-property-drawer)))
                                            (?9 "Add nytimes articles to org-roam" 
                                                (lambda ()
                                                  (interactive)
