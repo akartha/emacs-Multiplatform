@@ -90,8 +90,10 @@
   :commands (eglot eglot-ensure eglot-rename eglot-format-buffer)
   :config
   (tooltip-mode 1)
-  (add-to-list 'eglot-server-programs '(python-ts-mode . ("pyright-langserver" "--stdio")))
-  (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
+  ;; (add-to-list 'eglot-server-programs '(python-ts-mode . ("pyright-langserver" "--stdio")))
+  ;; (add-to-list 'eglot-server-programs '(python-mode . ("pyright-langserver" "--stdio")))
+  (add-to-list 'eglot-server-programs '((python-ts-mode python-mode) . ("pyright-langserver" "--stdio")))
+  ;; (add-to-list 'eglot-server-programs '((python-ts-mode python-mode) . ("uv" "tool" "run" "--from" "python-lsp-server[all]" "pylsp")))
   ;; (add-to-list 'eglot-server-programs '(python-ts-mode . ("pylsp")))
   (add-to-list 'eglot-server-programs '(go-ts-mode . ("gopls")))
   ;; (add-to-list 'eglot-server-programs '(go-mode . ("gopls")))
