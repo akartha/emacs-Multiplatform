@@ -679,23 +679,26 @@ and then uses pandoc to convert it to org mode"
       (shell-command (concat linux-clip-as-html-command " | " pandoc-command) 1)))))
 
 
-(defun ak/download-image-at-point-and-insert-org-link ()
-  "Download the image in an org article to '_downloads' folder
-and insert org image block for it"
-  (interactive)
-  (let* ((url (thing-at-point-url-at-point))
-         (url-bnds (bounds-of-thing-at-point 'url))
-         (directory "_downloads/")
-         (local-file-name (read-from-minibuffer "Enter File Name:" (buffer-name))))
-    (kill-region (car url-bnds) (cdr url-bnds))
-    (kill-whole-line 0)
-    (insert(format 
-            "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \n[[file:%s]] \n"
-            ;; local-file-name url (concat directory local-file-name) ))
-            local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))
-    ;; Message success to the minibuffer
-    (org-display-inline-images)
-    (ak/download-file url directory local-file-name)))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; DEAD function
+;; (defun ak/download-image-at-point-and-insert-org-link ()                                                                            ;;
+;;   "Download the image in an org article to '_downloads' folder                                                                      ;;
+;; and insert org image block for it"                                                                                                  ;;
+;;   (interactive)                                                                                                                     ;;
+;;   (let* ((url (thing-at-point-url-at-point))                                                                                        ;;
+;;          (url-bnds (bounds-of-thing-at-point 'url))                                                                                 ;;
+;;          (directory "_downloads/")                                                                                                  ;;
+;;          (local-file-name (read-from-minibuffer "Enter File Name:" (buffer-name))))                                                 ;;
+;;     (kill-region (car url-bnds) (cdr url-bnds))                                                                                     ;;
+;;     (kill-whole-line 0)                                                                                                             ;;
+;;     (insert(format                                                                                                                  ;;
+;;             "#+CAPTION: %s\n#+ATTR_HTML: :alt %s\n#+ATTR_HTML: :width 750px \n#+ATTR_LATEX: :width 0.4\\textwidth \n[[file:%s]] \n" ;;
+;;             ;; local-file-name url (concat directory local-file-name) ))                                                            ;;
+;;             local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))                               ;;
+;;     ;; Message success to the minibuffer                                                                                            ;;
+;;     (org-display-inline-images)                                                                                                     ;;
+;;     (ak/download-file url directory local-file-name)))                                                                              ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 (defun ak/embark-download-image-at-point-and-insert-org-link (url )
@@ -703,7 +706,8 @@ and insert org image block for it"
 and insert org image block for it"
   ;; (interactive)
   (let* ((url-bnds (bounds-of-thing-at-point 'url))
-         (directory (format "_downloads/%s/" (nth 1 (string-split (buffer-name) "-" t)) "/"))
+         (buf (buffer-name))
+         (directory (format "_downloads/%s/" (nth 1 (string-split buf "-" t)) "/"))
          (local-file-name (read-from-minibuffer "Enter File Name:" (last (string-split url "/" t) ))))
     (kill-region (car url-bnds) (cdr url-bnds))
     (kill-whole-line)
@@ -712,7 +716,9 @@ and insert org image block for it"
             ;; local-file-name url (concat directory local-file-name) ))
             local-file-name url (file-name-concat (directory-file-name directory) local-file-name) ))
     ;; Message success to the minibuffer
-    (ak/download-file url directory local-file-name)))
+    (ak/download-file url directory local-file-name)
+    (with-current-buffer buf
+      (call-interactively 'org-redisplay-inline-images))))
 
 (with-eval-after-load 'embark
   (define-key embark-org-link-map (kbd "<f12>") #'ak/embark-download-image-at-point-and-insert-org-link))
