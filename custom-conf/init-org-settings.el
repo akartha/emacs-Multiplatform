@@ -440,6 +440,83 @@ Does not overwrite existing properties."
 ;; (add-hook 'org-capture-before-finalize-hook 'ak/delete-image-base-64-data-lines))
 ;; (add-hook 'org-roam-capture 'ak/delete-image-base-64-data-lines))
 
+;; Chatgpt generated code
+(defun org-get-document-property (property)
+  "Return the value of document-level PROPERTY from the property drawer, or nil."
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^:PROPERTIES:" nil t)
+      (let ((end (save-excursion (re-search-forward "^:END:" nil t))))
+        (when (re-search-forward (format "^:%s: \\(.*\\)$" (upcase property)) end t)
+          (string-trim (match-string 1)))))))
+
+(defun org--commented-line-p ()
+  "Return non-nil if the current line is an Org comment line."
+  (save-excursion
+    (beginning-of-line)
+    (looking-at-p "[ \t]*#\\(?:\\+\\| \\|$\\)")))
+
+(defun org--in-example-block-p ()
+  "Return non-nil if point is inside an Org example block."
+  (let ((element (org-element-at-point)))
+    (eq (org-element-type element) 'example-block)))
+
+(defun ak/org-prepend-site-domain-to-url-at-point ()
+  "Prepend `https://<SITE>` from document property :SITE: to the relative URL at point.
+Works on:
+  - Org links ([[/path]] or [[/path][desc]])
+  - Raw relative URLs (/path/to/file)
+Skips code/example blocks and comment lines."
+  (interactive)
+  ;; Skip if in src/example block or comment
+  (when (or (org-in-src-block-p)
+            (org--in-example-block-p)
+            (org--commented-line-p))
+    (user-error "Point is in a code/example block or comment line; skipping"))
+
+  ;; Get :SITE: property
+  (let ((site (org-get-document-property "SITE")))
+    (unless site
+      (user-error "No :SITE: property found in this document"))
+    (let ((prefix (concat "https://" site))
+          (ctx (org-element-context))
+          did-replace)
+
+      ;; If inside or on an Org link
+      (when (and (not did-replace)
+                 (memq (org-element-type ctx) '(link paragraph plain-list item)))
+        ;; climb up until we hit the enclosing link or fail
+        (while (and ctx (not (eq (org-element-type ctx) 'link)))
+          (setq ctx (org-element-property :parent ctx)))
+        (when (and ctx (eq (org-element-type ctx) 'link))
+          (let ((target (org-element-property :path ctx))
+                (beg (org-element-property :begin ctx))
+                (end (org-element-property :end ctx)))
+            (when (and target
+                       (string-prefix-p "/" target)
+                       (not (string-match-p "\\`https?://" target)))
+              (save-excursion
+                (goto-char beg)
+                (when (re-search-forward org-link-bracket-re end t)
+                  (replace-match (concat prefix target) t t nil 1)
+                  (setq did-replace t)
+                  (message "Updated Org link to: %s%s" prefix target)))))))
+
+      ;; If point is on a raw relative URL
+      (when (and (not did-replace)
+                 (thing-at-point-looking-at "\\(/[^ \t\n]+\\)"))
+        (let ((url (match-string 1)))
+          (when (and (string-prefix-p "/" url)
+                     (not (string-match-p "\\`https?://" url)))
+            (replace-match (concat prefix url) t t nil 1)
+            (setq did-replace t)
+            (message "Updated raw URL to: %s%s" prefix url))))
+
+      (unless did-replace
+        (user-error "Point is not on a relative URL (or already absolute)")))))
+
+
+
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-tags-exclude-from-inheritance '("crypt"))
