@@ -3,6 +3,35 @@
 ;; (require 'projectile)
 (require 'crm)
 
+
+(use-package lambda-line
+  :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
+  :custom
+  (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
+  ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
+  (lambda-line-position 'bottom) ;; Set position of status-line 
+  (lambda-line-abbrev t) ;; abbreviate major modes
+  (lambda-line-hspace "  ")  ;; add some cushion
+  (lambda-line-prefix t) ;; use a prefix symbol
+  (lambda-line-prefix-padding nil) ;; no extra space for prefix 
+  (lambda-line-status-invert nil )  ;; no invert colors
+  (lambda-line-gui-ro-symbol  "⨂") ;; symbols
+  (lambda-line-gui-mod-symbol "⬤") 
+  (lambda-line-gui-rw-symbol  "◯") 
+  (lambda-line-space-top +.05)  ;; padding on top and bottom of line
+  (lambda-line-space-bottom -.05)
+  (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
+  (display-time-mode t)
+  (lambda-line-visual-bell nil)
+  :config
+  ;; activate lambda-line 
+  (lambda-line-mode)
+  (lambda-line-clockface-update-fontset "ClockFaceRect")
+  ;; set divider line in footer
+  (when (eq lambda-line-position 'top)
+    (setq-default mode-line-format (list "%_"))
+    (setq mode-line-format (list "%_"))))
+
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
 ;;;;;;;;;;;;;;;;
@@ -768,6 +797,67 @@
     (interactive "p")
     (other-window (if arg (- arg) -1) all-frames)))
 
+(use-package diminish
+  :ensure t 
+  :init
+  (diminish 'visual-line-mode)
+  (diminish 'subword-mode)
+  (diminish 'page-break-lines-mode)
+  (diminish 'auto-revert-mode)
+  ;; (diminish 'yas-minor-mode)
+  (diminish 'org-indent-mode))
+
+(use-package spacious-padding 
+  :ensure t
+  :defer t
+  :config
+(if ak/my-pi-p
+    (setq spacious-padding-widths '( :internal-border-width 2
+                                     :header-line-width 4
+                                     :mode-line-width nil
+                                     :tab-width 4
+                                     :right-divider-width 1
+                                     :scroll-bar-width nil
+                                     :left-fringe-width 1
+                                     :fringe-width 20))  
+  (setq spacious-padding-widths '( :internal-border-width 45
+                                   :header-line-width 4
+                                   :mode-line-width nil
+                                   :tab-width 4
+                                   :right-divider-width 30
+                                   :scroll-bar-width 8
+                                   :fringe-width 200)))
+
+  ;; Read the doc string of `spacious-padding-subtle-mode-line' as it
+  ;; is very flexible and provides several examples.
+  (setq spacious-padding-subtle-mode-line 
+        '(:mode-line-active "#0000ff" 
+                            :mode-line-inactive "#aaaa77")))
+
+(use-package logos
+  :ensure t
+  ;; :defer t
+  :config 
+;; If you want to use outlines instead of page breaks (the ^L):
+  (setq logos-outlines-are-pages t
+        ;; This is the default value for the outlines:
+        logos-outline-regexp-alist `((emacs-lisp-mode . "^;;;+ ")
+                                     (org-mode . "^\\*+ +")
+                                     (markdown-mode . "^\\#+ +")))
+  (setq-default logos-hide-cursor nil
+                logos-hide-mode-line t
+                logos-hide-header-line t
+                logos-hide-buffer-boundaries t
+                logos-hide-fringe t
+                logos-variable-pitch nil
+                logos-buffer-read-only nil
+                logos-scroll-lock nil
+                logos-olivetti nil))
+
+;; (let ((map global-map))
+(define-key global-map [remap narrow-to-region] #'logos-narrow-dwim)
+(define-key global-map [remap forward-page] #'logos-forward-page-dwim)
+(define-key global-map [remap backward-page] #'logos-backward-page-dwim)
 
 
 
