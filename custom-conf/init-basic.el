@@ -44,6 +44,8 @@
       idle-update-delay 1.0    
       )
 
+(define-key global-map (kbd "M-f") #'forward-to-word)
+
 (epa-file-enable)
 
 (put 'narrow-to-region 'disabled nil)

@@ -20,6 +20,7 @@
         ("r" . avy-kill-ring-save-region)
         ("R" . avy-kill-region)
         ("s" . avy-goto-symbol-1)
+        ("j" . avy-goto-char-in-line)
         ("h" . avy-org-goto-heading-timer))
   (:map ak-map
         ("<tab>" . avy-goto-line)

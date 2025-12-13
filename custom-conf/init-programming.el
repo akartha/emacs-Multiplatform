@@ -12,7 +12,7 @@
 (cl-defmethod project-root ((project (head go-module)))
   (list (cdr project)))
 
-(add-hook 'project-find-functions #'project-find-go-module)
+;; (add-hook 'project-find-functions #'project-find-go-module)
 
 
 (use-package yasnippet

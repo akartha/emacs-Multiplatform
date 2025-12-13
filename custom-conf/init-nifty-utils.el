@@ -243,7 +243,7 @@ With PREFIX - load the latest xkcd cartoon"
         (forward-char)
         (delete-region (point-min) (point))
         (write-file (concat (or download-dir
-                                "~/downloads/")
+                                "~/Downloads/")
                             (or download-name
                                 (car (last (split-string url "/" t))))))
         (kill-buffer download-buffer))))

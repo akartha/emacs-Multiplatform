@@ -9,6 +9,7 @@
 
 (add-to-list 'load-path (expand-file-name "custom-conf" user-emacs-directory))
 (add-to-list 'load-path (expand-file-name "custom-conf/third-party" user-emacs-directory))
+(add-to-list 'load-path (expand-file-name "custom-conf/third-party/nursery-main/lisp" user-emacs-directory))
 
 (require 'init-env)
 
