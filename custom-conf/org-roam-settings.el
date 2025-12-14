@@ -121,6 +121,7 @@ Provides an embark action to capture urls in org-roam from url/org-link at point
 
 (use-package org-roam-ui
     :ensure t
+    :if (window-system)
     :after org-roam
 ;;         normally we'd recommend hooking orui after org-roam, but since org-roam does not have
 ;;         a hookable mode anymore, you're advised to pick something yourself

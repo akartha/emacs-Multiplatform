@@ -7,7 +7,11 @@
 (defvar ak/my-mac-p nil
 "Macbook Pro M1")
 (defvar ak/my-pi-p nil
-"Either my Raspberry Pi 4 or the Clockworkpi uconsole")
+  "Either my Raspberry Pi 4 or the Clockworkpi uconsole")
+
+(defvar ak/my-server-p nil
+  "Ubuntu server - non GUI")
+
 (defvar ak/my-package-list nil)
 
 (defvar ak/my-org-file-location nil
@@ -19,6 +23,8 @@
        (setq ak/my-win-framework-p t))
       ((string= (system-name) "Arun-MBP14.local")
        (setq ak/my-mac-p t))
+      ((string= (system-name) "bunty")
+       (setq ak/my-server-p t))
       ((or (string= (system-name) "usbpi") (string= (system-name) "pi-o-mine") (string= (system-name) "pi-in-face"))
        (setq ak/my-pi-p t)))
 
@@ -99,6 +105,8 @@ Does not work with mac- so I have a package for that"
        (setq ak/my-org-file-location (expand-file-name "c:/Users/Arun/Dropbox/org-files/")))
       (ak/my-mac-p
        (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
+      (ak/my-server-p
+       (setq ak/my-org-file-location (expand-file-name "~/Documents/org-files/")))
       (ak/my-pi-p
        (setq ak/my-org-file-location (expand-file-name "~/Documents/org-docs/"))))
 
