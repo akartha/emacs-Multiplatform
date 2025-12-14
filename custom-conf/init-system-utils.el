@@ -8,6 +8,7 @@
   :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
   :custom
   (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
+  ;; (lambda-line-icon-time -1)
   ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
   (lambda-line-position 'bottom) ;; Set position of status-line 
   (lambda-line-abbrev t) ;; abbreviate major modes
@@ -26,7 +27,8 @@
   :config
   ;; activate lambda-line 
   (lambda-line-mode)
-  (lambda-line-clockface-update-fontset "ClockFaceRect")
+  ;; (lambda-line-clockface-update-fontset "ClockFaceRect")
+  ;; (setq lambda-line-icon-time -1)
   ;; set divider line in footer
   (when (eq lambda-line-position 'top)
     (setq-default mode-line-format (list "%_"))
@@ -473,6 +475,7 @@
   (add-to-list 'corfu-margin-formatters #'nerd-icons-corfu-formatter))
 
 (use-package nerd-icons-dired
+  :if (window-system)
   :ensure t
   :defer t
   :hook
