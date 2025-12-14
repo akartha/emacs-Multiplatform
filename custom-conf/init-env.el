@@ -25,7 +25,10 @@
        (setq ak/my-mac-p t))
       ((string= (system-name) "bunty")
        (setq ak/my-server-p t))
-      ((or (string= (system-name) "usbpi") (string= (system-name) "pi-o-mine") (string= (system-name) "pi-in-face"))
+      ((or (string= (system-name) "usbpi") 
+           (string= (system-name) "pi-o-mine") 
+           (string= (system-name) "pi-in-face") 
+           (string= (system-name) "pi-writer"))
        (setq ak/my-pi-p t)))
 
 (defvar ak/generic-windows-p (equal system-type 'windows-nt)
