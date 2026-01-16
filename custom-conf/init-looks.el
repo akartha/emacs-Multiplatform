@@ -253,6 +253,7 @@
 (use-package beacon
   :ensure t
   :diminish
+  :if (not ak/my-pi-p)
   :custom 
   (beacon-size 75)
   (beacon-blink-duration 0.75)
