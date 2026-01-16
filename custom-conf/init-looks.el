@@ -292,15 +292,21 @@
 (defvar-local my-minibuffer-font-remap-cookie nil
   "The current face remap of `my-minibuffer-set-font'.")
 
+(defface my-minibuffer-miniature
+  '((t :height 0.5))
+  "Face for the minibuffer.")
+
 (defface my-minibuffer-default
-  '((t :height 0.8))
+  '((t :height 1))
   "Face for the minibuffer.")
 
 (defun my-minibuffer-set-font ()
-  (setq-local my-minibuffer-font-remap-cookie
-              (face-remap-add-relative 'default 'my-minibuffer-default)))
+  (if (equal fontaine-current-preset 'reading)
+      (setq-local my-minibuffer-font-remap-cookie
+                  (face-remap-add-relative 'default 'my-minibuffer-miniature))))
 
 (add-hook 'minibuffer-mode-hook #'my-minibuffer-set-font)
+
 ;;Work in progress 
 (defun ak/toggle-immersive-mode()
   "Toggle Immersive Mode
