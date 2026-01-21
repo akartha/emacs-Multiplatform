@@ -80,9 +80,12 @@
 (save-place-mode t)     ;; Remember cursor position even after quitting file
 (display-time-mode 1)
 ;; (global-subword-mode 1) 
+
 (show-paren-mode 1) ;;Highlights matching parens when the cursor is just behind one of them.
-(setq show-paren-when-point-inside-paren t
+(setq show-paren-style 'expression
+      show-paren-when-point-inside-paren t
       show-paren-when-point-in-periphery t) 
+
 ;; Turn on transient-mark-mode
 (transient-mark-mode 1)
 (goto-address-mode 1)
