@@ -4,35 +4,49 @@
 (require 'crm)
 
 
-(use-package lambda-line
-  :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
+;; (use-package lambda-line
+;;   :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
+;;   :custom
+;;   (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
+;;   ;; (lambda-line-icon-time -1)
+;;   ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
+;;   (lambda-line-position 'bottom) ;; Set position of status-line 
+;;   (lambda-line-abbrev t) ;; abbreviate major modes
+;;   (lambda-line-hspace "  ")  ;; add some cushion
+;;   (lambda-line-prefix t) ;; use a prefix symbol
+;;   (lambda-line-prefix-padding nil) ;; no extra space for prefix 
+;;   (lambda-line-status-invert nil )  ;; no invert colors
+;;   (lambda-line-gui-ro-symbol  "⨂") ;; symbols
+;;   (lambda-line-gui-mod-symbol "⬤") 
+;;   (lambda-line-gui-rw-symbol  "◯") 
+;;   (lambda-line-space-top +.05)  ;; padding on top and bottom of line
+;;   (lambda-line-space-bottom -.05)
+;;   (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
+;;   (display-time-mode t)
+;;   (lambda-line-visual-bell nil)
+;;   :config
+;;   ;; activate lambda-line 
+;;   (lambda-line-mode)
+;;   ;; (lambda-line-clockface-update-fontset "ClockFaceRect")
+;;   ;; (setq lambda-line-icon-time -1)
+;;   ;; set divider line in footer
+;;   (when (eq lambda-line-position 'top)
+;;     (setq-default mode-line-format (list "%_"))
+;;     (setq mode-line-format (list "%_"))))
+(use-package maple-modeline
+  :ensure (:type git :host github :repo "honmaple/emacs-maple-modeline")
+  :hook (after-init . maple-modeline-mode)
+  :custom-face
+  (mode-line ((t (:box nil))))
+  (mode-line-inactive ((t (:box nil))))
   :custom
-  (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
-  ;; (lambda-line-icon-time -1)
-  ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
-  (lambda-line-position 'bottom) ;; Set position of status-line 
-  (lambda-line-abbrev t) ;; abbreviate major modes
-  (lambda-line-hspace "  ")  ;; add some cushion
-  (lambda-line-prefix t) ;; use a prefix symbol
-  (lambda-line-prefix-padding nil) ;; no extra space for prefix 
-  (lambda-line-status-invert nil )  ;; no invert colors
-  (lambda-line-gui-ro-symbol  "⨂") ;; symbols
-  (lambda-line-gui-mod-symbol "⬤") 
-  (lambda-line-gui-rw-symbol  "◯") 
-  (lambda-line-space-top +.05)  ;; padding on top and bottom of line
-  (lambda-line-space-bottom -.05)
-  (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
-  (display-time-mode t)
-  (lambda-line-visual-bell nil)
-  :config
-  ;; activate lambda-line 
-  (lambda-line-mode)
-  ;; (lambda-line-clockface-update-fontset "ClockFaceRect")
-  ;; (setq lambda-line-icon-time -1)
-  ;; set divider line in footer
-  (when (eq lambda-line-position 'top)
-    (setq-default mode-line-format (list "%_"))
-    (setq mode-line-format (list "%_"))))
+  (maple-modeline-height 20)
+  (maple-modeline-style 'standard)
+  (maple-modeline-width 'standard)
+  ;; maple-modeline-icon (and (display-graphic-p) *icon*)
+  (maple-modeline-separator (if (display-graphic-p) 'arrow 'default))
+  :init 
+  (maple-modeline-mode t))
 
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
