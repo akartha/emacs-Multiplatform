@@ -296,6 +296,9 @@ Also see `prot-window-delete-popup-frame'." command)
                     (match-data t)
                     2)))
 
+(use-package tmr
+  :ensure t)
+
 (provide 'non-core)
 
 
