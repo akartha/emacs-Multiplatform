@@ -399,4 +399,9 @@
 (use-package lua-mode
   :ensure t)
 
+
+(use-package duckdb-query
+    :ensure (:type git :host github :repo "gggion/duckdb-query.el"))
+
+
 (provide 'init-programming)

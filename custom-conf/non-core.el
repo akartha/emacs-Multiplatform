@@ -203,7 +203,7 @@ If LINK is specified, use that instead."
               ("l" . 'denote-link)
               ("b" . 'denote-backlinks)
               ("j" . 'ak/denote-journal))
-              ;; ("w" . 'ak/denote-clip-url))
+  ;; ("w" . 'ak/denote-clip-url))
   :custom
   (denote-known-keywords '("journal" "recipe" "article" "story" "musings" "work" "study"))
   :preface
@@ -222,7 +222,8 @@ If LINK is specified, use that instead."
   ;;     (denote 
   ;;      'web-title
   ;;      '("article"))))
-)
+  :config
+  (denote-rename-buffer-mode 1))
 
 
 ;;;; Run commands in a popup frame
