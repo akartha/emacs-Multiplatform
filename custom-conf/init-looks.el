@@ -93,10 +93,12 @@
 (when ak/my-pi-p
     (setq fontaine-presets
           '((tiny
-             :default-family "Iosevka Comfy Wide Fixed"
+             ;; :default-family "Iosevka Comfy Wide Fixed"
+             :default-family "Aporetic Serif"
              :default-height 90)
             (small
-             :default-family "Iosevka Comfy Fixed"
+             ;; :default-family "Iosevka Comfy Fixed"
+             :default-family "Aporetic Serif"
              :default-height 110)
             (regular
              :default-height 140)
@@ -115,19 +117,22 @@
              :default-height 300
              :bold-weight extrabold)
             (reading
-             :default-family "Iosevka Comfy Motion Duo" 
+             ;; :default-family "Iosevka Comfy Motion Duo" 
+             :default-family "Aporetic Serif"
              :default-weight semilight
              :default-height 335
              :line-spacing 19)              ;this is in pixels
             (immersive-writing
-             :default-family "Iosevka Comfy Wide Fixed" 
+             ;; :default-family "Iosevka Comfy Wide Fixed" 
+             :default-family "Aporetic Sans Mono"
              :default-weight semilight
              :default-height 235
              :line-spacing 13)              ;this is in pixels
             (t
              ;; See the fontaine manual for the technicalities:
              ;; <https://protesilaos.com/emacs/fontaine>.
-             :default-family "Iosevka Comfy"
+             ;; :default-family "Iosevka"
+             :default-family "Aporetic Serif Mono"
              :default-weight regular
              :default-height 100
              :fixed-pitch-family nil ; falls back to :default-family
@@ -136,12 +141,14 @@
              :fixed-pitch-serif-family nil ; falls back to :default-family
              :fixed-pitch-serif-weight nil ; falls back to :default-weight
              :fixed-pitch-serif-height 1.0
-             :variable-pitch-family "Iosevka Comfy Motion Duo"
+             ;; :variable-pitch-family "Iosevka Comfy Motion Duo"
+             :variable-pitch-family "Aporetic Serif"
              :variable-pitch-weight nil
              :variable-pitch-height 1.3
              :bold-family nil ; use whatever the underlying face has
              :bold-weight bold
-             :italic-family "Iosevka Comfy Motion"
+             ;; :italic-family "Iosevka Comfy Motion"
+             :italic-family "Aporetic Serif"
              :italic-slant italic
              :line-spacing 3))))
 
