@@ -4,35 +4,6 @@
 (require 'crm)
 
 
-;; (use-package lambda-line
-;;   :ensure (:type git :host github :repo "lambda-emacs/lambda-line")
-;;   :custom
-;;   (lambda-line-icon-time nil) ;; requires ClockFace font (see below)
-;;   ;; (lambda-line-icon-time -1)
-;;   ;; (lambda-line-clockface-update-fontset "ClockFaceRect") ;; set clock icon
-;;   (lambda-line-position 'bottom) ;; Set position of status-line 
-;;   (lambda-line-abbrev t) ;; abbreviate major modes
-;;   (lambda-line-hspace "  ")  ;; add some cushion
-;;   (lambda-line-prefix t) ;; use a prefix symbol
-;;   (lambda-line-prefix-padding nil) ;; no extra space for prefix 
-;;   (lambda-line-status-invert nil )  ;; no invert colors
-;;   (lambda-line-gui-ro-symbol  "⨂") ;; symbols
-;;   (lambda-line-gui-mod-symbol "⬤") 
-;;   (lambda-line-gui-rw-symbol  "◯") 
-;;   (lambda-line-space-top +.05)  ;; padding on top and bottom of line
-;;   (lambda-line-space-bottom -.05)
-;;   (lambda-line-symbol-position 0.1) ;; adjust the vertical placement of symbol
-;;   (display-time-mode t)
-;;   (lambda-line-visual-bell nil)
-;;   :config
-;;   ;; activate lambda-line 
-;;   (lambda-line-mode)
-;;   ;; (lambda-line-clockface-update-fontset "ClockFaceRect")
-;;   ;; (setq lambda-line-icon-time -1)
-;;   ;; set divider line in footer
-;;   (when (eq lambda-line-position 'top)
-;;     (setq-default mode-line-format (list "%_"))
-;;     (setq mode-line-format (list "%_"))))
 (use-package maple-modeline
   :ensure (:type git :host github :repo "honmaple/emacs-maple-modeline")
   :hook (after-init . maple-modeline-mode)
@@ -169,7 +140,8 @@
                                 (consult-line buffer)
                                 (completion-at-point reverse)
                                 (org-roam-node-find 
-                                 (vertico-sort-function . vertico-sort-history-alpha) reverse)
+                                 ;; (vertico-sort-function . vertico-sort-history-alpha) reverse)
+                                 (vertico-sort-function . vertico-sort-history-alpha))
                                 (embark-completing-read-prompter reverse)
                                 (embark-act-with-completing-read reverse)
                                 (embark-prefix-help-command reverse)
@@ -508,23 +480,6 @@
                                   ("avi" . "vlc")
                                   ("opus" . "mpv")))))
 
-;; (use-package dired-sidebar
-;;   :ensure t
-;;   :bind (("C-x C-n" . dired-sidebar-toggle-sidebar))
-;;   :commands (dired-sidebar-toggle-sidebar)
-;;   :init
-;;   (add-hook 'dired-sidebar-mode-hook
-;;             (lambda ()
-;;               (unless (file-remote-p default-directory)
-;;                 (auto-revert-mode))))
-;;   :config
-;;   (push 'toggle-window-split dired-sidebar-toggle-hidden-commands)
-;;   (push 'rotate-windows dired-sidebar-toggle-hidden-commands)
-
-;;   (setq dired-sidebar-subtree-line-prefix "__")
-;;   (setq dired-sidebar-theme 'nerd)
-;;   (setq dired-sidebar-use-term-integration t)
-;;   (setq dired-sidebar-use-custom-font t))
 
 
 ;; Async
@@ -590,19 +545,6 @@
   :bind (:map ak-map
               ("1" . dashboard-open)))
 
- ;;;;;;;;;;;;;;;;;;
- ;; ** Which-Key ;;
- ;;;;;;;;;;;;;;;;;;
-
-;; (use-package which-key
-;;   :ensure t
-;;   :defer t
-;;   :diminish
-;;   :config
-;;   (if ak/my-pi-p
-;;       (which-key-setup-side-window-bottom)
-;;     (which-key-setup-side-window-right-bottom)) ;;prefer right side - but will go for bottom if there is not enough space
-;;   (which-key-mode))
   
 ;;;;;;;;;;;
 ;; CORFU ;;
@@ -730,23 +672,8 @@
                               help-mode
                               compilation-mode))
   :init
-  ;; (setq popper-reference-buffers
-  ;;       '("\\*Messages\\*"
-  ;;         "[Oo]utput\\*$"
-  ;;         "\\*Async Shell Command\\*"
-  ;;         "^\\*Backtrace\\*"
-  ;;         "\\*Completions\\*"
-  ;;         "^\\*ielm\\*"
-  ;;         "^Calc:"
-  ;;         ("\\*Async Shell Command\\*" . hide)
-  ;;         ("^\\*Warnings\\*$" . hide)
-  ;;         ("^\\*Compile-Log\\*$" . hide)
-  ;;         help-mode
-  ;;         compilation-mode))
   (popper-mode +1)
   (popper-echo-mode +1))                ; For echo area hints
-  ;; :hook (after-init . popper-mode)
-  ;; (after-init . popper-echo-mode))
 
 
 ;; A few more useful configurations...
@@ -876,6 +803,13 @@
 (define-key global-map [remap forward-page] #'logos-forward-page-dwim)
 (define-key global-map [remap backward-page] #'logos-backward-page-dwim)
 
+(use-package ekg
+ :ensure t
+ :bind (([f12] . ekg-capture))
+ :config
+ (require 'ekg-auto-save)
+ (add-hook 'ekg-capture-mode-hook #'ekg-auto-save-mode)
+ (add-hook 'ekg-edit-mode-hook #'ekg-auto-save-mode))
 
 
 (provide 'init-system-utils)
