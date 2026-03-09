@@ -430,9 +430,12 @@
   (setq trashed-sort-key '("Date deleted" . t))
   (setq trashed-date-format "%Y-%m-%d %H:%M:%S"))
 
+(use-package dired-hacks-utils
+  :ensure t)
+
 (use-package dired-subtree
   :ensure t
-  :after dired
+  :after (dired dired-open)
   :bind
   ( :map dired-mode-map
     ("<tab>" . dired-subtree-toggle)
@@ -468,6 +471,7 @@
   (dired-mode . nerd-icons-dired-mode))
 
 (use-package dired-open
+  :after (dired dired-hacks-utils)
   :ensure t
   :defer t
   :config
