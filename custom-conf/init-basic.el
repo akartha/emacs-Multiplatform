@@ -231,7 +231,7 @@
 ;; ** PDF tool ;;
 ;;;;;;;;;;;;;;;;;
 
-(when (and (or ak/my-framework-p ak/my-mac-p)
+(when (and ak/my-framework-p
     (file-directory-p "/usr/share/emacs/site-lisp/tex-utils"))
   (add-to-list 'load-path "/usr/share/emacs/site-lisp/tex-utils")
   (require 'xdvi-search))
