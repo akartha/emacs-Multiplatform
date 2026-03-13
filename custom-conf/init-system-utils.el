@@ -15,9 +15,7 @@
   (maple-modeline-style 'standard)
   (maple-modeline-width 'standard)
   ;; maple-modeline-icon (and (display-graphic-p) *icon*)
-  (maple-modeline-separator (if (display-graphic-p) 'arrow 'default))
-  :init 
-  (maple-modeline-mode t))
+  (maple-modeline-separator (if (display-graphic-p) 'arrow 'default)))
 
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
