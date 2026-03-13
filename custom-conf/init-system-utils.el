@@ -286,8 +286,8 @@
    consult-theme consult-imenu consult-imenu-multi :preview-key '(:debounce 0.2 any)
    consult-buffer consult-recent-file consult-mark consult-global-mark :preview-key '(:debounce 0.4 any)
    consult-ripgrep consult-git-grep consult-grep consult-bookmark consult-xref
-   consult--source-bookmark consult--source-file-register
-   consult--source-recent-file consult--source-project-recent-file
+   consult-source-bookmark consult-source-file-register
+   consult-source-recent-file consult-source-project-recent-file
    :preview-key '(:debounce 0.75 any))
 
   ;; Optionally configure the narrowing key.
