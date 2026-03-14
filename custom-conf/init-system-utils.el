@@ -4,51 +4,22 @@
 (require 'crm)
 
 
-;; (use-package maple-modeline
-;;   :ensure (:type git :host github :repo "honmaple/emacs-maple-modeline")
-;;   :after all-the-icons
-;;   :hook (after-init . maple-modeline-mode)
-;;   :custom-face
-;;   (mode-line ((t (:box nil))))
-;;   (mode-line-inactive ((t (:box nil))))
-;;   :custom
-;;   (maple-modeline-height 20)
-;;   (maple-modeline-style 'standard)
-;;   (maple-modeline-width 'standard)
-;;   ;; maple-modeline-icon (and (display-graphic-p) *icon*)
-;;   (maple-modeline-separator (if (display-graphic-p) 'arrow 'default)))
-(use-package maple-modeline
-  :ensure (:type git :host github :repo "honmaple/emacs-maple-modeline")
-  :demand t
-  :custom-face
-  (mode-line ((t (:box nil))))
-  (mode-line-inactive ((t (:box nil))))
+(use-package doom-modeline
+  :ensure t
+  :init 
+  (doom-modeline-mode 1)
+  (display-battery-mode 1)
   :custom
-  (maple-modeline-height 23)
-  (maple-modeline-style 'standard)
-  (maple-modeline-width 'standard)
-  (maple-modeline-icon t)
-  (maple-modeline-separator 'arrow)
-  :config
-  (defun maple-modeline--color (color)
-    "Covert COLOR to hex."
-    (if (and (eq system-type 'darwin) (not (boundp 'mac-carbon-version-string)))
-        (pcase-let*
-            ((`(,r ,g ,b) (color-name-to-rgb color))
-             (`(,x ,y ,z) (color-srgb-to-xyz r g b))
-             (r (expt (max 0.0 (+ (* 3.2404542 x) (* -1.5371385 y) (* -0.4985314 z)))
-                      (/ 1.8)))
-             (g (expt (max 0.0 (+ (* -0.9692660 x) (* 1.8760108 y) (* 0.0415560 z)))
-                      (/ 1.8)))
-             (b (expt (max 0.0 (+ (* 0.0556434 x) (* -0.2040259 y) (* 1.0572252 z)))
-                      (/ 1.8))))
-          (color-rgb-to-hex r g b 2))
-      (apply 'color-rgb-to-hex (color-name-to-rgb color))))
+  (doom-modeline-icon t)
+  (doom-modeline-major-mode-icon t)
+  (doom-modeline-vcs-max-length 20)
+  (doom-modeline-time-analogue-clock t)
+  (doom-modeline-battery t)
+  (doom-modeline-highlight-modified-buffer-name t)
+  (doom-modeline-enable-word-count t)
+  (doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)))
 
-  (defun maple-modeline--adjust (left-segments right-segments &optional separator width)
-    "Patched: bypass broken --min-priority loop."
-    (maple-modeline--format left-segments right-segments separator))
-  (maple-modeline-mode 1))    
+
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
 ;;;;;;;;;;;;;;;;
