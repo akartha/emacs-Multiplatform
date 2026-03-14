@@ -30,22 +30,24 @@
   (maple-modeline-icon t)
   (maple-modeline-separator 'arrow)
   :config
-  (defun maple-modeline--color (color &optional weight)
-    "Patched: clamp color values to avoid NaN/overflow in color-rgb-to-hex."
-    (let* ((rgb (color-name-to-rgb color))
-           (r (car rgb))
-           (g (cadr rgb))
-           (b (caddr rgb))
-           (w (or weight 0))
-           (clamp (lambda (x) (max 0.0 (min 1.0 (if (or (isnan x) (not (numberp x))) 0.0 x))))))
-      (color-rgb-to-hex
-       (funcall clamp (+ r w))
-       (funcall clamp (+ g w))
-       (funcall clamp (+ b w))
-       2)))
-  (defun maple-modeline--adjust (left-segments right-segments &optional separator width)
-    "Patched: bypass broken --min-priority loop."
-    (maple-modeline--format left-segments right-segments separator))
+
+  (if ak/my-mac-p
+      (defun maple-modeline--color (color &optional weight)
+        "Patched: clamp color values to avoid NaN/overflow in color-rgb-to-hex."
+        (let* ((rgb (color-name-to-rgb color))
+               (r (car rgb))
+               (g (cadr rgb))
+               (b (caddr rgb))
+               (w (or weight 0))
+               (clamp (lambda (x) (max 0.0 (min 1.0 (if (or (isnan x) (not (numberp x))) 0.0 x))))))
+          (color-rgb-to-hex
+           (funcall clamp (+ r w))
+           (funcall clamp (+ g w))
+           (funcall clamp (+ b w))
+           2)))
+    (defun maple-modeline--adjust (left-segments right-segments &optional separator width)
+      "Patched: bypass broken --min-priority loop."
+      (maple-modeline--format left-segments right-segments separator)))
   (maple-modeline-mode 1))
 ;;;;;;;;;;;;;;;;
 ;; ** Vertico ;;
