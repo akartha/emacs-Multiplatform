@@ -243,8 +243,8 @@
 (define-key global-map (kbd "C-c F") #'fontaine-set-preset)
 ;; (define-key global-map (kbd "C-c g") #'fontaine-set-face-font)
 
-;; (use-package all-the-icons
-;;   :ensure t)
+(use-package all-the-icons
+  :ensure t)
 
 
 
