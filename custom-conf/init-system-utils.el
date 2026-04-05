@@ -16,8 +16,8 @@
   (doom-modeline-time-analogue-clock t)
   (doom-modeline-battery t)
   (doom-modeline-highlight-modified-buffer-name t)
-  (doom-modeline-enable-word-count t)
-  (doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)))
+  (doom-modeline-enable-word-count t))
+  ;; (doom-modeline-continuous-word-count-modes '(markdown-mode gfm-mode org-mode)))
 
 
 ;;;;;;;;;;;;;;;;

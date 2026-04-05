@@ -20,6 +20,7 @@
           (concat "${title:85} "
                   (propertize "${author:25} " 'face 'org-meta-line)
                   (propertize "${site:20}" 'face 'org-tag)
+                  (propertize "${word-count:20}" 'face 'org-meta-line)
                   (propertize "${tags:30}" 'face 'org-tag)))))
   :custom
   ;; (org-roam-database-connector 'sqlite-builtin)
@@ -88,6 +89,10 @@
   (cl-defmethod org-roam-node-author ((node org-roam-node))
     "Return the currently set author for the NODE."
     (cdr (assoc-string "AUTHOR" (org-roam-node-properties node))))
+
+  (cl-defmethod org-roam-node-word-count ((node org-roam-node))
+    "Return the word-count for the NODE."
+    (cdr (assoc-string "WORD-COUNT" (org-roam-node-properties node))))
 
   (cl-defmethod org-roam-node-site ((node org-roam-node))
     "Return the currently set site value for the NODE."

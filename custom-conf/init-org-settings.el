@@ -356,7 +356,8 @@
   :after org 
   :commands (org-web-tools--get-url org-web-tools--get-first-url)
   :hook ((org-capture-before-finalize . ak/delete-image-base-64-data-lines)
-         (org-capture-before-finalize . ak/org-extract-top-level-domain-into-property-drawer))
+         (org-capture-before-finalize . ak/org-extract-top-level-domain-into-property-drawer)
+         (org-capture-before-finalize . ak/org-word-count-into-property-drawer))
   :bind (:map ak-map
               ;; ("<f2>" . ak/get-url-title)
               ;; ("<f2>" . ak/clip-web-page-title-and-search-org-roam)
@@ -397,30 +398,74 @@
             (delete-line))))))
 
 ;;;###autoload
-(defun ak/org-set-document-property (property value)
-  "Set a document-level PROPERTY to VALUE inside the property drawer.
-If the drawer or property does not exist, create them.
-Does not overwrite existing properties."
+(defun ak/org-set-document-property (property value &optional force)
+  "Set document PROPERTY to VALUE in the top-level property drawer.
+If FORCE is non-nil, overwrite an existing property."
   (save-excursion
     (goto-char (point-min))
-    (if (re-search-forward "^:PROPERTIES:" nil t)
-        (let ((drawer-end (save-excursion (re-search-forward "^:END:" nil t))))
-          ;; Check if property already exists
-          (if (save-excursion
-                (re-search-forward (format "^:%s: " (upcase property)) drawer-end t))
-              (message "Property :%s: already exists, skipping." (upcase property))
-            ;; Insert property before :END:
-            (re-search-forward "^:END:" nil t)
-            (beginning-of-line)
-            (insert (format ":%s: %s\n" (upcase property) value))
-            (message "Inserted :%s: property with value: %s" (upcase property) value)))
-      ;; No property drawer — create one
-      (goto-char (point-min))
-      (forward-line)
-      (insert ":PROPERTIES:\n")
-      (insert (format ":%s: %s\n" (upcase property) value))
-      (insert ":END:\n")
-      (message "Created property drawer with :%s: %s" (upcase property) value))))
+    (let* ((prop (upcase property))
+           (case-fold-search t)
+           (drawer-start (re-search-forward "^:PROPERTIES:" nil t))
+           drawer-end prop-pos)
+
+      ;; Ensure drawer exists
+      (unless drawer-start
+        (forward-line 1)
+        (insert ":PROPERTIES:\n:END:\n")
+        (setq drawer-start (re-search-backward "^:PROPERTIES:")))
+
+      ;; Find end + property (single constrained scan)
+      (setq drawer-end (save-excursion
+                         (re-search-forward "^:END:" nil t)))
+
+      (setq prop-pos
+            (save-excursion
+              (when (re-search-forward (format "^:%s: " prop) drawer-end t)
+                (line-beginning-position))))
+
+      (cond
+       ;; Property exists
+       (prop-pos
+        (if force
+            (progn
+              (goto-char prop-pos)
+              (delete-region (line-beginning-position)
+                             (line-end-position))
+              (insert (format ":%s: %s" prop value))
+              (message "Updated :%s: %s" prop value))
+          (message "Property :%s: exists, skipping" prop)))
+
+       ;; Property missing → insert before :END:
+       (t
+        (goto-char drawer-end)
+        (beginning-of-line)
+        (insert (format ":%s: %s\n" prop value))
+        (message "Inserted :%s: %s" prop value))))))
+
+;; (defun ak/org-set-document-property (property value)
+;;   "Set a document-level PROPERTY to VALUE inside the property drawer.
+;; If the drawer or property does not exist, create them.
+;; Does not overwrite existing properties."
+;;   (save-excursion
+;;     (goto-char (point-min))
+;;     (if (re-search-forward "^:PROPERTIES:" nil t)
+;;         (let ((drawer-end (save-excursion (re-search-forward "^:END:" nil t))))
+;;           ;; Check if property already exists
+;;           (if (save-excursion
+;;                 (re-search-forward (format "^:%s: " (upcase property)) drawer-end t))
+;;               (message "Property :%s: already exists, skipping." (upcase property))
+;;             ;; Insert property before :END:
+;;             (re-search-forward "^:END:" nil t)
+;;             (beginning-of-line)
+;;             (insert (format ":%s: %s\n" (upcase property) value))
+;;             (message "Inserted :%s: property with value: %s" (upcase property) value)))
+;;       ;; No property drawer — create one
+;;       (goto-char (point-min))
+;;       (forward-line)
+;;       (insert ":PROPERTIES:\n")
+;;       (insert (format ":%s: %s\n" (upcase property) value))
+;;       (insert ":END:\n")
+;;       (message "Created property drawer with :%s: %s" (upcase property) value))))
 
 
 ;;;###autoload
@@ -712,7 +757,19 @@ If NO-RECURSION is non-nil don't count the words in subsections."
     word-count))
 
 (define-key ak-map "c" '("Count words in section" . org+-count-words-of-heading))
+(define-key ak-map "C" '("Count words for properties" . ak/org-word-count-into-property-drawer))
 
+
+(defun ak/org-word-count-into-property-drawer ()
+"Go to the first top-level headline link and store it in the :WORD-COUNT: document-level property."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (when (re-search-forward "^\\* .*?\\[\\[\\(https?://[^]]+\\)\\]\\[.*?\\]\\]" nil t)
+      (let* (( wordcount (org+-count-words-of-heading)))
+        (when wordcount
+          ;; (org-set-property "SITE" domain)))))))
+          (ak/org-set-document-property "WORD-COUNT" wordcount t))))))
 
 (defun ak/set-author-property-with-region(beg end)
   (interactive "r")
