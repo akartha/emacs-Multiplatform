@@ -225,7 +225,22 @@
     (add-to-list 'savehist-additional-variables 'shell-command-history)    
     (add-to-list 'savehist-additional-variables 'kill-ring )))
 
+(setq-default bidi-display-reordering 'left-to-right
+              bidi-paragraph-direction 'left-to-right)
+(setq bidi-inhibit-bpa t)
 
+(setq redisplay-skip-fontification-on-input t)
+
+(add-hook 'savehist-save-hook
+          (lambda ()
+            (setq kill-ring
+                  (mapcar #'substring-no-properties
+                          (cl-remove-if-not #'stringp kill-ring)))))
+
+
+(setq window-combination-resize t)
+
+(setq set-mark-command-repeat-pop t)
 
 ;;;;;;;;;;;;;;;;;
 ;; ** PDF tool ;;
