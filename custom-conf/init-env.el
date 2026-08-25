@@ -1,42 +1,33 @@
 ;;; -*- lexical-binding: t; -*-
 
-(defvar ak/my-framework-p nil
-"Framework 13 manjaro install")
-(defvar ak/my-win-framework-p nil
-"Framework 13 windows dual boot")
-(defvar ak/my-mac-p nil
-"Macbook Pro M1")
-(defvar ak/my-pi-p nil
+(defconst ak/my-framework-p  (string=  (system-name) "arun-framework")
+  "Framework 13 manjaro install")
+(defconst ak/my-win-framework-p (string=  (system-name) "FRAMEWORKWIN")
+  "Framework 13 windows dual boot")
+(defconst ak/my-mac-p (string= (system-name) "Arun-MBP14.local")
+  "Macbook Pro M1")
+(defconst ak/my-pi-p (or (string= (system-name) "pi-o-mine") 
+                         (string= (system-name) "pi-in-face"))
   "Either my Raspberry Pi 4 or the Clockworkpi uconsole")
 
-(defvar ak/my-server-p nil
+(defconst ak/my-server-p (string= (system-name) "bunty")
   "Ubuntu server - non GUI")
 
-(defvar ak/my-package-list nil)
-
-(defvar ak/my-org-file-location nil
-"Location of the org-files on this machine")
-
-(cond ((string=  (system-name) "arun-framework")
-       (setq ak/my-framework-p t))
-      ((string=  (system-name) "FRAMEWORKWIN")
-       (setq ak/my-win-framework-p t))
-      ((string= (system-name) "Arun-MBP14.local")
-       (setq ak/my-mac-p t))
-      ((string= (system-name) "bunty")
-       (setq ak/my-server-p t))
-      ((or (string= (system-name) "usbpi") 
-           (string= (system-name) "pi-o-mine") 
-           (string= (system-name) "pi-in-face") 
-           (string= (system-name) "pi-writer"))
-       (setq ak/my-pi-p t)))
-
-(defvar ak/generic-windows-p (equal system-type 'windows-nt)
+(defconst ak/generic-windows-p (equal system-type 'windows-nt)
 "Any windows machine")
-(defvar ak/generic-linux-p (equal system-type 'gnu/linux)
+(defconst ak/generic-linux-p (equal system-type 'gnu/linux)
 "Any linux machine")
-(defvar ak/generic-mac-p (equal system-type 'darwin)
+(defconst ak/generic-mac-p (equal system-type 'darwin)
 "Any mac")
+
+
+(defconst ak/my-org-file-location 
+  (cond (ak/my-framework-p (expand-file-name "~/Dropbox/org-files/"))
+        (ak/my-win-framework-p (expand-file-name "c:/Users/Arun/Dropbox/org-files/"))
+        (ak/my-mac-p (expand-file-name "~/Dropbox/org-files/"))
+        (ak/my-server-p (expand-file-name "~/Documents/org-files/"))
+        (ak/my-pi-p (expand-file-name "~/Documents/org-docs/"))))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; need this for windows, as otherwise gpg doesnt understand
@@ -101,17 +92,6 @@ Does not work with mac- so I have a package for that"
 
 ;; (add-hook 'window-size-change-functions
 ;;             #'frame-hide-title-bar-when-maximized)
-
-(cond (ak/my-framework-p
-       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
-      (ak/my-win-framework-p
-       (setq ak/my-org-file-location (expand-file-name "c:/Users/Arun/Dropbox/org-files/")))
-      (ak/my-mac-p
-       (setq ak/my-org-file-location (expand-file-name "~/Dropbox/org-files/")))
-      (ak/my-server-p
-       (setq ak/my-org-file-location (expand-file-name "~/Documents/org-files/")))
-      (ak/my-pi-p
-       (setq ak/my-org-file-location (expand-file-name "~/Documents/org-docs/"))))
 
 
 (provide 'init-env)
