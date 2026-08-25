@@ -442,32 +442,6 @@ If FORCE is non-nil, overwrite an existing property."
         (insert (format ":%s: %s\n" prop value))
         (message "Inserted :%s: %s" prop value))))))
 
-;; (defun ak/org-set-document-property (property value)
-;;   "Set a document-level PROPERTY to VALUE inside the property drawer.
-;; If the drawer or property does not exist, create them.
-;; Does not overwrite existing properties."
-;;   (save-excursion
-;;     (goto-char (point-min))
-;;     (if (re-search-forward "^:PROPERTIES:" nil t)
-;;         (let ((drawer-end (save-excursion (re-search-forward "^:END:" nil t))))
-;;           ;; Check if property already exists
-;;           (if (save-excursion
-;;                 (re-search-forward (format "^:%s: " (upcase property)) drawer-end t))
-;;               (message "Property :%s: already exists, skipping." (upcase property))
-;;             ;; Insert property before :END:
-;;             (re-search-forward "^:END:" nil t)
-;;             (beginning-of-line)
-;;             (insert (format ":%s: %s\n" (upcase property) value))
-;;             (message "Inserted :%s: property with value: %s" (upcase property) value)))
-;;       ;; No property drawer — create one
-;;       (goto-char (point-min))
-;;       (forward-line)
-;;       (insert ":PROPERTIES:\n")
-;;       (insert (format ":%s: %s\n" (upcase property) value))
-;;       (insert ":END:\n")
-;;       (message "Created property drawer with :%s: %s" (upcase property) value))))
-
-
 ;;;###autoload
 (defun ak/org-extract-top-level-domain-into-property-drawer ()
 "Extract domain from the first top-level headline link and store it in the :SITE: document-level property."
