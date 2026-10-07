@@ -36,15 +36,15 @@
      ;;  :unnarrowed t)
 
      ("w" "articles" plain "%?"
-      :target (file+head "articles/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/org-email-head-css.org\n#+filetags: web\n#+DATE: %U\n")
+      :target (file+head "articles/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: web\n")
       :unnarrowed t)
 
      ("f" "fiction" plain "%?"
-      :target (file+head "lit/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: fiction\n#+DATE: %U\n")
+      :target (file+head "lit/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: fiction\n")
       :unnarrowed t)
 
      ("r" "recipe" plain "%?"
-      :target (file+head "recipes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: recipe\n#+DATE: %U\n")
+      :target (file+head "recipes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: recipe\n")
       :unnarrowed t)
 
      ("b" "book notes" plain "\n* Source\n\nAuthor: %^{Author}\nTitle: ${title}\nYear: %^{Year}\n\n* Summary\n\n%?"
@@ -52,7 +52,7 @@
       :unnarrowed t)
 
      ("t" "tech notes" plain "%?"
-      :target (file+head "tech-notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/imagine-css.org\n#+filetags: tech\n#+DATE: %U\n")
+      :target (file+head "tech-notes/%<%Y%m%d%H%M%S>-${slug}.org" "#+title: ${title}\n#+SETUPFILE: custom-css/subtle-elegance-css.org\n#+filetags: tech\n")
       :unnarrowed t)
 
      ("p" "project" plain "\n* Goals\n\n%?\n\n* Tasks\n\n** TODO Add Initial Tasks\n\n* Dates\n\n"
@@ -137,5 +137,32 @@ Provides an embark action to capture urls in org-roam from url/org-link at point
           org-roam-ui-follow t
           org-roam-ui-update-on-save t
           org-roam-ui-open-on-start t))
+
+(defun ak/org-roam-set-created-from-filename ()
+  "Set CREATED on a newly captured Org-roam node.
+
+Extracts the timestamp from the current buffer's filename,
+formatted as YYYYMMDDHHMMSS-description.org.
+
+The CREATED property is set to YYYY-MM-DD HH:MM:SS.
+Does nothing if the filename doesn't match the expected format."
+  (when-let* ((filename (buffer-file-name))
+              (basename (file-name-nondirectory filename))
+              ((string-match
+                "\\`\\([0-9]\\{4\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)\\([0-9]\\{2\\}\\)-"
+                basename))
+              (created
+               (format "%s-%s-%s %s:%s:%s"
+                       (match-string 1 basename)
+                       (match-string 2 basename)
+                       (match-string 3 basename)
+                       (match-string 4 basename)
+                       (match-string 5 basename)
+                       (match-string 6 basename))))
+    (save-excursion
+      (org-entry-put nil "CREATED" created))))
+
+(add-hook 'org-roam-capture-new-node-hook
+          #'ak/org-roam-set-created-from-filename)
 
 (provide 'org-roam-settings)

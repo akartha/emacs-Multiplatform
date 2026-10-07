@@ -326,16 +326,40 @@
 ;; ;; * Projectile                                                        
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; (use-package projectile
+;;   :ensure t 
+;;   :init
+;;   (projectile-mode +1)
+;;   :bind (:map projectile-mode-map
+;;               ("C-c p" . projectile-command-map))
+;;   :config 
+;;   (with-eval-after-load 'projectile
+;;   (add-to-list 'projectile-ignored-projects "~/"))
+;;   (setq projectile-enable-caching t))
 (use-package projectile
-  :ensure t 
+  :ensure (:wait t)
   :init
   (projectile-mode +1)
+  (add-to-list 'projectile-globally-ignored-buffers "*dashboard*")
+  
+  ;; 1. Expand the home path so Emacs recognizes the absolute path vs "~/"
+  (setq projectile-ignored-projects 
+        (list "~/" 
+              (expand-file-name "~/")
+              (abbreviate-file-name (expand-file-name "~/"))))
+
+  ;; 2. Crucial: Do NOT treat a directory as a project unless a root file exists
+  (setq projectile-require-project-root t)
+
   :bind (:map projectile-mode-map
-              ("C-c p" . projectile-command-map)))
+              ("C-c p" . projectile-command-map))
+  :config
+  (setq projectile-enable-caching t))
 
 ;; ** Let projectile call make
 
 (global-set-key (kbd "<f5>") 'projectile-compile-project)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Custom functions to make life a little easier ;;
